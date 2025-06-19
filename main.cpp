@@ -1,6 +1,13 @@
 #define _CRT_SECURE_NO_WARNINGS
-#include <windows.h>
+#include<stdio.h>
+#include<stdlib.h>
 #include<graphics.h>
+#include<string>
+#include<math.h>
+#include<time.h>
+#include<mmstream.h>
+#include<Winuser.h>
+#pragma comment(lib,"winmm.lib")
 #include"helloworld.h"
 
 int WINAPI WinMain(
