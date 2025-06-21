@@ -130,7 +130,13 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="defines.h" />
+    <ClInclude Include="DrawGames.h" />
     <ClInclude Include="helloworld.h" />
+    <ClInclude Include="includes.h" />
+    <ClInclude Include="InitGame.h" />
+    <ClInclude Include="loadImages.h" />
+    <ClInclude Include="UpdateGame.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
