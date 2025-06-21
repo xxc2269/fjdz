@@ -23,5 +23,23 @@
     <ClInclude Include="helloworld.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="includes.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="defines.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="loadImages.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawGames.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="InitGame.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UpdateGame.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
