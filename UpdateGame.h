@@ -3,9 +3,9 @@
 
 //控制
 void control_plane() {
-	//// 此处可以添加更新游戏状态的逻辑，例如处理飞机移动、子弹发射、敌机生成等
+	// 此处可以添加更新游戏状态的逻辑，例如处理飞机移动、子弹发射、敌机生成等
 	// 以下为一个备选方案：用键盘输入控制飞机移动
-	//// 例如，处理飞机移动
+	//例如，处理飞机移动
 	//if (GetAsyncKeyState(VK_LEFT)) { // 如果按下左键
 	//	my_plane.plane_pos.x -= my_plane.speed; // 向左移动
 	//}
@@ -166,6 +166,16 @@ void check_bullet_collision() {
 	}
 }
 
+//检测玩家生命状态
+void check_player_life() {
+	if (my_plane.life <= 0) { // 如果玩家飞机生命值小于等于0
+		my_plane.is_alive = false; // 玩家飞机死亡
+		PlaySound("src/sound/game_over.wav", NULL, SND_FILENAME | SND_ASYNC | SND_NOWAIT); // 播放游戏结束音效
+		MessageBox(NULL, "Game Over!", "提示", MB_OK); // 弹出游戏结束提示框
+		exit(0); // 退出游戏
+	}
+}
+
 // 更新游戏状态函数
 void UpdateGame() {
 
@@ -183,4 +193,5 @@ void UpdateGame() {
 	update_enemy(); // 调用更新敌机位置函数，处理敌机移动
 	check_collision(); // 调用碰撞检测函数，处理敌机与玩家飞机的碰撞
 	check_bullet_collision(); // 调用碰撞检测函数，处理玩家子弹与敌机的碰撞
+	check_player_life(); // 调用检测玩家生命状态函数，处理玩家飞机的生命状态
 }
