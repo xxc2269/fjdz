@@ -78,6 +78,7 @@ static time_t start_time; //记录游戏开始时间
 static time_t end_time; //记录游戏结束时间
 static time_t last_shoot_time = clock(); //记录上次射击时间
 static time_t last_generate_enemy_time = clock(); //记录上次生成敌机时间
+static time_t last_added_time = clock(); //记录上次添加耐久的时间
 static IMAGE bg[5]; //背景图片
 
 static IMAGE plane[6]; //飞机图片

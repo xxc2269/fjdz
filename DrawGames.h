@@ -31,5 +31,14 @@ void DrawGame() {
 	sprintf(score_text, "Score: %d", score); //将分数格式化为字符串
 	drawtext(score_text, &score_rect, DT_SINGLELINE | DT_VCENTER | DT_NOCLIP); //绘制分数文本
 
+	//绘制生命值
+	RECT life_rect = { 10, 60, 200, 100 }; //定义一个矩形区域，用于绘制生命值
+	sprintf(score_text, "Life: %.0f", my_plane.life); //将生命值格式化为字符串
+	drawtext(score_text, &life_rect, DT_SINGLELINE | DT_VCENTER | DT_NOCLIP); //绘制生命值文本
+	//绘制耐久度
+	RECT endurance_rect = { 10, 110, 200, 150 }; //定义一个矩形区域，用于绘制耐久度
+	sprintf(score_text, "Endurance: %.0f", my_plane.endurance); //将耐久度格式化为字符串
+	drawtext(score_text, &endurance_rect, DT_SINGLELINE | DT_VCENTER | DT_NOCLIP); //绘制耐久度文本
+
 	EndBatchDraw(); //结束批量绘图
 }

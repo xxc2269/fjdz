@@ -66,6 +66,7 @@ void shoot_bullet() {
 				bullet[i].bullet_pos.x = my_plane.plane_pos.x + PLANE_SIZE / 2; // 设置子弹位置为飞机位置
 				bullet[i].bullet_pos.y = my_plane.plane_pos.y - PLANE_SIZE / 2; // 设置子弹位置为飞机位置
 				bullet[i].bullet_speed = 1.0; // 设置子弹速度
+				my_plane.endurance -= 1; // 减少飞机耐久度
 				last_shoot_time = clock(); // 记录最后一次射击时间
 				if (my_plane.bullet_num < BULLET_NUM) { // 如果子弹数量小于最大子弹数量
 					my_plane.bullet_num++; // 增加子弹数量
@@ -175,6 +176,29 @@ void check_player_life() {
 		exit(0); // 退出游戏
 	}
 }
+//耐久的加减，正常状态每秒恢复15耐久
+void add_endurance() {
+	
+	if (my_plane.plane_state == PLANE_STATE_NORMAL && clock()-last_added_time > 200) { // 如果飞机状态为正常
+		
+		my_plane.endurance += 3; // 每秒恢复15耐久
+		last_added_time = clock(); // 重置上次添加耐久的时间
+		if (my_plane.endurance > 100) { // 如果耐久度超过100
+			my_plane.endurance = 100; // 将耐久度设置为100
+		}
+	}
+}
+
+
+//检测飞机耐久，归零时终止射击
+void check_player_endurance() {
+	if (my_plane.endurance <= 0) { // 如果玩家飞机耐久度小于等于0
+		my_plane.endurance = 0; // 将耐久度设置为0
+		my_plane.plane_state = PLANE_STATE_NORMAL; // 切换到正常状态
+		
+	}
+}
+
 
 // 更新游戏状态函数
 void UpdateGame() {
@@ -194,4 +218,9 @@ void UpdateGame() {
 	check_collision(); // 调用碰撞检测函数，处理敌机与玩家飞机的碰撞
 	check_bullet_collision(); // 调用碰撞检测函数，处理玩家子弹与敌机的碰撞
 	check_player_life(); // 调用检测玩家生命状态函数，处理玩家飞机的生命状态
+	check_player_endurance(); // 调用检测飞机耐久函数，处理飞机耐久状态
+
+
+	check_player_endurance(); // 调用检测飞机耐久函数，处理飞机耐久状态
+	add_endurance(); // 调用添加耐久函数，处理飞机耐久状态
 }
