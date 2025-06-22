@@ -86,14 +86,23 @@ static time_t last_added_time = clock(); //记录上次添加耐久的时间
 static IMAGE bg[5]; //背景图片
 
 static IMAGE plane[6]; //飞机图片
+static IMAGE plane_mask[6]; //飞机掩码图片
 static IMAGE enemy[3]; //敌机图片
+static IMAGE enemy_mask[3]; //敌机掩码图片
 static IMAGE elite[3]; //精英敌机图片
+static IMAGE elite_mask[3]; //精英敌机掩码图片
 static IMAGE boss[2]; //BOSS图片
+static IMAGE boss_mask[2]; //BOSS掩码图片
 static IMAGE bullet_image[6]; //子弹图片
+static IMAGE bullet_mask[6]; //子弹掩码图片
 static IMAGE mega_bullet_image[6]; //超级子弹图片
+static IMAGE mega_bullet_mask[6]; //超级子弹掩码图片
 static IMAGE mega_time; //无双时间图片
+static IMAGE mega_time_mask; //无双时间掩码图片
 static IMAGE enemy_bullet_image[4]; //敌机子弹图片
+static IMAGE enemy_bullet_mask[4]; //敌机子弹掩码图片
 static IMAGE laser_image[4]; //激光图片
+static IMAGE laser_mask[4]; //激光掩码图片
 
 static int score = 0; //分数
 static int level = 1; //游戏等级

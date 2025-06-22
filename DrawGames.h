@@ -5,23 +5,39 @@ void DrawGame() {
 
 	BeginBatchDraw();//开始批量绘图，可以在屏幕上绘制多个图像而不立即显示，防止闪烁
 
-	setfillcolor(BLACK); //设置填充颜色为黑色
+	//setfillcolor(BLACK); //设置填充颜色为黑色
 	//绘制游戏界面
 	//绘制背景
-	putimage(0, 0, &bg[0]); //绘制背景图片1
-	//绘制飞机
-	putimage(my_plane.plane_pos.x - PLANE_SIZE / 2, my_plane.plane_pos.y - PLANE_SIZE / 2, &plane[0], SRCPAINT); //绘制飞机图片1
-	//SRCPAINT表示源图像和目标图像的颜色相加，产生透明效果
+	putimage(0, 0, &bg[0]); //绘制背景图片1（背景通常不需要掩码）
+
+	//绘制飞机（假设只用plane[0]和plane_mask[0]，如需动态切换请自行调整下标）
+	putTransparentImage(
+		my_plane.plane_pos.x - PLANE_SIZE / 2,
+		my_plane.plane_pos.y - PLANE_SIZE / 2,
+		&plane[0],
+		&plane_mask[0]
+	);
+
 	//绘制敌机
 	for (int i = 0; i < ENEMY_MAX_NUM; i++) {
 		if (enemy_plane[i].is_alive) { //如果敌机存活
-			putimage(enemy_plane[i].plane_pos.x - PLANE_SIZE / 2, enemy_plane[i].plane_pos.y - PLANE_SIZE / 2, &enemy[0], SRCPAINT); //绘制敌机图片1
+			putTransparentImage(
+				enemy_plane[i].plane_pos.x - PLANE_SIZE / 2,
+				enemy_plane[i].plane_pos.y - PLANE_SIZE / 2,
+				&enemy[0],
+				&enemy_mask[0]
+			);
 		}
 	}
 	//绘制子弹
 	for (int i = 0; i < BULLET_NUM; i++) {
 		if (bullet[i].is_active) { //如果子弹激活
-			putimage(bullet[i].bullet_pos.x - PLANE_SIZE / 2, bullet[i].bullet_pos.y - PLANE_SIZE / 2, &bullet_image[0], SRCPAINT); //绘制子弹图片1
+			putTransparentImage(
+				bullet[i].bullet_pos.x - PLANE_SIZE / 2,
+				bullet[i].bullet_pos.y - PLANE_SIZE / 2,
+				&bullet_image[0],
+				&bullet_mask[0]
+			);
 		}
 	}
 	//绘制分数
