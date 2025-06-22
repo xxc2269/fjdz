@@ -109,6 +109,12 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /Y /I "$(ProjectDir)x64\*.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>xcopy /E /Y /I "$(ProjectDir)src" "$(OutDir)src"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -130,13 +136,23 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bass.h" />
     <ClInclude Include="defines.h" />
     <ClInclude Include="DrawGames.h" />
     <ClInclude Include="helloworld.h" />
     <ClInclude Include="includes.h" />
     <ClInclude Include="InitGame.h" />
     <ClInclude Include="loadImages.h" />
+    <ClInclude Include="loadSounds.h" />
     <ClInclude Include="UpdateGame.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="bass.lib" />
+    <Library Include="x64\bass.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bass.dll" />
+    <None Include="x64\bass.dll" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

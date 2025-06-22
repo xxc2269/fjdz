@@ -12,6 +12,7 @@
 #include"DrawGames.h"//自定义的头文件，包含了绘制游戏界面函数的声明
 #include"InitGame.h"//自定义的头文件，包含了初始化游戏函数的声明
 #include"UpdateGame.h"//自定义的头文件，包含了更新游戏状态函数的声明
+#include"loadSounds.h"//自定义的头文件，包含了加载音效函数的声明
 
 //函数声明
 
@@ -38,6 +39,7 @@ int WINAPI WinMain(
 
 
 	loadimages(); //调用加载图片函数，加载所有需要的图片资源
+	loadSounds(); //调用加载音效函数，加载所有需要的音效资源
 
 
 	initgraph(SCREEN_WIDTH, SCREEN_HEIGHT);//初始化图形窗口，设置窗口大小
@@ -46,7 +48,7 @@ int WINAPI WinMain(
 	while(1){
 		UpdateGame(); //调用更新游戏状态函数，更新游戏状态
 		DrawGame(); //调用绘制游戏界面函数，绘制游戏界面
-		//Sleep(1); //延时1毫秒，控制游戏帧率
+		//Sleep(1); //延时1毫秒，控制游戏帧率（弃用）
 	}
 
 
