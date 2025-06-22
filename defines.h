@@ -32,6 +32,7 @@ enum {
 
 typedef struct {
 	POS plane_pos; //飞机位置
+	POS start_pos; //飞机起始位置
 	POS bullet_pos[BULLET_NUM]; //子弹位置
 	float speed; //飞机的速度
 	int bullet_num; //子弹数量
@@ -43,6 +44,7 @@ typedef struct {
 	int plane_state; //飞机状态（0-正常，1-射击，2-蓄力中，3-蓄力完成，4-无双状态）(仅用于玩家飞机)
 	bool is_alive; //飞机是否存活(仅用于敌机)
 	int plane_type; //飞机类型（0-普通敌机，1-精英敌机，2-BOSS敌机）
+	time_t generate_time; //生成时间(仅用于敌机)
 } PLANE; //飞机结构体
 //飞机结构体，包含飞机位置、子弹位置、速度和子弹数量等信息
 
@@ -53,6 +55,7 @@ enum {
 }; //子弹类型枚举
 typedef struct {
 	POS bullet_pos; //子弹位置
+	POS start_pos; //子弹起始位置
 	int bullet_num; //子弹数量
 	float bullet_speed; //子弹速度
 	bool is_active; //子弹是否激活
@@ -61,6 +64,7 @@ typedef struct {
 	int bullet_size; //子弹大小
 	int bullet_color; //子弹颜色
 	int byllet_type; //子弹类型（0-普通子弹，1-无双子弹，2-激光）
+	time_t generate_time; //生成时间
 } BULLET; //子弹结构体
 //子弹结构体，包含子弹位置、数量、速度等信息
 

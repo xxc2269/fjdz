@@ -63,10 +63,13 @@ void shoot_bullet() {
 			if (!bullet[i].is_active && clock() - last_shoot_time > 200) { // 如果子弹未激活且距离上次射击时间超过200毫秒
 				PlaySound("src/sound/bullet.wav", NULL, SND_FILENAME | SND_ASYNC | SND_NOWAIT); // 播放子弹发射音效，SND_FILENAME表示文件名，SND_ASYNC表示异步播放，防止阻塞,SND_NOWAIT表示不等待音效播放完成
 				bullet[i].is_active = true; // 激活子弹
-				bullet[i].bullet_pos.x = my_plane.plane_pos.x + PLANE_SIZE / 2; // 设置子弹位置为飞机位置
-				bullet[i].bullet_pos.y = my_plane.plane_pos.y - PLANE_SIZE / 2; // 设置子弹位置为飞机位置
-				bullet[i].bullet_speed = 1.0; // 设置子弹速度
+				bullet[i].start_pos.x = my_plane.plane_pos.x + PLANE_SIZE / 2; // 设置子弹位置为飞机位置
+				bullet[i].bullet_pos.x = bullet[i].start_pos.x; // 设置子弹位置为起始位置
+				bullet[i].start_pos.y = my_plane.plane_pos.y - PLANE_SIZE / 2; // 设置子弹位置为飞机位置
+				bullet[i].bullet_pos.y = bullet[i].start_pos.y; // 设置子弹位置为起始位置
+				bullet[i].bullet_speed = 0.3; // 设置子弹速度
 				my_plane.endurance -= 1; // 减少飞机耐久度
+				bullet[i].generate_time = clock(); // 记录子弹生成时间
 				last_shoot_time = clock(); // 记录最后一次射击时间
 				if (my_plane.bullet_num < BULLET_NUM) { // 如果子弹数量小于最大子弹数量
 					my_plane.bullet_num++; // 增加子弹数量
@@ -82,7 +85,7 @@ void bullet_move() {
 	// 更新子弹位置
 	for (int i = 0; i <= BULLET_NUM; i++) {
 		if (bullet[i].is_active) { // 如果子弹激活
-			bullet[i].bullet_pos.y -= bullet[i].bullet_speed; // 更新子弹位置
+			bullet[i].bullet_pos.y = bullet[i].start_pos.y - (clock() - bullet[i].generate_time) * bullet[i].bullet_speed; // 更新子弹位置
 			if (bullet[i].bullet_pos.y < 0) { // 如果子弹超出屏幕上边界
 				bullet[i].is_active = false; // 禁用子弹
 				my_plane.bullet_num--; // 减少子弹数量
@@ -97,12 +100,15 @@ void generate_enemy() {
 		for (int i = 0; i < ENEMY_MAX_NUM; i++) {
 			if (!enemy_plane[i].is_alive) { // 如果敌机未激活
 				enemy_plane[i].is_alive = true; // 激活敌机
-				enemy_plane[i].plane_pos.x = rand() % (SCREEN_WIDTH - PLANE_SIZE)+25; // 随机生成敌机位置
-				enemy_plane[i].plane_pos.y = -PLANE_SIZE; // 设置敌机初始位置在屏幕上方
+				enemy_plane[i].start_pos.x = rand() % (SCREEN_WIDTH - PLANE_SIZE)+25; // 随机生成敌机位置
+				enemy_plane[i].plane_pos.x = enemy_plane[i].start_pos.x; // 设置敌机位置为起始位置
+				enemy_plane[i].start_pos.y = -PLANE_SIZE; // 设置敌机初始位置在屏幕上方
+				enemy_plane[i].plane_pos.y = enemy_plane[i].start_pos.y; // 设置敌机位置为起始位置
 				enemy_plane[i].speed = 0.3; // 设置敌机速度
 				enemy_plane[i].plane_type = ENEMY_TYPE_NORMAL; // 设置敌机类型为普通敌机
 				enemy_plane[i].maxlife = 50; // 设置敌机最大生命值
 				enemy_plane[i].life = 50; // 设置敌机生命值
+				enemy_plane[i].generate_time = clock(); // 记录敌机生成时间
 				enemy_num++; // 增加敌机数量
 				break; // 退出循环
 			}
@@ -113,7 +119,7 @@ void generate_enemy() {
 void update_enemy() {
 	for (int i = 0; i < ENEMY_MAX_NUM; i++) {
 		if (enemy_plane[i].is_alive) { // 如果敌机激活
-			enemy_plane[i].plane_pos.y += enemy_plane[i].speed; // 更新敌机位置
+			enemy_plane[i].plane_pos.y = enemy_plane[i].start_pos.y + (clock()-enemy_plane[i].generate_time)*0.1; // 更新敌机位置
 			if (enemy_plane[i].plane_pos.y > SCREEN_HEIGHT) { // 如果敌机超出屏幕下边界
 				enemy_plane[i].is_alive = false; // 禁用敌机
 				enemy_num--; // 减少敌机数量
