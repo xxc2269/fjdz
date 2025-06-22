@@ -61,7 +61,11 @@ void shoot_bullet() {
 	if (my_plane.plane_state == PLANE_STATE_SHOOTING) {
 		for (int i = 0; i <= my_plane.bullet_num; i++) {
 			if (!bullet[i].is_active && clock() - last_shoot_time > 200) { // 如果子弹未激活且距离上次射击时间超过200毫秒
-				PlaySound("src/sound/bullet.wav", NULL, SND_FILENAME | SND_ASYNC | SND_NOWAIT); // 播放子弹发射音效，SND_FILENAME表示文件名，SND_ASYNC表示异步播放，防止阻塞,SND_NOWAIT表示不等待音效播放完成
+				// 子弹发射音效
+				if (bullet_sound) {
+					DWORD chan = BASS_SampleGetChannel(bullet_sound, FALSE);
+					BASS_ChannelPlay(chan, TRUE);
+				}
 				bullet[i].is_active = true; // 激活子弹
 				bullet[i].start_pos.x = my_plane.plane_pos.x + PLANE_SIZE / 2; // 设置子弹位置为飞机位置
 				bullet[i].bullet_pos.x = bullet[i].start_pos.x; // 设置子弹位置为起始位置
@@ -134,7 +138,11 @@ void check_collision() {
 			// 检测敌机与玩家飞机的碰撞
 			if (abs(enemy_plane[i].plane_pos.x - my_plane.plane_pos.x) < PLANE_SIZE &&
 				abs(enemy_plane[i].plane_pos.y - my_plane.plane_pos.y) < PLANE_SIZE) {
-				PlaySound("src/sound/enemy1_down.wav", NULL, SND_FILENAME | SND_ASYNC | SND_NOWAIT); // 播放敌机被击落音效
+				// 敌机被击落音效
+				if (enemy_down_sound) {
+					DWORD chan = BASS_SampleGetChannel(enemy_down_sound, FALSE);
+					BASS_ChannelPlay(chan, TRUE);
+				}
 				my_plane.life -= 10; // 玩家飞机受到伤害
 				enemy_plane[i].is_alive = false; // 禁用敌机
 				enemy_num--; // 减少敌机数量
@@ -155,12 +163,22 @@ void check_bullet_collision() {
 					// 检测子弹与敌机的碰撞
 					if (abs(bullet[i].bullet_pos.x - enemy_plane[j].plane_pos.x) < PLANE_SIZE &&
 						abs(bullet[i].bullet_pos.y - enemy_plane[j].plane_pos.y) < PLANE_SIZE) {
-						PlaySound("src/sound/hit.wav", NULL, SND_FILENAME | SND_ASYNC | SND_NOWAIT); // 播放子弹击中敌机音效
 						enemy_plane[j].life -= bullet[i].bullet_damage; // 敌机受到伤害
+						if (enemy_plane[i].life > 0) {
+							// 子弹击中音效
+							if (bullet_hit_sound) {
+								DWORD chan = BASS_SampleGetChannel(bullet_hit_sound, FALSE);
+								BASS_ChannelPlay(chan, TRUE);
+							}
+						}
 						bullet[i].is_active = false; // 禁用子弹
 						my_plane.bullet_num--; // 减少子弹数量
 						if (enemy_plane[j].life <= 0) { // 如果敌机生命值小于等于0
-							PlaySound("src/sound/enemy1_down.wav", NULL, SND_FILENAME | SND_ASYNC | SND_NOWAIT); // 播放敌机被击落音效
+							// 敌机被击落音效
+							if (enemy_down_sound) {
+								DWORD chan = BASS_SampleGetChannel(enemy_down_sound, FALSE);
+								BASS_ChannelPlay(chan, TRUE);
+							}
 							enemy_plane[j].is_alive = false; // 禁用敌机
 							enemy_num--; // 减少敌机数量
 							score += enemy_plane[j].maxlife;// 增加分数

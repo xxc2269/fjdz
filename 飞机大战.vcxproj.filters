@@ -41,5 +41,19 @@
     <ClInclude Include="UpdateGame.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="loadSounds.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="bass.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="bass.lib" />
+    <Library Include="x64\bass.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bass.dll" />
+    <None Include="x64\bass.dll" />
   </ItemGroup>
 </Project>

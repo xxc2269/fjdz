@@ -98,3 +98,11 @@ static IMAGE laser_image[4]; //激光图片
 static int score = 0; //分数
 static int level = 1; //游戏等级
 static int game_state = 0; //游戏状态（0-未开始，1-进行中，2-结束）
+
+//音效相关变量
+static HSTREAM bullet_sound; //子弹音效
+static HSTREAM enemy_down_sound; //敌机被击落音效
+static HSTREAM elite_down_sound; //精英敌机被击落音效
+static HSTREAM boss_down_sound; //BOSS被击落音效
+static HSTREAM bullet_hit_sound; //子弹击中音效
+
