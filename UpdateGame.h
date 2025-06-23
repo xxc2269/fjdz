@@ -88,11 +88,14 @@ void shoot_bullet() {
 void bullet_move() {
 	
 		// 更新子弹位置
-		for (int i = 0; i <= BULLET_NUM; i++) {
+		for (int i = 0; i < BULLET_NUM; i++) {
 			if (bullet[i].is_active) { // 如果子弹激活
 				bullet[i].bullet_pos.y = bullet[i].start_pos.y - (clock() - bullet[i].generate_time) * bullet[i].bullet_speed; // 更新子弹位置
 				if (bullet[i].bullet_pos.y < 0) { // 如果子弹超出屏幕上边界
 					bullet[i].is_active = false; // 禁用子弹
+					char teststr[50];
+					//sprintf(teststr, "bullet_num: %d", i);
+					//MessageBox(NULL, teststr, "提示", MB_OK); // 弹出提示框显示子弹数量(排除bug用）
 					my_plane.bullet_num--; // 减少子弹数量
 				}
 			}
