@@ -60,7 +60,7 @@ void control_plane() {
 void shoot_bullet() {
 	if (my_plane.plane_state == PLANE_STATE_SHOOTING) {
 		for (int i = 0; i <= my_plane.bullet_num; i++) {
-			if (!bullet[i].is_active && clock() - last_shoot_time > 200) { // 如果子弹未激活且距离上次射击时间超过200毫秒
+			if (!bullet[i].is_active && clock() - my_plane.last_shoot_time > 200) { // 如果子弹未激活且距离上次射击时间超过200毫秒
 				// 子弹发射音效
 				if (bullet_sound) {
 					DWORD chan = BASS_SampleGetChannel(bullet_sound, FALSE);
@@ -74,7 +74,7 @@ void shoot_bullet() {
 				bullet[i].bullet_speed = 0.3; // 设置子弹速度
 				my_plane.endurance -= 1; // 减少飞机耐久度
 				bullet[i].generate_time = clock(); // 记录子弹生成时间
-				last_shoot_time = clock(); // 记录最后一次射击时间
+				my_plane.last_shoot_time = clock(); // 记录最后一次射击时间
 				if (my_plane.bullet_num < BULLET_NUM) { // 如果子弹数量小于最大子弹数量
 					my_plane.bullet_num++; // 增加子弹数量
 				}
@@ -86,17 +86,19 @@ void shoot_bullet() {
 
 //更新子弹位置
 void bullet_move() {
-	// 更新子弹位置
-	for (int i = 0; i <= BULLET_NUM; i++) {
-		if (bullet[i].is_active) { // 如果子弹激活
-			bullet[i].bullet_pos.y = bullet[i].start_pos.y - (clock() - bullet[i].generate_time) * bullet[i].bullet_speed; // 更新子弹位置
-			if (bullet[i].bullet_pos.y < 0) { // 如果子弹超出屏幕上边界
-				bullet[i].is_active = false; // 禁用子弹
-				my_plane.bullet_num--; // 减少子弹数量
+	
+		// 更新子弹位置
+		for (int i = 0; i <= BULLET_NUM; i++) {
+			if (bullet[i].is_active) { // 如果子弹激活
+				bullet[i].bullet_pos.y = bullet[i].start_pos.y - (clock() - bullet[i].generate_time) * bullet[i].bullet_speed; // 更新子弹位置
+				if (bullet[i].bullet_pos.y < 0) { // 如果子弹超出屏幕上边界
+					bullet[i].is_active = false; // 禁用子弹
+					my_plane.bullet_num--; // 减少子弹数量
+				}
 			}
 		}
 	}
-}
+
 
 //生成敌机
 void generate_enemy() {
@@ -114,6 +116,8 @@ void generate_enemy() {
 				enemy_plane[i].life = 50; // 设置敌机生命值
 				enemy_plane[i].generate_time = clock(); // 记录敌机生成时间
 				enemy_num++; // 增加敌机数量
+				srand(time(NULL));
+				enemy_plane[i].style = rand() % 3;  // 0, 1, 2
 				break; // 退出循环
 			}
 		}
@@ -131,6 +135,50 @@ void update_enemy() {
 		}
 	}
 }
+
+//发射敌机子弹
+void enemy_shoot_bullet() {
+	for(int j = 0; j < ENEMY_MAX_NUM; j++) {
+		if (enemy_plane[j].is_alive && clock() - enemy_plane[j].generate_time > 1000 && clock() - enemy_plane[j].last_shoot_time > 1000) { // 如果敌机激活且距离生成时间超过1000毫秒
+			for (int i = 0; i < BULLET_NUM; i++) {
+				if (!enemy_bullet[i].is_active) { // 如果敌机子弹未激活
+					enemy_bullet[i].is_active = true; // 激活敌机子弹
+					enemy_bullet[i].start_pos.x = enemy_plane[j].plane_pos.x + PLANE_SIZE / 2; // 设置敌机子弹位置为敌机位置
+					enemy_bullet[i].bullet_pos.x = enemy_bullet[i].start_pos.x; // 设置敌机子弹位置为起始位置
+					enemy_bullet[i].start_pos.y = enemy_plane[j].plane_pos.y + PLANE_SIZE / 2; // 设置敌机子弹位置为敌机位置
+					enemy_bullet[i].bullet_pos.y = enemy_bullet[i].start_pos.y; // 设置敌机子弹位置为起始位置
+					enemy_bullet[i].bullet_speed = 0.3; // 设置敌机子弹速度
+					enemy_bullet[i].generate_time = clock(); // 记录敌机子弹生成时间
+					enemy_plane[j].last_shoot_time = clock(); // 记录最后一次射击时间
+					enemy_bullet_num++; // 增加敌机子弹数量
+					break; // 退出循环
+				}
+			}
+		//enemy_plane[j].generate_time = clock(); // 更新敌机生成时间
+			break; // 退出循环
+		}
+	}
+}
+
+//更新敌机子弹位置
+void enemy_bullet_move() {
+
+		// 更新子弹位置
+		for (int i = 0; i <= ENEMY_MAX_NUM; i++) {
+			if (enemy_bullet[i].is_active) { // 如果子弹激活
+				enemy_bullet[i].bullet_pos.y = enemy_bullet[i].start_pos.y + (clock() - enemy_bullet[i].generate_time) * enemy_bullet[i].bullet_speed; // 更新子弹位置
+				if (enemy_bullet[i].bullet_pos.y > SCREEN_HEIGHT) { // 如果子弹超出屏幕下边界
+					enemy_bullet[i].is_active = false; // 禁用子弹
+					enemy_bullet_num--; // 减少敌机子弹数量
+				}
+			}
+		}
+}
+
+
+
+
+
 //敌机与玩家飞机碰撞检测
 void check_collision() {
 	for (int i = 0; i < ENEMY_MAX_NUM; i++) {
@@ -239,6 +287,8 @@ void UpdateGame() {
 	}
 
 	update_enemy(); // 调用更新敌机位置函数，处理敌机移动
+	enemy_shoot_bullet(); // 调用发射敌机子弹函数，处理敌机子弹发射
+	enemy_bullet_move(); // 调用更新敌机子弹位置函数，处理敌机子弹移动
 	check_collision(); // 调用碰撞检测函数，处理敌机与玩家飞机的碰撞
 	check_bullet_collision(); // 调用碰撞检测函数，处理玩家子弹与敌机的碰撞
 	check_player_life(); // 调用检测玩家生命状态函数，处理玩家飞机的生命状态
@@ -247,4 +297,5 @@ void UpdateGame() {
 
 	check_player_endurance(); // 调用检测飞机耐久函数，处理飞机耐久状态
 	add_endurance(); // 调用添加耐久函数，处理飞机耐久状态
+
 }

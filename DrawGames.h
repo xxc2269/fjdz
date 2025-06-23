@@ -20,12 +20,13 @@ void DrawGame() {
 
 	//绘制敌机
 	for (int i = 0; i < ENEMY_MAX_NUM; i++) {
-		if (enemy_plane[i].is_alive) { //如果敌机存活
+		if (enemy_plane[i].is_alive) { 
+			//如果敌机存活
 			putTransparentImage(
 				enemy_plane[i].plane_pos.x - PLANE_SIZE / 2,
 				enemy_plane[i].plane_pos.y - PLANE_SIZE / 2,
-				&enemy[0],
-				&enemy_mask[0]
+				&enemy[enemy_plane[i].style],
+				&enemy_mask[enemy_plane[i].style]
 			);
 		}
 	}
@@ -40,6 +41,18 @@ void DrawGame() {
 			);
 		}
 	}
+
+	for (int i = 0; i < BULLET_NUM; i++) {
+		if (enemy_bullet[i].is_active) { //如果子弹激活
+			putTransparentImage(
+				enemy_bullet[i].bullet_pos.x - PLANE_SIZE / 2,
+				enemy_bullet[i].bullet_pos.y - PLANE_SIZE / 2,
+				&enemy_bullet_image[0],
+				&enemy_bullet_mask[0]
+			);
+		}
+	}
+
 	//绘制分数
 	RECT score_rect = { 10, 10, 200, 50 }; //定义一个矩形区域，用于绘制分数
 	setbkmode(TRANSPARENT); //设置背景模式为透明

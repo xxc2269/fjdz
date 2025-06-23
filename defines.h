@@ -36,6 +36,7 @@ typedef struct {
 	POS bullet_pos[BULLET_NUM]; //子弹位置
 	float speed; //飞机的速度
 	int bullet_num; //子弹数量
+
 	float bullet_speed; //子弹速度
 	float maxlife; //飞机最大生命值
 	float life; //飞机生命值
@@ -45,6 +46,8 @@ typedef struct {
 	bool is_alive; //飞机是否存活(仅用于敌机)
 	int plane_type; //飞机类型（0-普通敌机，1-精英敌机，2-BOSS敌机）
 	time_t generate_time; //生成时间(仅用于敌机)
+	time_t last_shoot_time; //上次射击时间
+	int style; //飞机样式
 } PLANE; //飞机结构体
 //飞机结构体，包含飞机位置、子弹位置、速度和子弹数量等信息
 
@@ -72,12 +75,13 @@ typedef struct {
 //static用于定义全局变量，这些变量在整个程序中都可以访问
 static PLANE my_plane; //定义一个全局变量my_plane，表示飞机
 static PLANE enemy_plane[ENEMY_MAX_NUM]; //定义一个全局变量enemy_plane，表示敌机
-static BULLET bullet[BULLET_NUM]; //定义一个全局变量bullet，表示子弹
+static BULLET bullet[BULLET_NUM]; //定义一个全局变量bullet，表示玩家子弹
 static BULLET mega_bullet[2]; //定义一个全局变量mega_bullet，表示超级子弹
-static BULLET enemy_bullet[ENEMY_MAX_NUM]; //定义一个全局变量enemy_bullet，表示敌机子弹
+static BULLET enemy_bullet[BULLET_NUM]; //定义一个全局变量enemy_bullet，表示敌机子弹
 static BULLET laser_bullet[ENEMY_MAX_NUM]; //定义一个全局变量laser_bullet，表示激光
 
 static int enemy_num = 0; //敌机数量
+static int  enemy_bullet_num; //敌机子弹数量
 static time_t start_time; //记录游戏开始时间
 static time_t end_time; //记录游戏结束时间
 static time_t last_shoot_time = clock(); //记录上次射击时间
