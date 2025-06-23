@@ -110,7 +110,7 @@ void loadimages() {
 	loadimage(&enemy_bullet_mask[1], "src/ColorImages/bullet/enemy_bullet1.bmp"); //加载敌机子弹掩码图片2
 	loadimage(&enemy_bullet_mask[2], "src/ColorImages/bullet/enemy_bullet2.bmp"); //加载敌机子弹掩码图片3
 	loadimage(&enemy_bullet_mask[3], "src/ColorImages/bullet/enemy_bullet3.bmp"); //加载敌机子弹掩码图片4
-
+	
 
 
 	//加载激光图片
