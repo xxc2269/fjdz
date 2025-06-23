@@ -178,9 +178,24 @@ void enemy_bullet_move() {
 		}
 }
 
-
-
-
+//敌机子弹与玩家飞机碰撞
+void check_enemy_bullet_collision() {
+	for (int i = 0; i < BULLET_NUM; i++) {
+		if (enemy_bullet[i].is_active) { // 如果敌机子弹激活
+			// 检测敌机子弹与玩家飞机的碰撞
+			if (abs(enemy_bullet[i].bullet_pos.x - my_plane.plane_pos.x) < PLANE_SIZE &&
+				abs(enemy_bullet[i].bullet_pos.y - my_plane.plane_pos.y) < PLANE_SIZE) {
+				my_plane.life -= 1; // 玩家飞机受到伤害
+				enemy_bullet[i].is_active = false; // 禁用敌机子弹
+				enemy_bullet_num--; // 减少敌机子弹数量
+				if (my_plane.life <= 0) { // 如果玩家飞机生命值小于等于0
+					my_plane.is_alive = false; // 玩家飞机死亡
+					break; // 退出循环
+				}
+			}
+		}
+	}
+}
 
 //敌机与玩家飞机碰撞检测
 void check_collision() {
@@ -212,8 +227,8 @@ void check_bullet_collision() {
 			for (int j = 0; j < ENEMY_MAX_NUM; j++) {
 				if (enemy_plane[j].is_alive) { // 如果敌机激活
 					// 检测子弹与敌机的碰撞
-					if (abs(bullet[i].bullet_pos.x - enemy_plane[j].plane_pos.x) < PLANE_SIZE &&
-						abs(bullet[i].bullet_pos.y - enemy_plane[j].plane_pos.y) < PLANE_SIZE) {
+					if (abs(bullet[i].bullet_pos.x - enemy_plane[j].plane_pos.x) < PLANE_SIZE/2 &&
+						abs(bullet[i].bullet_pos.y - enemy_plane[j].plane_pos.y) < PLANE_SIZE/2) {
 						enemy_plane[j].life -= bullet[i].bullet_damage; // 敌机受到伤害
 						if (enemy_plane[i].life > 0) {
 							// 子弹击中音效
@@ -275,15 +290,6 @@ void check_player_endurance() {
 }
 
 
-
-
-
-
-
-
-
-
-
 // 更新游戏状态函数
 void UpdateGame() {
 
@@ -301,6 +307,7 @@ void UpdateGame() {
 	update_enemy(); // 调用更新敌机位置函数，处理敌机移动
 	enemy_shoot_bullet(); // 调用发射敌机子弹函数，处理敌机子弹发射
 	enemy_bullet_move(); // 调用更新敌机子弹位置函数，处理敌机子弹移动
+	check_enemy_bullet_collision(); // 调用敌机子弹与玩家飞机碰撞检测函数，处理敌机子弹与玩家飞机的碰撞
 	check_collision(); // 调用碰撞检测函数，处理敌机与玩家飞机的碰撞
 	check_bullet_collision(); // 调用碰撞检测函数，处理玩家子弹与敌机的碰撞
 	check_player_life(); // 调用检测玩家生命状态函数，处理玩家飞机的生命状态
