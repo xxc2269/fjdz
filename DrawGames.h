@@ -20,14 +20,31 @@ void DrawGame() {
 
 	//绘制敌机
 	for (int i = 0; i < ENEMY_MAX_NUM; i++) {
-		if (enemy_plane[i].is_alive) { 
-			//如果敌机存活
-			putTransparentImage(
-				enemy_plane[i].plane_pos.x - PLANE_SIZE / 2,
-				enemy_plane[i].plane_pos.y - PLANE_SIZE / 2,
-				&enemy[enemy_plane[i].style],
-				&enemy_mask[enemy_plane[i].style]
-			);
+		if (enemy_plane[i].is_alive) { //如果敌机存活
+			if (enemy_plane[i].plane_type == ENEMY_TYPE_BOSS) { //如果是BOSS
+				putTransparentImage(
+					enemy_plane[i].plane_pos.x - enemy_plane[i].size / 2,
+					enemy_plane[i].plane_pos.y - enemy_plane[i].size / 2,
+					&boss[enemy_plane[i].style],
+					&boss_mask[enemy_plane[i].style]
+				);
+			}
+			else if (enemy_plane[i].plane_type == ENEMY_TYPE_ELITE) { //如果是精英敌机
+				putTransparentImage(
+					enemy_plane[i].plane_pos.x - enemy_plane[i].size / 2,
+					enemy_plane[i].plane_pos.y - enemy_plane[i].size / 2,
+					&elite[enemy_plane[i].style],
+					&elite_mask[enemy_plane[i].style]
+				);
+			}
+			else { //普通敌机
+				putTransparentImage(
+					enemy_plane[i].plane_pos.x - enemy_plane[i].size / 2,
+					enemy_plane[i].plane_pos.y - enemy_plane[i].size / 2,
+					&enemy[enemy_plane[i].style],
+					&enemy_mask[enemy_plane[i].style]
+				);
+			}
 		}
 	}
 	//绘制子弹

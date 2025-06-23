@@ -4,6 +4,8 @@
 #define SCREEN_WIDTH 512 //屏幕宽度
 #define SCREEN_HEIGHT 720 //屏幕高度
 #define PLANE_SIZE 50 //飞机大小
+#define BOSS_SIZE 200 //BOSS大小
+#define BOSS_HEIGHT 140 //BOSS高度
 #define PLANE_SPEED 1.0 //飞机移动速度
 #define ENEMY_MAX_NUM 20 //敌机最大数量
 #define BULLET_NUM 50 //子弹数量
@@ -45,6 +47,8 @@ typedef struct {
 	float maxlife; //飞机最大生命值
 	float life; //飞机生命值
 	float power; //飞机火力(仅用于玩家飞机)
+	int size; //飞机大小
+	int height; //飞机高度
 	float endurance; //飞机耐久度（仅用于玩家飞机）
 	int plane_state; //飞机状态（0-正常，1-射击，2-蓄力中，3-蓄力完成，4-无双状态）(仅用于玩家飞机)
 	bool is_alive; //飞机是否存活(仅用于敌机)
