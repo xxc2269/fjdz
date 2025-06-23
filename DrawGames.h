@@ -21,6 +21,26 @@ void DrawGame() {
 	//绘制敌机
 	for (int i = 0; i < ENEMY_MAX_NUM; i++) {
 		if (enemy_plane[i].is_alive) { //如果敌机存活
+			//绘制血条
+			if (enemy_plane[i].plane_type != ENEMY_TYPE_BOSS) {
+			int x1 = enemy_plane[i].plane_pos.x - enemy_plane[i].size / 2;//敌机血条起始位置x坐标
+			int y1 = enemy_plane[i].plane_pos.y - enemy_plane[i].size / 2 - 10;//敌机血条起始位置y坐标
+			int x2 = x1 + enemy_plane[i].size * ((enemy_plane[i].life * 100) / (enemy_plane[i].maxlife * 100));//敌机血条结束位置x坐标
+			int y2 = enemy_plane[i].plane_pos.y - enemy_plane[i].size / 2;//敌机血条结束位置y坐标
+
+			setfillcolor(RED); //设置填充颜色为红色
+			fillrectangle(x1, y1, x2, y2); //绘制敌机血条
+		}	
+			else {
+				int x1 = 20;
+				int y1 = 20;
+				int x2 = x1 + (SCREEN_WIDTH-40) * ((enemy_plane[i].life * 100) / (enemy_plane[i].maxlife * 100));
+				int y2 = 40;
+				setfillcolor(RED); //设置填充颜色为红色
+				fillrectangle(x1, y1, x2, y2); //绘制敌机血条
+			}
+
+
 			if (enemy_plane[i].plane_type == ENEMY_TYPE_BOSS) { //如果是BOSS
 				putTransparentImage(
 					enemy_plane[i].plane_pos.x - enemy_plane[i].size / 2,
