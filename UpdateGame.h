@@ -183,8 +183,8 @@ void check_enemy_bullet_collision() {
 	for (int i = 0; i < BULLET_NUM; i++) {
 		if (enemy_bullet[i].is_active) { // 如果敌机子弹激活
 			// 检测敌机子弹与玩家飞机的碰撞
-			if (abs(enemy_bullet[i].bullet_pos.x - my_plane.plane_pos.x) < PLANE_SIZE &&
-				abs(enemy_bullet[i].bullet_pos.y - my_plane.plane_pos.y) < PLANE_SIZE) {
+			if (abs(enemy_bullet[i].bullet_pos.x - my_plane.plane_pos.x) < PLANE_SIZE/2 &&
+				abs(enemy_bullet[i].bullet_pos.y - my_plane.plane_pos.y) < PLANE_SIZE/2) {
 				my_plane.life -= 1; // 玩家飞机受到伤害
 				enemy_bullet[i].is_active = false; // 禁用敌机子弹
 				enemy_bullet_num--; // 减少敌机子弹数量
@@ -227,8 +227,8 @@ void check_bullet_collision() {
 			for (int j = 0; j < ENEMY_MAX_NUM; j++) {
 				if (enemy_plane[j].is_alive) { // 如果敌机激活
 					// 检测子弹与敌机的碰撞
-					if (abs(bullet[i].bullet_pos.x - enemy_plane[j].plane_pos.x) < PLANE_SIZE/2 &&
-						abs(bullet[i].bullet_pos.y - enemy_plane[j].plane_pos.y) < PLANE_SIZE/2) {
+					if (abs(bullet[i].bullet_pos.x - enemy_plane[j].plane_pos.x) < PLANE_SIZE &&
+						abs(bullet[i].bullet_pos.y - enemy_plane[j].plane_pos.y) < PLANE_SIZE) {
 						enemy_plane[j].life -= bullet[i].bullet_damage; // 敌机受到伤害
 						if (enemy_plane[i].life > 0) {
 							// 子弹击中音效

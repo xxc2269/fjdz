@@ -8,6 +8,10 @@
 #define ENEMY_MAX_NUM 20 //敌机最大数量
 #define BULLET_NUM 50 //子弹数量
 
+#define ENEMY_LIFE 50 //敌机生命值
+#define ELITE_ENEMY_LIFE 200 //精英敌机生命值
+#define BOSS_LIFE 5000 //BOSS生命值
+
 typedef struct {
 	float x; //x坐标
 	float y; //y坐标
