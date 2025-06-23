@@ -58,7 +58,7 @@ void control_plane() {
 
 //发射子弹
 void shoot_bullet() {
-	if (my_plane.plane_state == PLANE_STATE_SHOOTING) {
+	if (my_plane.plane_state == PLANE_STATE_SHOOTING && my_plane.endurance > 0) {
 		for (int i = 0; i <= my_plane.bullet_num; i++) {
 			if (!bullet[i].is_active && clock() - my_plane.last_shoot_time > 200) { // 如果子弹未激活且距离上次射击时间超过200毫秒
 				// 子弹发射音效
@@ -134,6 +134,9 @@ void update_enemy() {
 	for (int i = 0; i < ENEMY_MAX_NUM; i++) {
 		if (enemy_plane[i].is_alive) { // 如果敌机激活
 			enemy_plane[i].plane_pos.y = enemy_plane[i].start_pos.y + (clock()-enemy_plane[i].generate_time)*enemy_plane[i].speed; // 更新敌机位置
+			if (enemy_plane[i].plane_type == ENEMY_TYPE_BOSS && enemy_plane[i].plane_pos.y > 200) {
+				enemy_plane[i].plane_pos.y = 200; // 如果是BOSS敌机，限制其位置在屏幕上方200像素
+			}
 			if (enemy_plane[i].plane_pos.y > SCREEN_HEIGHT) { // 如果敌机超出屏幕下边界
 				enemy_plane[i].is_alive = false; // 禁用敌机
 				enemy_num--; // 减少敌机数量
@@ -186,8 +189,13 @@ void check_enemy_bullet_collision() {
 	for (int i = 0; i < BULLET_NUM; i++) {
 		if (enemy_bullet[i].is_active) { // 如果敌机子弹激活
 			// 检测敌机子弹与玩家飞机的碰撞
-			if (abs(enemy_bullet[i].bullet_pos.x - my_plane.plane_pos.x) < enemy_plane[i].size /2 &&
-				abs(enemy_bullet[i].bullet_pos.y - my_plane.plane_pos.y) < enemy_plane[i].height /2) {
+			if (abs(enemy_bullet[i].bullet_pos.x - my_plane.plane_pos.x) < my_plane.size /2 &&
+				abs(enemy_bullet[i].bullet_pos.y - my_plane.plane_pos.y) < my_plane.height /2) {
+				// 子弹击中音效
+				if (bullet_hit_sound) {
+					DWORD chan = BASS_SampleGetChannel(bullet_hit_sound, FALSE);
+					BASS_ChannelPlay(chan, TRUE);
+				}
 				my_plane.life -= 1; // 玩家飞机受到伤害
 				enemy_bullet[i].is_active = false; // 禁用敌机子弹
 				enemy_bullet_num--; // 减少敌机子弹数量
@@ -205,8 +213,9 @@ void check_collision() {
 	for (int i = 0; i < ENEMY_MAX_NUM; i++) {
 		if (enemy_plane[i].is_alive) { // 如果敌机激活
 			// 检测敌机与玩家飞机的碰撞
-			if (abs(enemy_plane[i].plane_pos.x - my_plane.plane_pos.x) < enemy_plane[i].size &&
-				abs(enemy_plane[i].plane_pos.y - my_plane.plane_pos.y) < enemy_plane[i].height) {
+			if (enemy_plane[i].plane_type != ENEMY_TYPE_BOSS && // 如果不是BOSS敌机
+				abs(enemy_plane[i].plane_pos.x - my_plane.plane_pos.x) < enemy_plane[i].size/2 &&
+				abs(enemy_plane[i].plane_pos.y - my_plane.plane_pos.y) < enemy_plane[i].height/2) {
 				// 敌机被击落音效
 				if (enemy_down_sound) {
 					DWORD chan = BASS_SampleGetChannel(enemy_down_sound, FALSE);
@@ -230,29 +239,58 @@ void check_bullet_collision() {
 			for (int j = 0; j < ENEMY_MAX_NUM; j++) {
 				if (enemy_plane[j].is_alive) { // 如果敌机激活
 					// 检测子弹与敌机的碰撞
-					if (abs(bullet[i].bullet_pos.x - enemy_plane[j].plane_pos.x) < enemy_plane[j].size &&
-						abs(bullet[i].bullet_pos.y - enemy_plane[j].plane_pos.y) < enemy_plane[j].height) {
-						enemy_plane[j].life -= bullet[i].bullet_damage; // 敌机受到伤害
-						if (enemy_plane[i].life > 0) {
-							// 子弹击中音效
-							if (bullet_hit_sound) {
-								DWORD chan = BASS_SampleGetChannel(bullet_hit_sound, FALSE);
-								BASS_ChannelPlay(chan, TRUE);
+					if (enemy_plane[j].plane_type == ENEMY_TYPE_BOSS) {// 如果是BOSS敌机
+						if (abs(bullet[i].bullet_pos.x - enemy_plane[j].plane_pos.x) < enemy_plane[j].size / 2 &&
+							abs(bullet[i].bullet_pos.y - enemy_plane[j].plane_pos.y) < enemy_plane[j].height / 2) {
+							enemy_plane[j].life -= bullet[i].bullet_damage; // 敌机受到伤害
+							if (enemy_plane[i].life > 0) {
+								// 子弹击中音效
+								if (bullet_hit_sound) {
+									DWORD chan = BASS_SampleGetChannel(bullet_hit_sound, FALSE);
+									BASS_ChannelPlay(chan, TRUE);
+								}
 							}
-						}
-						bullet[i].is_active = false; // 禁用子弹
-						my_plane.bullet_num--; // 减少子弹数量
-						if (enemy_plane[j].life <= 0) { // 如果敌机生命值小于等于0
-							// 敌机被击落音效
-							if (enemy_down_sound) {
-								DWORD chan = BASS_SampleGetChannel(enemy_down_sound, FALSE);
-								BASS_ChannelPlay(chan, TRUE);
+							bullet[i].is_active = false; // 禁用子弹
+							my_plane.bullet_num--; // 减少子弹数量
+							if (enemy_plane[j].life <= 0) { // 如果敌机生命值小于等于0
+								// 敌机被击落音效
+								if (enemy_down_sound) {
+									DWORD chan = BASS_SampleGetChannel(boss_down_sound, FALSE);
+									BASS_ChannelPlay(chan, TRUE);
+								}
+								enemy_plane[j].is_alive = false; // 禁用敌机
+								enemy_num--; // 减少敌机数量
+								score += enemy_plane[j].maxlife;// 增加分数
 							}
-							enemy_plane[j].is_alive = false; // 禁用敌机
-							enemy_num--; // 减少敌机数量
-							score += enemy_plane[j].maxlife;// 增加分数
+							break; // 退出循环
 						}
-						break; // 退出循环
+					}
+					else {// 如果是普通敌机或精英敌机
+						if (abs(bullet[i].bullet_pos.x - enemy_plane[j].plane_pos.x) < enemy_plane[j].size &&
+							abs(bullet[i].bullet_pos.y - enemy_plane[j].plane_pos.y) < enemy_plane[j].height){
+							enemy_plane[j].life -= bullet[i].bullet_damage; // 敌机受到伤害
+							if (enemy_plane[i].life > 0) {
+								// 子弹击中音效
+								if (bullet_hit_sound) {
+									DWORD chan = BASS_SampleGetChannel(bullet_hit_sound, FALSE);
+									BASS_ChannelPlay(chan, TRUE);
+								}
+							}
+							bullet[i].is_active = false; // 禁用子弹
+							my_plane.bullet_num--; // 减少子弹数量
+							if (enemy_plane[j].life <= 0) { // 如果敌机生命值小于等于0
+								// 敌机被击落音效
+								if (enemy_down_sound) {
+									DWORD chan = BASS_SampleGetChannel(enemy_down_sound, FALSE);
+									BASS_ChannelPlay(chan, TRUE);
+								}
+								enemy_plane[j].is_alive = false; // 禁用敌机
+								enemy_num--; // 减少敌机数量
+								score += enemy_plane[j].maxlife;// 增加分数
+							}
+							break; // 退出循环
+							}
+
 					}
 				}
 			}
@@ -262,7 +300,7 @@ void check_bullet_collision() {
 
 //游戏开始2分钟后生成BOSS
 void generate_boss() {
-	if (clock() - start_time > 1000 && !boss_is_alive) { // 如果游戏开始超过2分钟且BOSS未激活
+	if (clock() - start_time > 10000 && !boss_is_alive) { // 如果游戏开始超过2分钟且BOSS未激活
 		for (int i = 0; i < ENEMY_MAX_NUM; i++) {
 			if (!enemy_plane[i].is_alive) { // 如果敌机未激活
 				enemy_plane[i].is_alive = true; // 激活敌机
@@ -304,7 +342,7 @@ void check_player_life() {
 //耐久的加减，正常状态每秒恢复15耐久
 void add_endurance() {
 	
-	if (my_plane.plane_state == PLANE_STATE_NORMAL && clock()-last_added_time > 200) { // 如果飞机状态为正常
+	if (my_plane.plane_state == PLANE_STATE_NORMAL && clock()-last_added_time > 200 && clock()-my_plane.last_shoot_time > 300) { // 如果飞机状态为正常
 		
 		my_plane.endurance += 3; // 每秒恢复15耐久
 		last_added_time = clock(); // 重置上次添加耐久的时间
@@ -334,10 +372,10 @@ void UpdateGame() {
 	
 	bullet_move(); // 调用更新子弹位置函数，处理子弹移动
 
-	//if(clock() - last_generate_enemy_time > (2500/level)) { // 如果距上次生成时间超过（2.5/关卡数）秒
-	//	generate_enemy(); // 调用生成敌机函数，处理敌机生成
-	//	last_generate_enemy_time = clock(); // 重置生成敌机时间
-	//}
+	if(clock() - last_generate_enemy_time > (5000/level)) { // 如果距上次生成时间超过（2.5/关卡数）秒
+		generate_enemy(); // 调用生成敌机函数，处理敌机生成
+		last_generate_enemy_time = clock(); // 重置生成敌机时间
+	}
 
 	update_enemy(); // 调用更新敌机位置函数，处理敌机移动
 	enemy_shoot_bullet(); // 调用发射敌机子弹函数，处理敌机子弹发射

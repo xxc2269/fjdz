@@ -12,7 +12,7 @@
 
 #define ENEMY_LIFE 50 //敌机生命值
 #define ELITE_ENEMY_LIFE 200 //精英敌机生命值
-#define BOSS_LIFE 5000 //BOSS生命值
+#define BOSS_LIFE 2000 //BOSS生命值
 
 typedef struct {
 	float x; //x坐标
