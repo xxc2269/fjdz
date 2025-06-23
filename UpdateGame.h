@@ -272,6 +272,15 @@ void check_player_endurance() {
 }
 
 
+
+
+
+
+
+
+
+
+
 // 更新游戏状态函数
 void UpdateGame() {
 

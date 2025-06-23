@@ -73,6 +73,7 @@ typedef struct {
 
 // 定义游戏中的全局变量和常量
 //static用于定义全局变量，这些变量在整个程序中都可以访问
+static bool boss_is_alive = false; //BOSS是否存活
 static PLANE my_plane; //定义一个全局变量my_plane，表示飞机
 static PLANE enemy_plane[ENEMY_MAX_NUM]; //定义一个全局变量enemy_plane，表示敌机
 static BULLET bullet[BULLET_NUM]; //定义一个全局变量bullet，表示玩家子弹
