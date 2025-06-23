@@ -262,11 +262,12 @@ void check_bullet_collision() {
 
 //游戏开始2分钟后生成BOSS
 void generate_boss() {
-	if (clock() - start_time > 10000 && !boss_is_alive) { // 如果游戏开始超过2分钟且BOSS未激活
+	if (clock() - start_time > 1000 && !boss_is_alive) { // 如果游戏开始超过2分钟且BOSS未激活
 		for (int i = 0; i < ENEMY_MAX_NUM; i++) {
 			if (!enemy_plane[i].is_alive) { // 如果敌机未激活
 				enemy_plane[i].is_alive = true; // 激活敌机
 				enemy_plane[i].size = BOSS_SIZE; // 设置BOSS大小
+				enemy_plane[i].height = BOSS_HEIGHT;// 设置BOSS高度
 				enemy_plane[i].start_pos.x = SCREEN_WIDTH / 2 /*- enemy_plane[i].size / 2*/; // 设置BOSS位置为屏幕中心
 				enemy_plane[i].plane_pos.x = enemy_plane[i].start_pos.x; // 设置BOSS位置为起始位置
 				enemy_plane[i].start_pos.y = -enemy_plane[i].height; // 设置BOSS初始位置在屏幕上方
@@ -333,10 +334,10 @@ void UpdateGame() {
 	
 	bullet_move(); // 调用更新子弹位置函数，处理子弹移动
 
-	if(clock() - last_generate_enemy_time > (2500/level)) { // 如果距上次生成时间超过（2.5/关卡数）秒
-		generate_enemy(); // 调用生成敌机函数，处理敌机生成
-		last_generate_enemy_time = clock(); // 重置生成敌机时间
-	}
+	//if(clock() - last_generate_enemy_time > (2500/level)) { // 如果距上次生成时间超过（2.5/关卡数）秒
+	//	generate_enemy(); // 调用生成敌机函数，处理敌机生成
+	//	last_generate_enemy_time = clock(); // 重置生成敌机时间
+	//}
 
 	update_enemy(); // 调用更新敌机位置函数，处理敌机移动
 	enemy_shoot_bullet(); // 调用发射敌机子弹函数，处理敌机子弹发射
