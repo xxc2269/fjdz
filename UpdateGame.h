@@ -362,6 +362,18 @@ void check_player_endurance() {
 	}
 }
 
+//播放音乐
+void play_music() {
+	if (bgm1) { // 如果背景音乐存在
+		BGM = BASS_SampleGetChannel(bgm1, FALSE); // 获取背景音乐通道
+		//if (!BASS_ChannelIsActive(BGM)) { // 如果背景音乐未在播放
+			
+			// 将背景音乐音量设置为50%
+			BASS_ChannelSetAttribute(BGM, BASS_ATTRIB_VOL, 0.5f);
+			BASS_ChannelPlay(BGM, TRUE); // 播放背景音乐
+		//}
+	}
+}
 
 // 更新游戏状态函数
 void UpdateGame() {
@@ -392,4 +404,6 @@ void UpdateGame() {
 
 	generate_boss(); // 调用生成BOSS函数，处理BOSS生成
 
+
+	play_music(); // 调用播放音乐函数，处理背景音乐播放
 }

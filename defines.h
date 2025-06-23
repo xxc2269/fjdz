@@ -122,6 +122,16 @@ static int score = 0; //分数
 static int level = 1; //游戏等级
 static int game_state = 0; //游戏状态（0-未开始，1-进行中，2-结束）
 
+//背景音乐
+static HSAMPLE bgm1; //背景音乐1
+static HSTREAM bgm2; //背景音乐2
+static HSTREAM bgm3; //背景音乐3
+static HSTREAM bgm4; //背景音乐4
+static HSTREAM bgm5; //背景音乐5
+static HSTREAM over; //游戏结束音乐
+
+static HCHANNEL BGM; //背景音乐通道
+
 //音效相关变量
 static HSTREAM bullet_sound; //子弹音效
 static HSTREAM enemy_down_sound; //敌机被击落音效
@@ -129,3 +139,8 @@ static HSTREAM elite_down_sound; //精英敌机被击落音效
 static HSTREAM boss_down_sound; //BOSS被击落音效
 static HSTREAM bullet_hit_sound; //子弹击中音效
 
+static HSTREAM grade1_sound; //一级音效
+static HSTREAM grade2_sound; //二级音效
+static HSTREAM grade3_sound; //三级音效
+static HSTREAM grade4_sound; //四级音效
+static HSTREAM grade5_sound; //五级音效
