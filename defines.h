@@ -57,11 +57,12 @@ enum {
 	BULLET_TYPE_LASER //激光
 }; //子弹类型枚举
 typedef struct {
+	bool is_active; //子弹是否激活
 	POS bullet_pos; //子弹位置
 	POS start_pos; //子弹起始位置
 	int bullet_num; //子弹数量
 	float bullet_speed; //子弹速度
-	bool is_active; //子弹是否激活
+
 	int bullet_type; //子弹类型
 	int bullet_damage; //子弹伤害
 	int bullet_size; //子弹大小
