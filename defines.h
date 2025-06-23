@@ -94,6 +94,7 @@ static int enemy_num = 0; //敌机数量
 static int  enemy_bullet_num; //敌机子弹数量
 static time_t start_time; //记录游戏开始时间
 static time_t end_time; //记录游戏结束时间
+static time_t last_complete_time = clock(); //记录上次通关时间
 static time_t last_shoot_time = clock(); //记录上次射击时间
 static time_t last_generate_enemy_time = clock(); //记录上次生成敌机时间
 static time_t last_added_time = clock(); //记录上次添加耐久的时间
