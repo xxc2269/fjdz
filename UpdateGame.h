@@ -151,9 +151,17 @@ void check_plane_state() {
 			
 				
 			// 子弹发射音效
-			if (bullet_sound) {
-				DWORD chan = BASS_SampleGetChannel(bullet_sound, FALSE);
-				BASS_ChannelPlay(chan, TRUE);
+			if (my_plane.grade <= 2) {
+				if (bullet_sound) {
+					DWORD chan = BASS_SampleGetChannel(bullet_sound, FALSE);
+					BASS_ChannelPlay(chan, TRUE);
+				}
+			}
+			else {
+				if (mega_bullet_sound) {
+					DWORD chan = BASS_SampleGetChannel(mega_bullet_sound, FALSE);
+					BASS_ChannelPlay(chan, TRUE);
+				}
 			}
 
 			//根据飞机气势等级设置子弹类型和伤害
@@ -194,7 +202,7 @@ void check_plane_state() {
 			mega_bullet[0].bullet_pos.x = mega_bullet[0].start_pos.x; // 设置子弹位置为起始位置
 			mega_bullet[0].start_pos.y = my_plane.plane_pos.y - PLANE_SIZE / 2; // 设置子弹位置为飞机位置
 			mega_bullet[0].bullet_pos.y = mega_bullet[0].start_pos.y; // 设置子弹位置为起始位置
-			mega_bullet[0].bullet_speed = 0.3; // 设置子弹速度
+			mega_bullet[0].bullet_speed = 0.7; // 设置子弹速度
 			my_plane.endurance -= 10; // 减少飞机耐久度
 			bullet[++my_plane.bullet_num-1].generate_time = clock(); // 记录子弹生成时间
 			bullet[my_plane.bullet_num-1] = mega_bullet[0];
@@ -220,7 +228,7 @@ void bullet_move() {
 		for (int i = 0; i < BULLET_NUM; i++) {
 			if (bullet[i].is_active) { // 如果子弹激活
 				bullet[i].bullet_pos.y = bullet[i].start_pos.y - (clock() - bullet[i].generate_time) * bullet[i].bullet_speed; // 更新子弹位置
-				if (bullet[i].bullet_pos.y < 0) { // 如果子弹超出屏幕上边界
+				if (bullet[i].bullet_pos.y < -150) { // 如果子弹超出屏幕上边界
 					bullet[i].is_active = false; // 禁用子弹
 					if (bullet[i].bullet_type == BULLET_TYPE_BIG) {
 						mega_bullet[0].is_active = false; // 禁用大子弹
@@ -375,11 +383,19 @@ void check_bullet_collision() {
 						if (abs(bullet[i].bullet_pos.x - enemy_plane[j].plane_pos.x) < enemy_plane[j].size / 2 &&
 							abs(bullet[i].bullet_pos.y - enemy_plane[j].plane_pos.y) < enemy_plane[j].height / 2) {
 							enemy_plane[j].life -= bullet[i].bullet_damage; // 敌机受到伤害
-							if (enemy_plane[i].life > 0) {
+							if (enemy_plane[i].life > 0 || bullet[i].bullet_type == BULLET_TYPE_BIG) {
 								// 子弹击中音效
-								if (bullet_hit_sound) {
-									DWORD chan = BASS_SampleGetChannel(bullet_hit_sound, FALSE);
-									BASS_ChannelPlay(chan, TRUE);
+								if (bullet[i].bullet_grade <= 2 || bullet[i].bullet_type != BULLET_TYPE_BIG) {
+									if (bullet_hit_sound) {
+										DWORD chan = BASS_SampleGetChannel(bullet_hit_sound, FALSE);
+										BASS_ChannelPlay(chan, TRUE);
+									}
+								}
+								else {
+									if (mega_bullet_hit_sound) {
+										DWORD chan = BASS_SampleGetChannel(mega_bullet_hit_sound, FALSE);
+										BASS_ChannelPlay(chan, TRUE);
+									}
 								}
 							}
 							bullet[i].is_active = false; // 禁用子弹
@@ -407,11 +423,19 @@ void check_bullet_collision() {
 						if (abs(bullet[i].bullet_pos.x - enemy_plane[j].plane_pos.x) < enemy_plane[j].size &&
 							abs(bullet[i].bullet_pos.y - enemy_plane[j].plane_pos.y) < enemy_plane[j].height){
 							enemy_plane[j].life -= bullet[i].bullet_damage; // 敌机受到伤害
-							if (enemy_plane[i].life > 0) {
+							if (enemy_plane[i].life > 0 || bullet[i].bullet_type == BULLET_TYPE_BIG) {
 								// 子弹击中音效
-								if (bullet_hit_sound) {
-									DWORD chan = BASS_SampleGetChannel(bullet_hit_sound, FALSE);
-									BASS_ChannelPlay(chan, TRUE);
+								if (bullet[i].bullet_grade > 2 && bullet[i].bullet_type == BULLET_TYPE_BIG)  {
+									if (mega_bullet_hit_sound) {
+										DWORD chan = BASS_SampleGetChannel(mega_bullet_hit_sound, FALSE);
+										BASS_ChannelPlay(chan, TRUE);
+									}
+								}
+								else if(enemy_plane[j].life > 0) {
+									if (bullet_hit_sound) {
+										DWORD chan = BASS_SampleGetChannel(bullet_hit_sound, FALSE);
+										BASS_ChannelPlay(chan, TRUE);
+									}
 								}
 							}
 							bullet[i].is_active = false; // 禁用子弹
@@ -429,7 +453,7 @@ void check_bullet_collision() {
 								enemy_num--; // 减少敌机数量
 								score += enemy_plane[j].maxlife;// 增加分数
 							}
-							my_plane.power += 10; // 增加飞机气势
+							if(bullet[i].bullet_type == BULLET_TYPE_NORMAL)  my_plane.power += 10; // 增加飞机气势
 							break; // 退出循环
 							}
 
@@ -499,7 +523,7 @@ void add_endurance() {
 void check_player_endurance() {
 	if (my_plane.endurance <= 0) { // 如果玩家飞机耐久度小于等于0
 		my_plane.endurance = 0; // 将耐久度设置为0
-		my_plane.plane_state = PLANE_STATE_NORMAL; // 切换到正常状态
+		my_plane.plane_state = my_plane.plane_state == PLANE_STATE_CHARGING ? PLANE_STATE_CHARGED : PLANE_STATE_NORMAL ; // 切换到正常状态，若为蓄力状态则切换到蓄力完成状态
 		
 	}
 }
@@ -507,32 +531,57 @@ void check_player_endurance() {
 //检测飞机气势数值，与升级体系
 void check_player_power() {
 	if (my_plane.power >= GRADE1_SCORE && my_plane.grade == 0) { // 如果飞机气势大于等于100
+		//升级音效
+		if (grade1_sound) {
+			DWORD chan = BASS_SampleGetChannel(grade1_sound, FALSE);
+			BASS_ChannelPlay(chan, TRUE);
+		}
 		my_plane.power = 0; // 重置气势
 		my_plane.grade++; // 升级气势等级
 	}
 
 	if (my_plane.power >= GRADE2_SCORE && my_plane.grade == 1) { // 如果飞机气势大于等于110
+		//升级音效
+		if (grade2_sound) {
+			DWORD chan = BASS_SampleGetChannel(grade2_sound, FALSE);
+			BASS_ChannelPlay(chan, TRUE);
+		}
 		my_plane.power = 0; // 重置气势
 		my_plane.grade++; // 升级气势等级
 	}
 
 	if (my_plane.power >= GRADE3_SCORE && my_plane.grade == 2) { // 如果飞机气势大于等于120
+		//升级音效
+		if (grade3_sound) {
+			DWORD chan = BASS_SampleGetChannel(grade3_sound, FALSE);
+			BASS_ChannelPlay(chan, TRUE);
+		}
 		my_plane.power = 0; // 重置气势
 		my_plane.grade++; // 升级气势等级
 	}
 
 	if (my_plane.power >= GRADE4_SCORE && my_plane.grade == 3) { // 如果飞机气势大于等于150
+		//升级音效
+		if (grade4_sound) {
+			DWORD chan = BASS_SampleGetChannel(grade4_sound, FALSE);
+			BASS_ChannelPlay(chan, TRUE);
+		}
 		my_plane.power = 0; // 重置气势
 		my_plane.grade++; // 升级气势等级
 	}
 
 	if (my_plane.power >= GRADE5_SCORE && my_plane.grade == 4) { // 如果飞机气势大于等于400
-		my_plane.power = 0; // 重置气势
+		//升级音效
+		if (grade5_sound) {
+			DWORD chan = BASS_SampleGetChannel(grade5_sound, FALSE);
+			BASS_ChannelPlay(chan, TRUE);
+		}
+		my_plane.power = 400; // 重置气势
 		my_plane.grade++; // 升级气势等级
 		last_power_time = clock(); // 记录或重置上次减少气势的时间
 	}
 
-	if (my_plane.grade > 5) { // 如果气势等级超过5
+	if (my_plane.grade >= 5) { // 如果气势等级超过5
 		my_plane.grade = 5; // 将气势等级设置为5
 		my_plane.power = 400;// 将气势设置为400
 	}

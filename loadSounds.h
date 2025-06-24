@@ -19,14 +19,16 @@ inline void loadSounds() {
     
     // 加载音效文件
     bullet_sound = BASS_SampleLoad(FALSE, "src/sound/bullet.wav", 0, 0, 8, 0); // 加载子弹音效
+	mega_bullet_sound = BASS_SampleLoad(FALSE, "src/sound/mega_bullet.ogg", 0, 0, 8, 0); // 加载超级子弹音效
     enemy_down_sound = BASS_SampleLoad(FALSE, "src/sound/enemy_down.wav", 0, 0, 8, 0); // 加载敌机被击落音效
 	elite_down_sound = BASS_SampleLoad(FALSE, "src/sound/elite_down.wav", 0, 0, 8, 0); // 加载精英敌机被击落音效
 	boss_down_sound = BASS_SampleLoad(FALSE, "src/sound/boss_down.wav", 0, 0, 8, 0); // 加载BOSS被击落音效
-    bullet_hit_sound = BASS_SampleLoad(FALSE, "src/sound/hit.wav", 0, 0, 8, 0); // 加载子弹击中音效
+    bullet_hit_sound = BASS_SampleLoad(FALSE, "src/sound/hit.wav", 0, 0, 16, 0); // 加载子弹击中音效
+	mega_bullet_hit_sound = BASS_SampleLoad(FALSE, "src/sound/mega_hit.ogg", 0, 0, 16, 0); // 加载超级子弹击中音效
 
-	grade1_sound = BASS_SampleLoad(FALSE, "src/sound/grade1.wav", 0, 0, 8, 0); // 加载一级音效
-	grade2_sound = BASS_SampleLoad(FALSE, "src/sound/grade2.wav", 0, 0, 8, 0); // 加载二级音效
-	grade3_sound = BASS_SampleLoad(FALSE, "src/sound/grade3.wav", 0, 0, 8, 0); // 加载三级音效
-	grade4_sound = BASS_SampleLoad(FALSE, "src/sound/grade4.wav", 0, 0, 8, 0); // 加载四级音效
-	grade5_sound = BASS_SampleLoad(FALSE, "src/sound/grade5.wav", 0, 0, 8, 0); // 加载五级音效
+	grade1_sound = BASS_SampleLoad(FALSE, "src/sound/grade1.ogg", 0, 0, 8, 0); // 加载一级音效
+	grade2_sound = BASS_SampleLoad(FALSE, "src/sound/grade2.ogg", 0, 0, 8, 0); // 加载二级音效
+	grade3_sound = BASS_SampleLoad(FALSE, "src/sound/grade3.ogg", 0, 0, 8, 0); // 加载三级音效
+	grade4_sound = BASS_SampleLoad(FALSE, "src/sound/grade4.ogg", 0, 0, 8, 0); // 加载四级音效
+	grade5_sound = BASS_SampleLoad(FALSE, "src/sound/grade5.ogg", 0, 0, 8, 0); // 加载五级音效
 }

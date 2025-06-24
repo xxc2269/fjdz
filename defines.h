@@ -66,6 +66,8 @@ typedef struct {
 	time_t generate_time; //生成时间(仅用于敌机)
 	time_t last_shoot_time; //上次射击时间
 	int style; //飞机样式
+
+	
 } PLANE; //飞机结构体
 //飞机结构体，包含飞机位置、子弹位置、速度和子弹数量等信息
 
@@ -150,10 +152,12 @@ static HCHANNEL BGM; //背景音乐通道
 
 //音效相关变量
 static HSTREAM bullet_sound; //子弹音效
+static HSTREAM mega_bullet_sound; //超级子弹音效
 static HSTREAM enemy_down_sound; //敌机被击落音效
 static HSTREAM elite_down_sound; //精英敌机被击落音效
 static HSTREAM boss_down_sound; //BOSS被击落音效
 static HSTREAM bullet_hit_sound; //子弹击中音效
+static HSTREAM mega_bullet_hit_sound; //超级子弹击中音效
 
 static HSTREAM grade1_sound; //一级音效
 static HSTREAM grade2_sound; //二级音效
