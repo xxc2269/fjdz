@@ -232,6 +232,9 @@ void bullet_move() {
 					bullet[i].is_active = false; // 禁用子弹
 					if (bullet[i].bullet_type == BULLET_TYPE_BIG) {
 						mega_bullet[0].is_active = false; // 禁用大子弹
+						for(int j = 0;j < ENEMY_MAX_NUM;j++){
+							enemy_plane[j].is_hitted_by_mega = false; // 重置敌机被大子弹击中的状态
+						}
 					}
 					char teststr[50];
 					//sprintf(teststr, "bullet_num: %d", i);
@@ -377,7 +380,7 @@ void check_bullet_collision() {
 	for (int i = 0; i < BULLET_NUM; i++) {
 		if (bullet[i].is_active) { // 如果子弹激活
 			for (int j = 0; j < ENEMY_MAX_NUM; j++) {
-				if (enemy_plane[j].is_alive) { // 如果敌机激活
+				if (enemy_plane[j].is_alive && !enemy_plane[j].is_hitted_by_mega) { // 如果敌机激活
 					// 检测子弹与敌机的碰撞
 					if (enemy_plane[j].plane_type == ENEMY_TYPE_BOSS) {// 如果是BOSS敌机
 						if (abs(bullet[i].bullet_pos.x - enemy_plane[j].plane_pos.x) < enemy_plane[j].size / 2 &&
@@ -385,24 +388,30 @@ void check_bullet_collision() {
 							enemy_plane[j].life -= bullet[i].bullet_damage; // 敌机受到伤害
 							if (enemy_plane[i].life > 0 || bullet[i].bullet_type == BULLET_TYPE_BIG) {
 								// 子弹击中音效
-								if (bullet[i].bullet_grade <= 2 || bullet[i].bullet_type != BULLET_TYPE_BIG) {
-									if (bullet_hit_sound) {
-										DWORD chan = BASS_SampleGetChannel(bullet_hit_sound, FALSE);
-										BASS_ChannelPlay(chan, TRUE);
-									}
-								}
-								else {
+								if (bullet[i].bullet_grade > 2 && bullet[i].bullet_type == BULLET_TYPE_BIG) {
 									if (mega_bullet_hit_sound) {
 										DWORD chan = BASS_SampleGetChannel(mega_bullet_hit_sound, FALSE);
 										BASS_ChannelPlay(chan, TRUE);
 									}
 								}
+								else if (enemy_plane[j].life > 0) {
+									if (bullet_hit_sound) {
+										DWORD chan = BASS_SampleGetChannel(bullet_hit_sound, FALSE);
+										BASS_ChannelPlay(chan, TRUE);
+									}
+								}
 							}
-							bullet[i].is_active = false; // 禁用子弹
-							my_plane.bullet_num--; // 减少子弹数量
-							if (bullet[i].bullet_type == BULLET_TYPE_BIG) {
-								mega_bullet[0].is_active = false; // 禁用大子弹
+							if (bullet[i].bullet_type == BULLET_TYPE_BIG && bullet[i].bullet_grade > 2) {
+								enemy_plane[j].is_hitted_by_mega = true; // 设置敌机被重击子弹击中状态为true
 							}
+							else {
+								bullet[i].is_active = false; // 禁用子弹
+								my_plane.bullet_num--; // 减少子弹数量
+								if (bullet[i].bullet_type == BULLET_TYPE_BIG) {
+									mega_bullet[0].is_active = false; // 禁用大子弹
+								}
+							}
+							
 							if (enemy_plane[j].life <= 0) { // 如果敌机生命值小于等于0
 								// 敌机被击落音效
 								if (enemy_down_sound) {
@@ -415,7 +424,7 @@ void check_bullet_collision() {
 								last_complete_time = clock(); // 更新上次通关时间
 								boss_is_alive = false; // BOSS激活状态设置为false
 							}
-							my_plane.power += 10; // 增加飞机气势
+							if(bullet[i].bullet_type == BULLET_TYPE_NORMAL)my_plane.power += 10; // 增加飞机气势
 							break; // 退出循环
 						}
 					}
@@ -438,11 +447,17 @@ void check_bullet_collision() {
 									}
 								}
 							}
-							bullet[i].is_active = false; // 禁用子弹
-							my_plane.bullet_num--; // 减少子弹数量
-							if (bullet[i].bullet_type == BULLET_TYPE_BIG) {
-								mega_bullet[0].is_active = false; // 禁用大子弹
+							if (bullet[i].bullet_type == BULLET_TYPE_BIG && bullet[i].bullet_grade > 2) {
+								enemy_plane[j].is_hitted_by_mega = true; // 设置敌机被重击子弹击中状态为true
 							}
+							else {
+								bullet[i].is_active = false; // 禁用子弹
+								my_plane.bullet_num--; // 减少子弹数量
+								if (bullet[i].bullet_type == BULLET_TYPE_BIG) {
+									mega_bullet[0].is_active = false; // 禁用大子弹
+								}
+							}
+							
 							if (enemy_plane[j].life <= 0) { // 如果敌机生命值小于等于0
 								// 敌机被击落音效
 								if (enemy_down_sound) {
