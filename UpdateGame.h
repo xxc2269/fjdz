@@ -201,6 +201,8 @@ void check_plane_state() {
 				my_plane.bullet_num++; // 增加子弹数量
 			}
 			my_plane.plane_state = PLANE_STATE_NORMAL;
+			my_plane.grade = 0; // 重置飞机等级
+			my_plane.power = 0; // 重置飞机气势
 		}
 	}
 
@@ -516,6 +518,7 @@ void check_player_power() {
 	if (my_plane.power >= GRADE5_SCORE && my_plane.grade == 4) { // 如果飞机气势大于等于400
 		my_plane.power = 0; // 重置气势
 		my_plane.grade++; // 升级气势等级
+		last_power_time = clock(); // 记录或重置上次减少气势的时间
 	}
 
 	if (my_plane.grade > 5) { // 如果气势等级超过5
@@ -524,6 +527,15 @@ void check_player_power() {
 	}
 }
 
+//当飞机气势等级大于等于3时，气势每秒减少5点，但不会小于0
+void diminish_player_power() {
+	if (my_plane.grade >= 3 && clock() - last_power_time > 200) { // 如果飞机气势等级大于3且距离上次减少气势时间超过1秒
+		if (my_plane.power > 0) {
+			my_plane.power -= 1; // 每秒减少5点气势
+		}
+		last_power_time = clock(); // 重置上次减少气势的时间
+	}
+}
 
 
 
@@ -568,6 +580,7 @@ void UpdateGame() {
 	check_player_life(); // 调用检测玩家生命状态函数，处理玩家飞机的生命状态
 	check_player_endurance(); // 调用检测飞机耐久函数，处理飞机耐久状态
 	check_player_power();// 调用检测飞机气势函数，处理飞机气势状态
+	diminish_player_power(); // 调用检测飞机气势函数，处理飞机气势状态
 	add_endurance(); // 调用添加耐久函数，处理飞机耐久状态
 
 	generate_boss(); // 调用生成BOSS函数，处理BOSS生成

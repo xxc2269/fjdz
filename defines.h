@@ -61,6 +61,7 @@ typedef struct {
 	float endurance; //飞机耐久度（仅用于玩家飞机）
 	int plane_state; //飞机状态（0-正常，1-射击，2-蓄力中，3-蓄力完成，4-无双状态）(仅用于玩家飞机)
 	bool is_alive; //飞机是否存活(仅用于敌机)
+	bool is_hitted_by_mega; //是否被重击子弹击中(仅用于敌机)
 	int plane_type; //飞机类型（0-普通敌机，1-精英敌机，2-BOSS敌机）
 	time_t generate_time; //生成时间(仅用于敌机)
 	time_t last_shoot_time; //上次射击时间
@@ -110,6 +111,7 @@ static time_t last_generate_enemy_time = clock(); //记录上次生成敌机时间
 static time_t last_added_time = clock(); //记录上次添加耐久的时间
 static time_t start_charge_time = clock(); //记录开始蓄力的时间
 static time_t charge_time = 0; //记录蓄力时间
+static time_t last_power_time; //记录上次减少气势的时间
 static IMAGE bg[5]; //背景图片
 
 static IMAGE plane[6]; //飞机图片
