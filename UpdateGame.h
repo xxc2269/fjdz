@@ -807,6 +807,7 @@ void check_player_drop_item_collision() {
 				switch (drop_item[i].item_type) { // 根据掉落物类型执行不同操作
 				case ITEM_TYPE_SMALL_LIFE: // 小生命球
 					my_plane.life += 30; // 玩家飞机生命值增加1
+					if (my_plane.life > 100) my_plane.life = 100; // 生命值不超过100
 					drop_item[i].is_active = false; // 禁用掉落物
 					break;
 				case ITEM_TYPE_BIG_LIFE: // 大生命球
@@ -830,27 +831,7 @@ void check_player_drop_item_collision() {
 	}
 }
 
-	//if (enemy_plane[i].is_alive && enemy_plane[i].life <= 0) { // 如果敌机激活且生命值小于等于0
-	//	int drop_chance = rand() % 100; // 随机生成0-99之间的数
-	//	if (drop_chance < 5) { // 5%的概率掉落小生命球
-	//		drop_item[drop_item_num].item_type = ITEM_TYPE_SMALL_LIFE; // 设置掉落物类型为小生命球
-	//		drop_item[drop_item_num].item_pos.x = enemy_plane[i].plane_pos.x; // 设置掉落物位置为敌机位置
-	//		drop_item[drop_item_num].item_pos.y = enemy_plane[i].plane_pos.y; // 设置掉落物位置为敌机位置
-	//		drop_item[drop_item_num].is_active = true; // 激活掉落物
-	//		drop_item_num++; // 增加掉落物数量
-	//	}
-	//	else if (drop_chance < 7) { // 2%的概率掉落大生命球
-	//		drop_item[drop_item_num].item_type = ITEM_TYPE_BIG_LIFE; // 设置掉落物类型为大生命球
-	//		drop_item[drop_item_num].item_pos.x = enemy_plane[i].plane_pos.x; // 设置掉落物位置为敌机位置
-	//		drop_item[drop_item_num].item_pos.y = enemy_plane[i].plane_pos.y; // 设置掉落物位置为敌机位置
-	//		drop_item[drop_item_num].is_active = true; // 激活掉落物
-	//		drop_item_num++; // 增加掉落物数量
-	//	}
-	//	else if (drop_chance < 8) { // 1%的概率掉落大补给球
-	//		drop_item[drop_item_num].item_type = ITEM_TYPE_BIG_POWER; // 设置掉落物类型为大补给球
-	//		drop_item[drop_item_num].item_pos.x = enemy_plane[i].plane_pos.x; // 设置掉落物位置为敌机位置
-	//		drop_item[drop_item_num].item_pos.y = enemy_plane[i].plane_pos.y; // 设置掉落物位置为敌机位置
-	//		drop_item[drop_item_num
+
 
 
 
