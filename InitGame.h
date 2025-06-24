@@ -32,6 +32,14 @@ void init_game() {
 		bullet[i].bullet_size = 5; //设置子弹大小
 	}
 
+	//初始化收集物品
+	for (int i = 0; i < ITEM_NUM; i++) { //初始化收集物品
+		item[i].is_active = false; //设置物品激活状态为false
+		item[i].item_type = ITEM_TYPE_SMALL_LIFE; //设置物品类型为小生命球
+		item[i].item_size = 10; //设置物品大小
+		item[i].item_speed = 0.3; //设置物品移动速度
+	}
+
 	start_time = clock(); //记录游戏开始时间
 	srand((unsigned)time(NULL)); //设置随机数种子
 }

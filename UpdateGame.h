@@ -1,6 +1,19 @@
 #pragma once//用于防止头文件被多次包含
 #include"defines.h"//包含宏定义头文件(已包含了标准头文件)
 
+//函数声明
+void control_plane(); //控制飞机函数
+void check_plane_state(); //检查飞机状态函数
+void shoot_bullet(); //发射子弹函数
+void generate_enemy(); //生成敌机函数
+void generate_boss(); //生成BOSS函数
+void generate_drop_item(int plane_type,POS plan_pos); //生成物品函数
+void enemy_shoot_bullet(); //生成敌机子弹函数
+//void generate_laser(); //生成激光函数
+//void generate_mega_bullet(); //生成无双子弹函数
+
+
+
 //控制
 void control_plane() {
 	// 此处可以添加更新游戏状态的逻辑，例如处理飞机移动、子弹发射、敌机生成等
@@ -375,6 +388,7 @@ void check_collision() {
 		}
 	}
 }
+
 //玩家子弹与敌机碰撞检测
 void check_bullet_collision() {
 	for (int i = 0; i < BULLET_NUM; i++) {
@@ -423,6 +437,7 @@ void check_bullet_collision() {
 								score += enemy_plane[j].maxlife;// 增加分数
 								last_complete_time = clock(); // 更新上次通关时间
 								boss_is_alive = false; // BOSS激活状态设置为false
+								if (drop_item_num < ITEM_NUM - 1)generate_drop_item(ENEMY_TYPE_BOSS, enemy_plane[j].plane_pos); // 生成BOSS掉落物品
 							}
 							if(bullet[i].bullet_type == BULLET_TYPE_NORMAL)my_plane.power += 10; // 增加飞机气势
 							break; // 退出循环
@@ -465,6 +480,7 @@ void check_bullet_collision() {
 									BASS_ChannelPlay(chan, TRUE);
 								}
 								enemy_plane[j].is_alive = false; // 禁用敌机
+								if (drop_item_num < ITEM_NUM)generate_drop_item(enemy_plane[j].plane_type, enemy_plane[j].plane_pos); // 生成敌机掉落物品
 								enemy_num--; // 减少敌机数量
 								score += enemy_plane[j].maxlife;// 增加分数
 							}
@@ -551,7 +567,7 @@ void check_player_power() {
 			DWORD chan = BASS_SampleGetChannel(grade1_sound, FALSE);
 			BASS_ChannelPlay(chan, TRUE);
 		}
-		my_plane.power = 0; // 重置气势
+		my_plane.power -= 100; // 重置气势
 		my_plane.grade++; // 升级气势等级
 	}
 
@@ -561,7 +577,7 @@ void check_player_power() {
 			DWORD chan = BASS_SampleGetChannel(grade2_sound, FALSE);
 			BASS_ChannelPlay(chan, TRUE);
 		}
-		my_plane.power = 0; // 重置气势
+		my_plane.power -= 110; // 重置气势
 		my_plane.grade++; // 升级气势等级
 	}
 
@@ -571,7 +587,7 @@ void check_player_power() {
 			DWORD chan = BASS_SampleGetChannel(grade3_sound, FALSE);
 			BASS_ChannelPlay(chan, TRUE);
 		}
-		my_plane.power = 0; // 重置气势
+		my_plane.power -= 120; // 重置气势
 		my_plane.grade++; // 升级气势等级
 	}
 
@@ -581,7 +597,7 @@ void check_player_power() {
 			DWORD chan = BASS_SampleGetChannel(grade4_sound, FALSE);
 			BASS_ChannelPlay(chan, TRUE);
 		}
-		my_plane.power = 0; // 重置气势
+		my_plane.power -= 150; // 重置气势
 		my_plane.grade++; // 升级气势等级
 	}
 
@@ -614,38 +630,153 @@ void diminish_player_power() {
 
 //当敌机死亡时，掉落收集物，位置为敌机位置
 void generate_drop_item(int plane_type, POS plane_pos) {
+	int i = rand();
 	switch (plane_type) {
 	case ENEMY_TYPE_NORMAL: // 普通敌机
-		if (rand() % 100 < 5) { // 5%的概率掉落物品
-			drop_item[drop_item_num] = ITEM_TYPE_SMALL_LIFE; // 设置掉落物类型为小生命球
+		if (i % 1000 < 3) { // 0.3%的概率掉落物品
+			drop_item[drop_item_num].is_active = true; // 激活掉落物
+			drop_item[drop_item_num].item_type = ITEM_TYPE_SUPPLY; // 设置掉落物类型为大补给球
+			drop_item[drop_item_num].start_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].start_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].item_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].item_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].generate_time = clock(); // 设置掉落物起始时间
+			drop_item[drop_item_num].item_speed = 0.3; // 设置掉落物速度
 			drop_item_num++; // 增加掉落物数量
+			break; // 退出循环
 		}
-		if (rand() % 1000 < 5) { // 0.5%的概率掉落物品
-			drop_item[drop_item_num] = ITEM_TYPE_BIG_LIFE; // 设置掉落物类型为大生命球
+		if (i % 1000 < 5) { // 0.5%的概率掉落物品
+			drop_item[drop_item_num].is_active = true; // 激活掉落物
+			drop_item[drop_item_num].item_type = ITEM_TYPE_BIG_LIFE; // 设置掉落物类型为大生命球
+			drop_item[drop_item_num].start_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].start_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].item_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].item_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].generate_time = clock(); // 设置掉落物起始时间
+			drop_item[drop_item_num].item_speed = 0.3; // 设置掉落物速度
 			drop_item_num++; // 增加掉落物数量
+			break; // 退出循环
 		}
-		if (rand() % 100 < 3) { // 3%的概率掉落物品
-			drop_item[drop_item_num] = ITEM_TYPE_SUPPLY; // 设置掉落物类型为小补给球
+		if (i % 1000 < 30) { // 3%的概率掉落物品
+			drop_item[drop_item_num].is_active = true; // 激活掉落物
+			drop_item[drop_item_num].item_type = ITEM_TYPE_SUPPLY; // 设置掉落物类型为小补给球
+			drop_item[drop_item_num].start_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].start_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].item_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].item_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].generate_time = clock(); // 设置掉落物起始时间
+			drop_item[drop_item_num].item_speed = 0.3; // 设置掉落物速度
 			drop_item_num++; // 增加掉落物数量
+			break; // 退出循环
 		}
-		if (rand() % 1000 < 3) { // 0.3%的概率掉落物品
-			drop_item[drop_item_num] = ITEM_TYPE_SUPPLY; // 设置掉落物类型为大补给球
-			//drop_item[drop_item_num].item_pos.x = enemy_plane[i].plane_pos.x; // 设置掉落物位置为敌机位置
-			//drop_item[drop_item_num].item_pos.y = enemy_plane[i].plane_pos.y; // 设置掉落物位置为敌机位置
-			drop_item[drop_item_num] = true; // 激活掉落物
+		if (i % 1000 < 50) { // 5%的概率掉落物品
+			drop_item[drop_item_num].is_active = true; // 激活掉落物
+			drop_item[drop_item_num].item_type = ITEM_TYPE_SMALL_LIFE; // 设置掉落物类型为小生命球
+			drop_item[drop_item_num].start_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].start_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].item_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].item_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].generate_time = clock(); // 设置掉落物起始时间
+			drop_item[drop_item_num].item_speed = 0.3; // 设置掉落物速度
 			drop_item_num++; // 增加掉落物数量
+			break; // 退出循环
 		}
+		
+		
+		
 		break;
 	case ENEMY_TYPE_ELITE: // 精英敌机
-		if (rand() % 100 < 30) { // 30%的概率掉落物品
-			drop_item[drop_item_num] = ITEM_TYPE_SUPPLY; // 设置掉落物类型为大补给球
+		if (i % 1000 < 15) { // 1.5%的概率掉落物品
+			drop_item[drop_item_num].is_active = true; // 激活掉落物
+			drop_item[drop_item_num].item_type = ITEM_TYPE_SUPPLY; // 设置掉落物类型为大补给球
+			drop_item[drop_item_num].start_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].start_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].item_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].item_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].generate_time = clock(); // 设置掉落物起始时间
+			drop_item[drop_item_num].item_speed = 0.3; // 设置掉落物速度
 			drop_item_num++; // 增加掉落物数量
+			break; // 退出循环
 		}
+		if (i % 1000 < 20) { // 2%的概率掉落物品
+			drop_item[drop_item_num].is_active = true; // 激活掉落物
+			drop_item[drop_item_num].item_type = ITEM_TYPE_BIG_LIFE; // 设置掉落物类型为大生命球
+			drop_item[drop_item_num].start_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].start_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].item_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].item_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].generate_time = clock(); // 设置掉落物起始时间
+			drop_item[drop_item_num].item_speed = 0.3; // 设置掉落物速度
+			drop_item_num++; // 增加掉落物数量
+			break; // 退出循环
+
+		if (i % 1000 < 150) { // 15%的概率掉落物品
+			drop_item[drop_item_num].is_active = true; // 激活掉落物
+			drop_item[drop_item_num].item_type = ITEM_TYPE_SUPPLY; // 设置掉落物类型为小补给球
+			drop_item[drop_item_num].start_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].start_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].item_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].item_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].generate_time = clock(); // 设置掉落物起始时间
+			drop_item[drop_item_num].item_speed = 0.3; // 设置掉落物速度
+			drop_item_num++; // 增加掉落物数量
+			break; // 退出循环
+		}
+
+			if (i % 1000 < 200) { // 20%的概率掉落物品
+			drop_item[drop_item_num].is_active = true; // 激活掉落物
+			drop_item[drop_item_num].item_type = ITEM_TYPE_SMALL_LIFE; // 设置掉落物类型为小生命球
+			drop_item[drop_item_num].start_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].start_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].item_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].item_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].generate_time = clock(); // 设置掉落物起始时间
+			drop_item[drop_item_num].item_speed = 0.3; // 设置掉落物速度
+			drop_item_num++; // 增加掉落物数量
+			break; // 退出循环
+		}
+		
+		}
+
+		
 		break;
 	case ENEMY_TYPE_BOSS: // BOSS敌机
-		if (rand() % 100 < 50) { // 50%的概率掉落物品
-			drop_item[drop_item_num] = ITEM_TYPE_BIG_LIFE; // 设置掉落物类型为大生命球
+
+		//BOSS必掉大生命球
+			drop_item[drop_item_num].is_active = true; // 激活掉落物
+			drop_item[drop_item_num].item_type = ITEM_TYPE_BIG_LIFE; // 设置掉落物类型为大生命球
+			drop_item[drop_item_num].start_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].start_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].item_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].item_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].generate_time = clock(); // 设置掉落物起始时间
+			drop_item[drop_item_num].item_speed = 0.3; // 设置掉落物速度
 			drop_item_num++; // 增加掉落物数量
+		if (i % 100 < 5) { // 5%的概率掉落物品
+			drop_item[++drop_item_num].is_active = true; // 激活掉落物
+			drop_item[drop_item_num].item_type = ITEM_TYPE_SUPPLY; // 设置掉落物类型为大补给球
+			drop_item[drop_item_num].start_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].start_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].item_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].item_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].generate_time = clock(); // 设置掉落物起始时间
+			drop_item[drop_item_num].item_speed = 0.3; // 设置掉落物速度
+			break; // 退出循环
+
+		if (i % 100 < 50) { // 50%的概率掉落物品
+			drop_item[++drop_item_num].is_active = true; // 激活掉落物
+			drop_item[drop_item_num].item_type = ITEM_TYPE_SUPPLY; // 设置掉落物类型为小补给球
+			drop_item[drop_item_num].start_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].start_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].item_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].item_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].generate_time = clock(); // 设置掉落物起始时间
+			drop_item[drop_item_num].item_speed = 0.3; // 设置掉落物速度
+			//drop_item_num++; // 增加掉落物数量
+			break; // 退出循环
+		}
+		
+
 		}
 		break;
 
@@ -653,9 +784,51 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 }
 
 
+//更新掉落物位置
+void update_drop_item() {
+	for (int i = 0; i < ITEM_NUM; i++) {
+		if (drop_item[i].is_active) { // 如果掉落物激活
+			drop_item[i].item_pos.y = drop_item[i].start_pos.y + (clock() - drop_item[i].generate_time) * 0.1; // 更新掉落物位置
+			if (drop_item[i].item_pos.y > SCREEN_HEIGHT) { // 如果掉落物超出屏幕下边界
+				drop_item[i].is_active = false; // 禁用掉落物
+				drop_item_num--; // 减少掉落物数量
+			}
+		}
+	}
+}
 
+//玩家与掉落物碰撞检测
+void check_player_drop_item_collision() {
+	for (int i = 0; i < ITEM_NUM; i++) {
+		if (drop_item[i].is_active) { // 如果掉落物激活
+			// 检测掉落物与玩家飞机的碰撞
+			if (abs(drop_item[i].item_pos.x - my_plane.plane_pos.x) < PLANE_SIZE * 2 &&
+				abs(drop_item[i].item_pos.y - my_plane.plane_pos.y) < PLANE_SIZE * 2) {
+				switch (drop_item[i].item_type) { // 根据掉落物类型执行不同操作
+				case ITEM_TYPE_SMALL_LIFE: // 小生命球
+					my_plane.life += 30; // 玩家飞机生命值增加1
+					drop_item[i].is_active = false; // 禁用掉落物
+					break;
+				case ITEM_TYPE_BIG_LIFE: // 大生命球
+					my_plane.life = 100; // 玩家飞机生命值增加5
+					my_plane.endurance = 100; // 玩家飞机耐久度增加20
+					drop_item[i].is_active = false; // 禁用掉落物
+					break;
+				case ITEM_TYPE_SUPPLY: // 小补给球
+					my_plane.power += 100; // 玩家飞机气势增加30
+					drop_item[i].is_active = false; // 禁用掉落物
+					break;
+				case ITEM_TYPE_BIG_SUPPLY: // 大补给球
+					my_plane.power += 480; // 玩家飞机气势增加480
+					drop_item[i].is_active = false; // 禁用掉落物
 
-
+				}
+				drop_item[i].is_active = false; // 禁用掉落物
+				drop_item_num--; // 减少掉落物数量
+			}
+		}
+	}
+}
 
 	//if (enemy_plane[i].is_alive && enemy_plane[i].life <= 0) { // 如果敌机激活且生命值小于等于0
 	//	int drop_chance = rand() % 100; // 随机生成0-99之间的数
@@ -734,6 +907,8 @@ void UpdateGame() {
 
 	generate_boss(); // 调用生成BOSS函数，处理BOSS生成
 
+	update_drop_item(); // 调用更新掉落物位置函数，处理掉落物位置更新
+	check_player_drop_item_collision(); // 调用玩家与掉落物碰撞检测函数，处理玩家飞机与掉落物的碰撞
 
 	play_music(); // 调用播放音乐函数，处理背景音乐播放
 }

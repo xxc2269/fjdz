@@ -207,46 +207,46 @@ void DrawGame() {
 	);// 绘制飞机气势等级图标
 
 	//绘制小生命球、大生命球、补给球、大补给球，位置为BOSS的位置，BOSS死亡时生成
-	if (boss_is_alive == false) { //如果BOSS不存活
+	//if (boss_is_alive == false) { //如果BOSS不存活
 		for (int i = 0; i < ITEM_NUM; i++) {
-			if (item[i].is_active) { //如果物品激活
-				switch (item[i].item_type) { //根据物品类型绘制不同的图标
+			if (drop_item[i].is_active) { //如果物品激活
+				switch (drop_item[i].item_type) { //根据物品类型绘制不同的图标
 					case ITEM_TYPE_SMALL_LIFE:
 						putTransparentImage(
-							item[i].item_pos.x - PLANE_SIZE / 2,
-							item[i].item_pos.y - PLANE_SIZE / 2,
-							&small_life_image,
-							&small_life_mask
+							drop_item[i].item_pos.x - PLANE_SIZE / 2,
+							drop_item[i].item_pos.y - PLANE_SIZE / 2,
+							&life_image,
+							&life_mask
 						);
 						break;
 					case ITEM_TYPE_BIG_LIFE:
 						putTransparentImage(
-							item[i].item_pos.x - PLANE_SIZE / 2,
-							item[i].item_pos.y - PLANE_SIZE / 2,
-							&big_life_image,
-							&big_life_mask
+							drop_item[i].item_pos.x - PLANE_SIZE / 2,
+							drop_item[i].item_pos.y - PLANE_SIZE / 2,
+							&mega_life_image,
+							&mega_life_mask
 						);
 						break;
 					case ITEM_TYPE_SUPPLY:
 						putTransparentImage(
-							item[i].item_pos.x - PLANE_SIZE / 2,
-							item[i].item_pos.y - PLANE_SIZE / 2,
-							&supply_image,
-							&supply_mask
+							drop_item[i].item_pos.x - PLANE_SIZE / 2,
+							drop_item[i].item_pos.y - PLANE_SIZE / 2,
+							&power_image,
+							&power_mask
 						);
 						break;
 					case ITEM_TYPE_BIG_SUPPLY:
 						putTransparentImage(
 							item[i].item_pos.x - PLANE_SIZE / 2,
 							item[i].item_pos.y - PLANE_SIZE / 2,
-							&big_supply_image,
-							&big_supply_mask
+							&mega_power_image,
+							&mega_power_mask
 						);
 						break;
 				}
 			}
 		}
-	}
+	//}
 	
 
 

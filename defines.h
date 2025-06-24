@@ -10,6 +10,7 @@
 #define PLANE_SPEED 1.0 //飞机移动速度
 #define ENEMY_MAX_NUM 20 //敌机最大数量
 #define BULLET_NUM 50 //子弹数量
+#define ITEM_NUM 10//收集物数量
 
 #define ENEMY_LIFE 50 //敌机生命值
 #define ELITE_ENEMY_LIFE 200 //精英敌机生命值
@@ -102,10 +103,19 @@ enum {
 	ITEM_TYPE_SUPPLY = 2, //补给球
 	ITEM_TYPE_BIG_SUPPLY = 3 //大补给球
 }; //收集物品类型枚举
+typedef struct {
+	bool is_active; //物品是否激活
+	POS item_pos; //物品位置
+	POS start_pos; //物品起始位置
+	int item_type; //物品类型（0-小生命球，1-大生命球，2-补给球，3-大补给球）
+	int item_size; //物品大小
+	time_t generate_time; //生成时间
+	float item_speed; //物品移动速度
+} ITEM; //收集物品结构体;
 
 // 定义游戏中的全局变量和常量
 //static用于定义全局变量，这些变量在整个程序中都可以访问
-static int drop_item[10]; //定义一个全局变量drop_item，表示掉落物品
+static ITEM drop_item[10]; //定义一个全局变量drop_item，表示掉落物品
 static int drop_item_num = 0; //掉落物品数量
 static bool boss_is_alive = false; //BOSS是否存活
 static PLANE my_plane; //定义一个全局变量my_plane，表示飞机
@@ -114,6 +124,7 @@ static BULLET bullet[BULLET_NUM]; //定义一个全局变量bullet，表示玩家子弹
 static BULLET mega_bullet[2]; //定义一个全局变量mega_bullet，表示超级子弹
 static BULLET enemy_bullet[BULLET_NUM]; //定义一个全局变量enemy_bullet，表示敌机子弹
 static BULLET laser_bullet[ENEMY_MAX_NUM]; //定义一个全局变量laser_bullet，表示激光
+static ITEM item[ITEM_NUM]; //定义一个全局变量item，表示收集物品
 
 static int enemy_num = 0; //敌机数量
 static int  enemy_bullet_num; //敌机子弹数量
