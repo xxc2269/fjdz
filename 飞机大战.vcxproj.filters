@@ -18,6 +18,9 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="include\openssl\applink.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="helloworld.h">
@@ -47,13 +50,63 @@
     <ClInclude Include="bass.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="include\mysql\client_plugin.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mysql\plugin_auth_common.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mysql\udf_registration_types.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\errmsg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\field_types.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\my_command.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\my_compress.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\my_list.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mysql.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mysql_com.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mysql_time.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mysql_version.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mysqld_error.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mysqlx_ername.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mysqlx_error.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\mysqlx_version.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="bass.lib" />
     <Library Include="x64\bass.lib" />
+    <Library Include="x64\libmysql.lib" />
   </ItemGroup>
   <ItemGroup>
     <None Include="bass.dll" />
     <None Include="x64\bass.dll" />
+    <None Include="x64\libmysql.dll" />
   </ItemGroup>
 </Project>

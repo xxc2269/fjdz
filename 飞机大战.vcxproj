@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="include\openssl\applink.c" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -141,6 +142,22 @@
     <ClInclude Include="DrawGames.h" />
     <ClInclude Include="helloworld.h" />
     <ClInclude Include="includes.h" />
+    <ClInclude Include="include\errmsg.h" />
+    <ClInclude Include="include\field_types.h" />
+    <ClInclude Include="include\mysql.h" />
+    <ClInclude Include="include\mysqld_error.h" />
+    <ClInclude Include="include\mysqlx_ername.h" />
+    <ClInclude Include="include\mysqlx_error.h" />
+    <ClInclude Include="include\mysqlx_version.h" />
+    <ClInclude Include="include\mysql\client_plugin.h" />
+    <ClInclude Include="include\mysql\plugin_auth_common.h" />
+    <ClInclude Include="include\mysql\udf_registration_types.h" />
+    <ClInclude Include="include\mysql_com.h" />
+    <ClInclude Include="include\mysql_time.h" />
+    <ClInclude Include="include\mysql_version.h" />
+    <ClInclude Include="include\my_command.h" />
+    <ClInclude Include="include\my_compress.h" />
+    <ClInclude Include="include\my_list.h" />
     <ClInclude Include="InitGame.h" />
     <ClInclude Include="loadImages.h" />
     <ClInclude Include="loadSounds.h" />
@@ -149,10 +166,12 @@
   <ItemGroup>
     <Library Include="bass.lib" />
     <Library Include="x64\bass.lib" />
+    <Library Include="x64\libmysql.lib" />
   </ItemGroup>
   <ItemGroup>
     <None Include="bass.dll" />
     <None Include="x64\bass.dll" />
+    <None Include="x64\libmysql.dll" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
