@@ -124,6 +124,16 @@ void loadimages() {
 	loadimage(&laser_mask[2], "src/ColorImages/bullet/laser2.bmp"); //加载激光掩码图片3
 	loadimage(&laser_mask[3], "src/ColorImages/bullet/laser3.bmp"); //加载激光掩码图片4
 	
-	
+	//加载收集物图片
+	loadimage(&life_image, "src/ColorImages/collections/life.png"); //加载生命图片
+	loadimage(&power_image, "src/ColorImages/collections/power.png"); //加载气势图片
+	loadimage(&mega_life_image, "src/ColorImages/collections/mega_life.png"); //加载大生命图片
+	loadimage(&mega_power_image, "src/ColorImages/collections/mega_power.png"); //加载大气势图片
+	//加载收集物掩码图片
+	loadimage(&life_mask, "src/ColorImages/collections/life.bmp"); //加载生命掩码图片
+	loadimage(&power_mask, "src/ColorImages/collections/power.bmp"); //加载气势掩码图片
+	loadimage(&mega_life_mask, "src/ColorImages/collections/mega_life.bmp"); //加载大生命掩码图片
+	loadimage(&mega_power_mask, "src/ColorImages/collections/mega_power.bmp"); //加载大气势掩码图片
+
 
 }
