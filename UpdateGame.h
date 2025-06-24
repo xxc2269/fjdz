@@ -56,7 +56,7 @@ void control_plane() {
 
 	case WM_RBUTTONDOWN:
 		// 鼠标右键按下事件
-		if (my_plane.plane_state == PLANE_STATE_NORMAL) { // 如果飞机状态为正常
+		if (my_plane.plane_state == PLANE_STATE_NORMAL && !mega_bullet[0].is_active) { // 如果飞机状态为正常
 			start_charge_time = clock(); // 记录开始蓄力的时间
 			my_plane.plane_state = PLANE_STATE_CHARGING; // 切换到蓄力中状态
 		}
@@ -136,6 +136,7 @@ void check_plane_state() {
 					bullet[i].start_pos.y = my_plane.plane_pos.y - PLANE_SIZE / 2; // 设置子弹位置为飞机位置
 					bullet[i].bullet_pos.y = bullet[i].start_pos.y; // 设置子弹位置为起始位置
 					bullet[i].bullet_speed = 0.3; // 设置子弹速度
+					bullet[i].bullet_grade = my_plane.grade; // 设置子弹等级为飞机等级
 					my_plane.endurance -= 1; // 减少飞机耐久度
 					bullet[i].generate_time = clock(); // 记录子弹生成时间
 					my_plane.last_shoot_time = clock(); // 记录最后一次射击时间
@@ -187,6 +188,7 @@ void check_plane_state() {
 			}
 
 			mega_bullet[0].is_active = true; // 激活子弹
+			mega_bullet[0].bullet_grade = my_plane.grade; // 设置子弹等级为飞机等级
 			mega_bullet[0].generate_time = clock();
 			mega_bullet[0].start_pos.x = my_plane.plane_pos.x + PLANE_SIZE / 2; // 设置子弹位置为飞机位置
 			mega_bullet[0].bullet_pos.x = mega_bullet[0].start_pos.x; // 设置子弹位置为起始位置
@@ -194,8 +196,8 @@ void check_plane_state() {
 			mega_bullet[0].bullet_pos.y = mega_bullet[0].start_pos.y; // 设置子弹位置为起始位置
 			mega_bullet[0].bullet_speed = 0.3; // 设置子弹速度
 			my_plane.endurance -= 10; // 减少飞机耐久度
-			bullet[++my_plane.bullet_num].generate_time = clock(); // 记录子弹生成时间
-			bullet[++my_plane.bullet_num] = mega_bullet[0];
+			bullet[++my_plane.bullet_num-1].generate_time = clock(); // 记录子弹生成时间
+			bullet[my_plane.bullet_num-1] = mega_bullet[0];
 			my_plane.last_shoot_time = clock(); // 记录最后一次射击时间
 			if (my_plane.bullet_num < BULLET_NUM) { // 如果子弹数量小于最大子弹数量
 				my_plane.bullet_num++; // 增加子弹数量
@@ -220,6 +222,9 @@ void bullet_move() {
 				bullet[i].bullet_pos.y = bullet[i].start_pos.y - (clock() - bullet[i].generate_time) * bullet[i].bullet_speed; // 更新子弹位置
 				if (bullet[i].bullet_pos.y < 0) { // 如果子弹超出屏幕上边界
 					bullet[i].is_active = false; // 禁用子弹
+					if (bullet[i].bullet_type == BULLET_TYPE_BIG) {
+						mega_bullet[0].is_active = false; // 禁用大子弹
+					}
 					char teststr[50];
 					//sprintf(teststr, "bullet_num: %d", i);
 					//MessageBox(NULL, teststr, "提示", MB_OK); // 弹出提示框显示子弹数量(排除bug用）
@@ -379,6 +384,9 @@ void check_bullet_collision() {
 							}
 							bullet[i].is_active = false; // 禁用子弹
 							my_plane.bullet_num--; // 减少子弹数量
+							if (bullet[i].bullet_type == BULLET_TYPE_BIG) {
+								mega_bullet[0].is_active = false; // 禁用大子弹
+							}
 							if (enemy_plane[j].life <= 0) { // 如果敌机生命值小于等于0
 								// 敌机被击落音效
 								if (enemy_down_sound) {
@@ -408,6 +416,9 @@ void check_bullet_collision() {
 							}
 							bullet[i].is_active = false; // 禁用子弹
 							my_plane.bullet_num--; // 减少子弹数量
+							if (bullet[i].bullet_type == BULLET_TYPE_BIG) {
+								mega_bullet[0].is_active = false; // 禁用大子弹
+							}
 							if (enemy_plane[j].life <= 0) { // 如果敌机生命值小于等于0
 								// 敌机被击落音效
 								if (enemy_down_sound) {

@@ -74,8 +74,8 @@ void DrawGame() {
 				putTransparentImage(
 					bullet[i].bullet_pos.x - MEGA_SIZE  / 2,
 					bullet[i].bullet_pos.y - PLANE_SIZE / 2,
-					&mega_bullet_image[my_plane.grade],
-					&mega_bullet_mask[my_plane.grade]
+					&mega_bullet_image[bullet[i].bullet_grade],
+					&mega_bullet_mask[bullet[i].bullet_grade]
 				);
 			}
 			//else if (bullet[i].bullet_type == BULLET_TYPE_MEGA) { //如果是无双子弹
@@ -98,8 +98,8 @@ void DrawGame() {
 			putTransparentImage(
 				bullet[i].bullet_pos.x - PLANE_SIZE / 2,
 				bullet[i].bullet_pos.y - PLANE_SIZE / 2,
-				&bullet_image[my_plane.grade],
-				&bullet_mask[my_plane.grade]
+				&bullet_image[bullet[i].bullet_grade],
+				&bullet_mask[bullet[i].bullet_grade]
 			);
 		}
 	}

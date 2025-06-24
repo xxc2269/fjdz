@@ -83,6 +83,7 @@ typedef struct {
 	float bullet_speed; //子弹速度
 
 	int bullet_type; //子弹类型
+	int bullet_grade; //无双子弹等级
 	int bullet_damage; //子弹伤害
 	int bullet_size; //子弹大小
 	int bullet_color; //子弹颜色
