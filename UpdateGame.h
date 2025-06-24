@@ -53,36 +53,161 @@ void control_plane() {
 			my_plane.plane_state = PLANE_STATE_NORMAL; // 切换到正常状态
 		}
 		break;
+
+	case WM_RBUTTONDOWN:
+		// 鼠标右键按下事件
+		if (my_plane.plane_state == PLANE_STATE_NORMAL) { // 如果飞机状态为正常
+			start_charge_time = clock(); // 记录开始蓄力的时间
+			my_plane.plane_state = PLANE_STATE_CHARGING; // 切换到蓄力中状态
+		}
+		break;
+
+	case WM_RBUTTONUP:
+		// 鼠标右键松开事件
+		if (my_plane.plane_state == PLANE_STATE_CHARGING) { // 如果飞机状态为蓄力中状态
+			my_plane.plane_state = PLANE_STATE_CHARGED; // 切换到蓄力完成状态
+			charge_time = clock() - start_charge_time; // 计算蓄力时间
+		}
+		break;
 	}
 }
 
-//发射子弹
-void shoot_bullet() {
-	if (my_plane.plane_state == PLANE_STATE_SHOOTING && my_plane.endurance > 0) {
-		for (int i = 0; i <= my_plane.bullet_num; i++) {
-			if (!bullet[i].is_active && clock() - my_plane.last_shoot_time > 200) { // 如果子弹未激活且距离上次射击时间超过200毫秒
-				// 子弹发射音效
-				if (bullet_sound) {
-					DWORD chan = BASS_SampleGetChannel(bullet_sound, FALSE);
-					BASS_ChannelPlay(chan, TRUE);
-				}
-				bullet[i].is_active = true; // 激活子弹
-				bullet[i].start_pos.x = my_plane.plane_pos.x + PLANE_SIZE / 2; // 设置子弹位置为飞机位置
-				bullet[i].bullet_pos.x = bullet[i].start_pos.x; // 设置子弹位置为起始位置
-				bullet[i].start_pos.y = my_plane.plane_pos.y - PLANE_SIZE / 2; // 设置子弹位置为飞机位置
-				bullet[i].bullet_pos.y = bullet[i].start_pos.y; // 设置子弹位置为起始位置
-				bullet[i].bullet_speed = 0.3; // 设置子弹速度
-				my_plane.endurance -= 1; // 减少飞机耐久度
-				bullet[i].generate_time = clock(); // 记录子弹生成时间
-				my_plane.last_shoot_time = clock(); // 记录最后一次射击时间
-				if (my_plane.bullet_num < BULLET_NUM) { // 如果子弹数量小于最大子弹数量
-					my_plane.bullet_num++; // 增加子弹数量
-				}
-				break; // 退出循环
+//检测飞机状态为蓄力中状态时，每秒减少飞机5点耐久度，且每秒增加飞机气势100点，且气势等级最多为3级
+void check_plane_state() {
+	if (my_plane.plane_state == PLANE_STATE_CHARGING && clock() - start_charge_time > 200  ) { // 如果飞机状态为蓄力中状态
+		if (my_plane.endurance > 0) {
+			my_plane.endurance -= 1; // 每秒减少飞机5点耐久度
+			if(my_plane.grade <= 2){
+				my_plane.power += 20; // 每秒增加飞机气势100点
 			}
+			start_charge_time = clock(); // 重置开始蓄力的时间
+		}
+		else {
+			my_plane.endurance = 0; // 将耐久度设置为0
+			my_plane.plane_state = PLANE_STATE_CHARGED; // 切换到完成状态
 		}
 	}
 }
+	
+
+
+
+
+//发射子弹
+	void shoot_bullet(){
+		if (my_plane.plane_state == PLANE_STATE_SHOOTING && my_plane.endurance > 0) {
+			for (int i = 0; i <= my_plane.bullet_num; i++) {
+				if (!bullet[i].is_active && clock() - my_plane.last_shoot_time > 200) { // 如果子弹未激活且距离上次射击时间超过200毫秒
+					// 子弹发射音效
+					if (bullet_sound) {
+						DWORD chan = BASS_SampleGetChannel(bullet_sound, FALSE);
+						BASS_ChannelPlay(chan, TRUE);
+					}
+
+					//根据飞机气势等级设置子弹类型和伤害
+					if (my_plane.grade == 0) { // 一级气势
+						bullet[i].bullet_type = BULLET_TYPE_NORMAL; //
+						bullet[i].bullet_damage = 10; // 设置子弹伤害
+					}
+
+					else if (my_plane.grade == 1) { // 二级气势
+						bullet[i].bullet_type = BULLET_TYPE_NORMAL; // 
+						bullet[i].bullet_damage = 11; // 设置子弹伤害
+					}
+
+					else if (my_plane.grade == 2) { // 三级气势
+						bullet[i].bullet_type = BULLET_TYPE_NORMAL; // 
+						bullet[i].bullet_damage = 12; // 设置子弹伤害
+					}
+
+					else if (my_plane.grade == 3) { // 四级及以上气势
+						bullet[i].bullet_type = BULLET_TYPE_NORMAL; // 
+						bullet[i].bullet_damage = 15; // 设置子弹伤害
+					}
+
+					else if (my_plane.grade >= 4) { // 五级及以上气势
+						bullet[i].bullet_type = BULLET_TYPE_NORMAL; //
+						bullet[i].bullet_damage = 20; // 设置子弹伤害
+					}
+
+					bullet[i].is_active = true; // 激活子弹
+					bullet[i].start_pos.x = my_plane.plane_pos.x + PLANE_SIZE / 2; // 设置子弹位置为飞机位置
+					bullet[i].bullet_pos.x = bullet[i].start_pos.x; // 设置子弹位置为起始位置
+					bullet[i].start_pos.y = my_plane.plane_pos.y - PLANE_SIZE / 2; // 设置子弹位置为飞机位置
+					bullet[i].bullet_pos.y = bullet[i].start_pos.y; // 设置子弹位置为起始位置
+					bullet[i].bullet_speed = 0.3; // 设置子弹速度
+					my_plane.endurance -= 1; // 减少飞机耐久度
+					bullet[i].generate_time = clock(); // 记录子弹生成时间
+					my_plane.last_shoot_time = clock(); // 记录最后一次射击时间
+					if (my_plane.bullet_num < BULLET_NUM) { // 如果子弹数量小于最大子弹数量
+						my_plane.bullet_num++; // 增加子弹数量
+					}
+					break; // 退出循环
+				}
+			}
+		}
+		if (my_plane.plane_state == PLANE_STATE_CHARGED) {
+			
+				
+			// 子弹发射音效
+			if (bullet_sound) {
+				DWORD chan = BASS_SampleGetChannel(bullet_sound, FALSE);
+				BASS_ChannelPlay(chan, TRUE);
+			}
+
+			//根据飞机气势等级设置子弹类型和伤害
+			if (my_plane.grade == 0) { // 一级气势
+				mega_bullet[0].bullet_type = BULLET_TYPE_BIG; //
+				mega_bullet[0].bullet_damage = 100; // 设置子弹伤害
+			}
+
+			else if (my_plane.grade == 1) { // 二级气势
+				mega_bullet[0].bullet_type = BULLET_TYPE_BIG; // 
+				mega_bullet[0].bullet_damage = 110; // 设置子弹伤害
+			}
+
+			else if (my_plane.grade == 2) { // 三级气势
+				mega_bullet[0].bullet_type = BULLET_TYPE_BIG; // 
+				mega_bullet[0].bullet_damage = 120; // 设置子弹伤害
+			}
+
+			else if (my_plane.grade == 3) { // 四级及以上气势
+				mega_bullet[0].bullet_type = BULLET_TYPE_BIG; // 
+				mega_bullet[0].bullet_damage = 150; // 设置子弹伤害
+			}
+
+			else if (my_plane.grade == 4) { // 五级及以上气势
+				mega_bullet[0].bullet_type = BULLET_TYPE_BIG; //
+				mega_bullet[0].bullet_damage = 200; // 设置子弹伤害
+			}
+
+			else if (my_plane.grade == 5) { // 六级
+				mega_bullet[0].bullet_type = BULLET_TYPE_BIG; //
+				mega_bullet[0].bullet_damage = 400; // 设置子弹伤害
+			}
+
+			mega_bullet[0].is_active = true; // 激活子弹
+			mega_bullet[0].generate_time = clock();
+			mega_bullet[0].start_pos.x = my_plane.plane_pos.x + PLANE_SIZE / 2; // 设置子弹位置为飞机位置
+			mega_bullet[0].bullet_pos.x = mega_bullet[0].start_pos.x; // 设置子弹位置为起始位置
+			mega_bullet[0].start_pos.y = my_plane.plane_pos.y - PLANE_SIZE / 2; // 设置子弹位置为飞机位置
+			mega_bullet[0].bullet_pos.y = mega_bullet[0].start_pos.y; // 设置子弹位置为起始位置
+			mega_bullet[0].bullet_speed = 0.3; // 设置子弹速度
+			my_plane.endurance -= 10; // 减少飞机耐久度
+			bullet[++my_plane.bullet_num].generate_time = clock(); // 记录子弹生成时间
+			bullet[++my_plane.bullet_num] = mega_bullet[0];
+			my_plane.last_shoot_time = clock(); // 记录最后一次射击时间
+			if (my_plane.bullet_num < BULLET_NUM) { // 如果子弹数量小于最大子弹数量
+				my_plane.bullet_num++; // 增加子弹数量
+			}
+			my_plane.plane_state = PLANE_STATE_NORMAL;
+		}
+	}
+
+		
+	
+
+
 
 //更新子弹位置
 void bullet_move() {
@@ -264,6 +389,7 @@ void check_bullet_collision() {
 								last_complete_time = clock(); // 更新上次通关时间
 								boss_is_alive = false; // BOSS激活状态设置为false
 							}
+							my_plane.power += 10; // 增加飞机气势
 							break; // 退出循环
 						}
 					}
@@ -290,6 +416,7 @@ void check_bullet_collision() {
 								enemy_num--; // 减少敌机数量
 								score += enemy_plane[j].maxlife;// 增加分数
 							}
+							my_plane.power += 10; // 增加飞机气势
 							break; // 退出循环
 							}
 
@@ -364,6 +491,46 @@ void check_player_endurance() {
 	}
 }
 
+//检测飞机气势数值，与升级体系
+void check_player_power() {
+	if (my_plane.power >= GRADE1_SCORE && my_plane.grade == 0) { // 如果飞机气势大于等于100
+		my_plane.power = 0; // 重置气势
+		my_plane.grade++; // 升级气势等级
+	}
+
+	if (my_plane.power >= GRADE2_SCORE && my_plane.grade == 1) { // 如果飞机气势大于等于110
+		my_plane.power = 0; // 重置气势
+		my_plane.grade++; // 升级气势等级
+	}
+
+	if (my_plane.power >= GRADE3_SCORE && my_plane.grade == 2) { // 如果飞机气势大于等于120
+		my_plane.power = 0; // 重置气势
+		my_plane.grade++; // 升级气势等级
+	}
+
+	if (my_plane.power >= GRADE4_SCORE && my_plane.grade == 3) { // 如果飞机气势大于等于150
+		my_plane.power = 0; // 重置气势
+		my_plane.grade++; // 升级气势等级
+	}
+
+	if (my_plane.power >= GRADE5_SCORE && my_plane.grade == 4) { // 如果飞机气势大于等于400
+		my_plane.power = 0; // 重置气势
+		my_plane.grade++; // 升级气势等级
+	}
+
+	if (my_plane.grade > 5) { // 如果气势等级超过5
+		my_plane.grade = 5; // 将气势等级设置为5
+		my_plane.power = 400;// 将气势设置为400
+	}
+}
+
+
+
+
+
+
+
+
 //播放音乐
 void play_music() {
 	if (bgm1) { // 如果背景音乐存在
@@ -381,6 +548,7 @@ void play_music() {
 void UpdateGame() {
 
 	control_plane(); // 调用控制飞机函数，处理飞机移动和射击状态
+	check_plane_state();
 
 	shoot_bullet(); // 调用发射子弹函数，处理子弹发射
 	
@@ -399,9 +567,7 @@ void UpdateGame() {
 	check_bullet_collision(); // 调用碰撞检测函数，处理玩家子弹与敌机的碰撞
 	check_player_life(); // 调用检测玩家生命状态函数，处理玩家飞机的生命状态
 	check_player_endurance(); // 调用检测飞机耐久函数，处理飞机耐久状态
-
-
-	check_player_endurance(); // 调用检测飞机耐久函数，处理飞机耐久状态
+	check_player_power();// 调用检测飞机气势函数，处理飞机气势状态
 	add_endurance(); // 调用添加耐久函数，处理飞机耐久状态
 
 	generate_boss(); // 调用生成BOSS函数，处理BOSS生成

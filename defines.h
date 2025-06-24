@@ -5,6 +5,7 @@
 #define SCREEN_HEIGHT 720 //屏幕高度
 #define PLANE_SIZE 50 //飞机大小
 #define BOSS_SIZE 200 //BOSS大小
+#define MEGA_SIZE 273 //无双子弹大小
 #define BOSS_HEIGHT 140 //BOSS高度
 #define PLANE_SPEED 1.0 //飞机移动速度
 #define ENEMY_MAX_NUM 20 //敌机最大数量
@@ -13,6 +14,12 @@
 #define ENEMY_LIFE 50 //敌机生命值
 #define ELITE_ENEMY_LIFE 200 //精英敌机生命值
 #define BOSS_LIFE 2000 //BOSS生命值
+
+#define GRADE1_SCORE 100 //一级气势分数
+#define GRADE2_SCORE 110 //二级气势分数
+#define GRADE3_SCORE 120 //三级气势分数
+#define GRADE4_SCORE 150 //四级气势分数
+#define GRADE5_SCORE 400 //五级气势分数
 
 typedef struct {
 	float x; //x坐标
@@ -25,7 +32,8 @@ enum {
 	PLANE_STATE_SHOOTING, //射击状态
 	PLANE_STATE_CHARGING, //蓄力中状态
 	PLANE_STATE_CHARGED, //蓄力完成状态
-	PLANE_STATE_MEGA //无双状态
+	PLANE_STATE_MEGA_NORMAL, //无双状态
+	PLANE_STATE_MEGA_SHOOTING, //无双射击状态
 }; //玩家飞机状态枚举
 
 //敌机类型：普通敌机、精英敌机、BOSS敌机
@@ -46,7 +54,8 @@ typedef struct {
 	float bullet_speed; //子弹速度
 	float maxlife; //飞机最大生命值
 	float life; //飞机生命值
-	float power; //飞机火力(仅用于玩家飞机)
+	float power; //飞机气势(仅用于玩家飞机)
+	int grade; //飞机气势等级(仅用于玩家飞机)
 	int size; //飞机大小
 	int height; //飞机高度
 	float endurance; //飞机耐久度（仅用于玩家飞机）
@@ -61,6 +70,7 @@ typedef struct {
 
 enum {
 	BULLET_TYPE_NORMAL = 0, //普通子弹
+	BULLET_TYPE_BIG, //大子弹
 	BULLET_TYPE_MEGA, //无双子弹
 	BULLET_TYPE_LASER //激光
 }; //子弹类型枚举
@@ -98,6 +108,8 @@ static time_t last_complete_time = clock(); //记录上次通关时间
 static time_t last_shoot_time = clock(); //记录上次射击时间
 static time_t last_generate_enemy_time = clock(); //记录上次生成敌机时间
 static time_t last_added_time = clock(); //记录上次添加耐久的时间
+static time_t start_charge_time = clock(); //记录开始蓄力的时间
+static time_t charge_time = 0; //记录蓄力时间
 static IMAGE bg[5]; //背景图片
 
 static IMAGE plane[6]; //飞机图片

@@ -14,8 +14,8 @@ void DrawGame() {
 	putTransparentImage(
 		my_plane.plane_pos.x - PLANE_SIZE / 2,
 		my_plane.plane_pos.y - PLANE_SIZE / 2,
-		&plane[0],
-		&plane_mask[0]
+		&plane[my_plane.grade],
+		&plane_mask[my_plane.grade]
 	);
 
 	//绘制敌机
@@ -70,11 +70,36 @@ void DrawGame() {
 	//绘制子弹
 	for (int i = 0; i < BULLET_NUM; i++) {
 		if (bullet[i].is_active) { //如果子弹激活
+			if(bullet[i].bullet_type == BULLET_TYPE_BIG) { //如果是大子弹
+				putTransparentImage(
+					bullet[i].bullet_pos.x - MEGA_SIZE  / 2,
+					bullet[i].bullet_pos.y - PLANE_SIZE / 2,
+					&mega_bullet_image[my_plane.grade],
+					&mega_bullet_mask[my_plane.grade]
+				);
+			}
+			//else if (bullet[i].bullet_type == BULLET_TYPE_MEGA) { //如果是无双子弹
+			//	putTransparentImage(
+			//		bullet[i].bullet_pos.x - PLANE_SIZE / 2,
+			//		bullet[i].bullet_pos.y - PLANE_SIZE / 2,
+			//		&mega_bullet_image[my_plane.grade],
+			//		&mega_bullet_mask[my_plane.grade]
+			//	);
+			//}
+			//else if (bullet[i].bullet_type == BULLET_TYPE_LASER) { //如果是激光
+			//	putTransparentImage(
+			//		bullet[i].bullet_pos.x - PLANE_SIZE / 2,
+			//		bullet[i].bullet_pos.y - PLANE_SIZE / 2,
+			//		&laser_bullet_image[my_plane.grade],
+			//		&laser_bullet_mask[my_plane.grade]
+			//	);
+			//}
+			else //普通子弹
 			putTransparentImage(
 				bullet[i].bullet_pos.x - PLANE_SIZE / 2,
 				bullet[i].bullet_pos.y - PLANE_SIZE / 2,
-				&bullet_image[0],
-				&bullet_mask[0]
+				&bullet_image[my_plane.grade],
+				&bullet_mask[my_plane.grade]
 			);
 		}
 	}
@@ -105,6 +130,15 @@ void DrawGame() {
 	RECT endurance_rect = { 10, 110, 200, 150 }; //定义一个矩形区域，用于绘制耐久度
 	sprintf(score_text, "Endurance: %.0f", my_plane.endurance); //将耐久度格式化为字符串
 	drawtext(score_text, &endurance_rect, DT_SINGLELINE | DT_VCENTER | DT_NOCLIP); //绘制耐久度文本
+	//绘制气势值
+	RECT power_rect = { 10, 160, 200, 200 }; //定义一个矩形区域，用于绘制气势值
+	sprintf(score_text, "Power: %.0f", my_plane.power); //将气势值格式化为字符串
+	drawtext(score_text, &power_rect, DT_SINGLELINE | DT_VCENTER | DT_NOCLIP); //绘制气势值文本
+	//绘制等级
+	RECT level_rect = { 10, 210, 200, 250 }; //定义一个矩形区域，用于绘制等级
+	sprintf(score_text, "Level: %d", my_plane.grade); //将等级格式化为字符串
+	drawtext(score_text, &level_rect, DT_SINGLELINE | DT_VCENTER | DT_NOCLIP); //绘制等级文本
+
 
 	EndBatchDraw(); //结束批量绘图
 }

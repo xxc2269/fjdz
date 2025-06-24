@@ -23,7 +23,7 @@ void loadimages() {
 	loadimage(&plane[2], "src/ColorImages/plane/hero2.png", PLANE_SIZE, PLANE_SIZE); //加载飞机图片3
 	loadimage(&plane[3], "src/ColorImages/plane/hero3.png", PLANE_SIZE, PLANE_SIZE); //加载飞机图片4
 	loadimage(&plane[4], "src/ColorImages/plane/hero4.png", PLANE_SIZE, PLANE_SIZE); //加载飞机图片5
-	loadimage(&plane[5], "/src/ColorImages/plane/hero5.png", PLANE_SIZE, PLANE_SIZE); //加载飞机图片6
+	loadimage(&plane[5], "src/ColorImages/plane/hero5.png", PLANE_SIZE, PLANE_SIZE); //加载飞机图片6
 
 	//加载飞机掩码图片
 	loadimage(&plane_mask[0], "src/ColorImages/plane/hero0.bmp", PLANE_SIZE, PLANE_SIZE); //加载飞机掩码图片1
