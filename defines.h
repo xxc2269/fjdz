@@ -95,8 +95,17 @@ typedef struct {
 } BULLET; //子弹结构体
 //子弹结构体，包含子弹位置、数量、速度等信息
 
+//收集物品类型：小生命球、大生命球、补给球、大补给球
+enum {
+	ITEM_TYPE_SMALL_LIFE = 0, //小生命球
+	ITEM_TYPE_BIG_LIFE, //大生命球
+	ITEM_TYPE_SUPPLY, //补给球
+	ITEM_TYPE_BIG_SUPPLY //大补给球
+}; //收集物品类型枚举
+
 // 定义游戏中的全局变量和常量
 //static用于定义全局变量，这些变量在整个程序中都可以访问
+static const int ITEM_NUM = 10; //物品数量
 static bool boss_is_alive = false; //BOSS是否存活
 static PLANE my_plane; //定义一个全局变量my_plane，表示飞机
 static PLANE enemy_plane[ENEMY_MAX_NUM]; //定义一个全局变量enemy_plane，表示敌机
