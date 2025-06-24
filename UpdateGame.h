@@ -479,9 +479,9 @@ void check_bullet_collision() {
 	}
 }
 
-//游戏开始2分钟后生成BOSS
+//游戏开始90秒后生成BOSS
 void generate_boss() {
-	if (clock() - last_complete_time > 90000 && !boss_is_alive) { // 如果游戏开始超过2分钟且BOSS未激活
+	if (clock() - last_complete_time > 90000 && !boss_is_alive) { // 如果游戏开始超过90秒且BOSS未激活
 		for (int i = 0; i < ENEMY_MAX_NUM; i++) {
 			if (!enemy_plane[i].is_alive) { // 如果敌机未激活
 				enemy_plane[i].is_alive = true; // 激活敌机

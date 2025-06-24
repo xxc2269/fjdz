@@ -146,6 +146,15 @@ static IMAGE enemy_bullet_mask[4]; //敌机子弹掩码图片
 static IMAGE laser_image[4]; //激光图片
 static IMAGE laser_mask[4]; //激光掩码图片
 
+static IMAGE life_image; //生命图片
+static IMAGE life_mask; //生命掩码图片
+static IMAGE mega_life_image; //大生命图片
+static IMAGE mega_life_mask; //大生命掩码图片
+static IMAGE power_image; //气势图片
+static IMAGE power_mask; //气势掩码图片
+static IMAGE mega_power_image; //大气势图片
+static IMAGE mega_power_mask; //大气势掩码图片
+
 static int score = 0; //分数
 static int level = 1; //游戏等级
 static int game_state = 0; //游戏状态（0-未开始，1-进行中，2-结束）
