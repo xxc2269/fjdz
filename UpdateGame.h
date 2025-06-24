@@ -617,49 +617,34 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 	switch (plane_type) {
 	case ENEMY_TYPE_NORMAL: // 普通敌机
 		if (rand() % 100 < 5) { // 5%的概率掉落物品
-			drop_item[drop_item_num].item_type = ITEM_TYPE_SMALL_LIFE; // 设置掉落物类型为小生命球
-			drop_item[drop_item_num].item_pos.x = enemy_plane[i].plane_pos.x; // 设置掉落物位置为敌机位置
-			drop_item[drop_item_num].item_pos.y = enemy_plane[i].plane_pos.y; // 设置掉落物位置为敌机位置
-			drop_item[drop_item_num].is_active = true; // 激活掉落物
+			drop_item[drop_item_num] = ITEM_TYPE_SMALL_LIFE; // 设置掉落物类型为小生命球
 			drop_item_num++; // 增加掉落物数量
 		}
 		if (rand() % 1000 < 5) { // 0.5%的概率掉落物品
-			drop_item[drop_item_num].item_type = ITEM_TYPE_BIG_LIFE; // 设置掉落物类型为大生命球
-			drop_item[drop_item_num].item_pos.x = enemy_plane[i].plane_pos.x; // 设置掉落物位置为敌机位置
-			drop_item[drop_item_num].item_pos.y = enemy_plane[i].plane_pos.y; // 设置掉落物位置为敌机位置
-			drop_item[drop_item_num].is_active = true; // 激活掉落物
+			drop_item[drop_item_num] = ITEM_TYPE_BIG_LIFE; // 设置掉落物类型为大生命球
 			drop_item_num++; // 增加掉落物数量
 		}
 		if (rand() % 100 < 3) { // 3%的概率掉落物品
-			drop_item[drop_item_num].item_type = ITEM_TYPE_SUPPLY; // 设置掉落物类型为小补给球
-			drop_item[drop_item_num].item_pos.x = enemy_plane[i].plane_pos.x; // 设置掉落物位置为敌机位置
-			drop_item[drop_item_num].item_pos.y = enemy_plane[i].plane_pos.y; // 设置掉落物位置为敌机位置
-			drop_item[drop_item_num].is_active = true; // 激活掉落物
+			drop_item[drop_item_num] = ITEM_TYPE_SUPPLY; // 设置掉落物类型为小补给球
 			drop_item_num++; // 增加掉落物数量
 		}
 		if (rand() % 1000 < 3) { // 0.3%的概率掉落物品
-			drop_item[drop_item_num].item_type = ITEM_TYPE_SUPPLY; // 设置掉落物类型为大补给球
-			drop_item[drop_item_num].item_pos.x = enemy_plane[i].plane_pos.x; // 设置掉落物位置为敌机位置
-			drop_item[drop_item_num].item_pos.y = enemy_plane[i].plane_pos.y; // 设置掉落物位置为敌机位置
-			drop_item[drop_item_num].is_active = true; // 激活掉落物
+			drop_item[drop_item_num] = ITEM_TYPE_SUPPLY; // 设置掉落物类型为大补给球
+			//drop_item[drop_item_num].item_pos.x = enemy_plane[i].plane_pos.x; // 设置掉落物位置为敌机位置
+			//drop_item[drop_item_num].item_pos.y = enemy_plane[i].plane_pos.y; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num] = true; // 激活掉落物
 			drop_item_num++; // 增加掉落物数量
 		}
 		break;
 	case ENEMY_TYPE_ELITE: // 精英敌机
 		if (rand() % 100 < 30) { // 30%的概率掉落物品
-			drop_item[drop_item_num].item_type = ITEM_TYPE_BIG_POWER; // 设置掉落物类型为大补给球
-			drop_item[drop_item_num].item_pos.x = enemy_plane[i].plane_pos.x; // 设置掉落物位置为敌机位置
-			drop_item[drop_item_num].item_pos.y = enemy_plane[i].plane_pos.y; // 设置掉落物位置为敌机位置
-			drop_item[drop_item_num].is_active = true; // 激活掉落物
+			drop_item[drop_item_num] = ITEM_TYPE_SUPPLY; // 设置掉落物类型为大补给球
 			drop_item_num++; // 增加掉落物数量
 		}
 		break;
 	case ENEMY_TYPE_BOSS: // BOSS敌机
 		if (rand() % 100 < 50) { // 50%的概率掉落物品
-			drop_item[drop_item_num].item_type = ITEM_TYPE_BIG_LIFE; // 设置掉落物类型为大生命球
-			drop_item[drop_item_num].item_pos.x = enemy_plane[i].plane_pos.x; // 设置掉落物位置为敌机位置
-			drop_item[drop_item_num].item_pos.y = enemy_plane[i].plane_pos.y; // 设置掉落物位置为敌机位置
-			drop_item[drop_item_num].is_active = true; // 激活掉落物
+			drop_item[drop_item_num] = ITEM_TYPE_BIG_LIFE; // 设置掉落物类型为大生命球
 			drop_item_num++; // 增加掉落物数量
 		}
 		break;
