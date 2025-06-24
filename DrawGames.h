@@ -1,10 +1,15 @@
 #pragma once//用于防止头文件被多次包含
 #include"defines.h"//包含宏定义头文件(已包含了标准头文件)
+#include <math.h>
+#ifndef M_PI  
+#define M_PI 3.14159265358979323846 // 定义圆周率常量  
+#endif
 
 void DrawGame() {
 
 	BeginBatchDraw();//开始批量绘图，可以在屏幕上绘制多个图像而不立即显示，防止闪烁
 
+	setlinestyle(PS_NULL); //设置线条样式为无边框
 	//setfillcolor(BLACK); //设置填充颜色为黑色
 	//绘制游戏界面
 	//绘制背景
@@ -116,29 +121,90 @@ void DrawGame() {
 	}
 
 	//绘制分数
-	RECT score_rect = { 10, 10, 200, 50 }; //定义一个矩形区域，用于绘制分数
+	RECT score_rect = { 10, 80, 200, 50 }; //定义一个矩形区域，用于绘制分数
 	setbkmode(TRANSPARENT); //设置背景模式为透明
 	char score_text[20]; //定义一个字符数组，用于存储分数文本
 	sprintf(score_text, "Score: %d", score); //将分数格式化为字符串
 	drawtext(score_text, &score_rect, DT_SINGLELINE | DT_VCENTER | DT_NOCLIP); //绘制分数文本
 
-	//绘制生命值
-	RECT life_rect = { 10, 60, 200, 100 }; //定义一个矩形区域，用于绘制生命值
-	sprintf(score_text, "Life: %.0f", my_plane.life); //将生命值格式化为字符串
-	drawtext(score_text, &life_rect, DT_SINGLELINE | DT_VCENTER | DT_NOCLIP); //绘制生命值文本
-	//绘制耐久度
-	RECT endurance_rect = { 10, 110, 200, 150 }; //定义一个矩形区域，用于绘制耐久度
-	sprintf(score_text, "Endurance: %.0f", my_plane.endurance); //将耐久度格式化为字符串
-	drawtext(score_text, &endurance_rect, DT_SINGLELINE | DT_VCENTER | DT_NOCLIP); //绘制耐久度文本
-	//绘制气势值
-	RECT power_rect = { 10, 160, 200, 200 }; //定义一个矩形区域，用于绘制气势值
-	sprintf(score_text, "Power: %.0f", my_plane.power); //将气势值格式化为字符串
-	drawtext(score_text, &power_rect, DT_SINGLELINE | DT_VCENTER | DT_NOCLIP); //绘制气势值文本
-	//绘制等级
-	RECT level_rect = { 10, 210, 200, 250 }; //定义一个矩形区域，用于绘制等级
-	sprintf(score_text, "Level: %d", my_plane.grade); //将等级格式化为字符串
-	drawtext(score_text, &level_rect, DT_SINGLELINE | DT_VCENTER | DT_NOCLIP); //绘制等级文本
+	////绘制生命值
+	//RECT life_rect = { 10, 90, 200, 100 }; //定义一个矩形区域，用于绘制生命值
+	//sprintf(score_text, "Life: %.0f", my_plane.life); //将生命值格式化为字符串
+	//drawtext(score_text, &life_rect, DT_SINGLELINE | DT_VCENTER | DT_NOCLIP); //绘制生命值文本
+	////绘制耐久度
+	//RECT endurance_rect = { 10, 140, 200, 150 }; //定义一个矩形区域，用于绘制耐久度
+	//sprintf(score_text, "Endurance: %.0f", my_plane.endurance); //将耐久度格式化为字符串
+	//drawtext(score_text, &endurance_rect, DT_SINGLELINE | DT_VCENTER | DT_NOCLIP); //绘制耐久度文本
+	////绘制气势值
+	//RECT power_rect = { 10, 190, 200, 200 }; //定义一个矩形区域，用于绘制气势值
+	//sprintf(score_text, "Power: %.0f", my_plane.power); //将气势值格式化为字符串
+	//drawtext(score_text, &power_rect, DT_SINGLELINE | DT_VCENTER | DT_NOCLIP); //绘制气势值文本
+	////绘制等级
+	//RECT level_rect = { 10, 240, 200, 250 }; //定义一个矩形区域，用于绘制等级
+	//sprintf(score_text, "Level: %d", my_plane.grade); //将等级格式化为字符串
+	//drawtext(score_text, &level_rect, DT_SINGLELINE | DT_VCENTER | DT_NOCLIP); //绘制等级文本
 
+
+	//绘制血条
+	int life_x1 = 70;
+	int life_y1 = 655;
+	int life_x2 = life_x1 + (100) * ((my_plane.life * 100) / (my_plane.maxlife * 100));
+	int life_y2 = 665;
+	setfillcolor(RED); //设置填充颜色为红色
+	fillrectangle(life_x1, life_y1, life_x2, life_y2); //绘制敌机血条
+	//绘制耐力条
+	int endurance_x1 = 70;
+	int endurance_y1 = 665;
+	int endurance_x2 = endurance_x1 + (100) * ((my_plane.endurance * 100) / (my_plane.max_endurance * 100));
+	int endurance_y2 = 675;
+	setfillcolor(WHITE); //设置填充颜色为白色
+	fillrectangle(endurance_x1, endurance_y1, endurance_x2, endurance_y2); //绘制耐力条
+	
+	//绘制气势条（用扇形表示）
+	switch (my_plane.grade) {
+		case 0:
+			setfillcolor(WHITE); //设置填充颜色为白色
+			fillcircle(43, 664, 25); //绘制气势等级0的圆形
+			setfillcolor(LIGHTGREEN); //设置填充颜色为绿色
+			if (my_plane.power > 0)fillpie(18, 639, 68, 689, 0, 2 * M_PI * (my_plane.power / 100)); //绘制气势等级0的扇形
+			break;
+		case 1:
+			setfillcolor(LIGHTGREEN); //设置填充颜色为绿色
+			fillcircle(43, 664, 25); //绘制气势等级1的圆形
+			setfillcolor(LIGHTBLUE); //设置填充颜色为蓝色
+			if (my_plane.power > 0)fillpie(18, 639, 68, 689, 0, 2 * M_PI * (my_plane.power / 110)); //绘制气势等级1的扇形
+			break;
+		case 2:
+			setfillcolor(LIGHTBLUE); //设置填充颜色为蓝色
+			fillcircle(43, 664, 25); //绘制气势等级2的圆形
+			setfillcolor(LIGHTMAGENTA); //设置填充颜色为紫色
+			if (my_plane.power > 0)fillpie(18, 639, 68, 689, 0, 2 * M_PI * (my_plane.power / 120)); //绘制气势等级2的扇形
+			break;
+		case 3:
+			setfillcolor(LIGHTMAGENTA); //设置填充颜色为紫色
+			fillcircle(43, 664, 25); //绘制气势等级3的圆形
+			setfillcolor(YELLOW); //设置填充颜色为黄色
+			if (my_plane.power > 0)fillpie(18, 639, 68, 689, 0, 2 * M_PI * (my_plane.power / 150)); //绘制气势等级3的扇形
+			break;
+		case 4:
+			setfillcolor(YELLOW); //设置填充颜色为黄色
+			fillcircle(43, 664, 25); //绘制气势等级4的圆形
+			setfillcolor(LIGHTRED); //设置填充颜色为红色
+			if (my_plane.power > 0)fillpie(18, 639, 68, 689, 0, 2 * M_PI * (my_plane.power / 400)); //绘制气势等级4的扇形
+			break;
+		case 5:
+			setfillcolor(LIGHTRED); //设置填充颜色为红色
+			fillcircle(43, 664, 25); //绘制气势等级5的圆形
+			//fillpie(18, 639, 68, 689, 0, 2 * M_PI * (my_plane.power / 400)); //绘制气势等级5的扇形
+			break;
+	}
+
+	putTransparentImage(
+			20,
+			640,
+			&plane[my_plane.grade],
+			&plane_mask[my_plane.grade]
+	);// 绘制飞机气势等级图标
 
 	EndBatchDraw(); //结束批量绘图
 }

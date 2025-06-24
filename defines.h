@@ -59,6 +59,7 @@ typedef struct {
 	int size; //飞机大小
 	int height; //飞机高度
 	float endurance; //飞机耐久度（仅用于玩家飞机）
+	float max_endurance; //飞机最大耐久度（仅用于玩家飞机）
 	int plane_state; //飞机状态（0-正常，1-射击，2-蓄力中，3-蓄力完成，4-无双状态）(仅用于玩家飞机)
 	bool is_alive; //飞机是否存活(仅用于敌机)
 	bool is_hitted_by_mega; //是否被重击子弹击中(仅用于敌机)
