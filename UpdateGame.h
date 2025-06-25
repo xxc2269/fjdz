@@ -265,14 +265,28 @@ void generate_enemy() {
 		for (int i = 0; i < ENEMY_MAX_NUM; i++) {
 			if (!enemy_plane[i].is_alive) { // 如果敌机未激活
 				enemy_plane[i].is_alive = true; // 激活敌机
-				enemy_plane[i].size = PLANE_SIZE; // 设置敌机大小
-				enemy_plane[i].height = PLANE_SIZE; // 设置敌机高度
+				//根据敌机类型设置不同的大小和高度
+				if (enemy_plane[i].plane_type == ENEMY_TYPE_ELITE) {
+					enemy_plane[i].size = PLANE_ELITE_SIZE; // 设置精英敌机大小
+					enemy_plane[i].height = 80; // 设置精英敌机高度
+				} else if (enemy_plane[i].plane_type == ENEMY_TYPE_NORMAL){
+					enemy_plane[i].size = PLANE_SIZE; // 设置普通敌机大小
+					enemy_plane[i].height = PLANE_SIZE; // 设置普通敌机高度
+				}
+				//enemy_plane[i].size = PLANE_SIZE; // 设置敌机大小
+				//enemy_plane[i].height = PLANE_SIZE; // 设置敌机高度
 				enemy_plane[i].start_pos.x = rand() % (SCREEN_WIDTH - enemy_plane[i].size)+25; // 随机生成敌机位置
 				enemy_plane[i].plane_pos.x = enemy_plane[i].start_pos.x; // 设置敌机位置为起始位置
 				enemy_plane[i].start_pos.y = -enemy_plane[i].height; // 设置敌机初始位置在屏幕上方
 				enemy_plane[i].plane_pos.y = enemy_plane[i].start_pos.y; // 设置敌机位置为起始位置
 				enemy_plane[i].speed = 0.1; // 设置敌机速度
-				enemy_plane[i].plane_type = ENEMY_TYPE_NORMAL; // 设置敌机类型为普通敌机
+				//概率生成敌机类型
+				if (rand() % 100 < 30) { // 30%的概率生成精英敌机
+					enemy_plane[i].plane_type = ENEMY_TYPE_ELITE; // 设置敌机类型为BOSS敌机
+				} else {
+					enemy_plane[i].plane_type = ENEMY_TYPE_NORMAL; // 设置敌机类型为普通敌机
+				}
+				/*enemy_plane[i].plane_type = ENEMY_TYPE_NORMAL;*/ // 设置敌机类型为普通敌机
 				enemy_plane[i].maxlife = 50; // 设置敌机最大生命值
 				enemy_plane[i].life = 50; // 设置敌机生命值
 				enemy_plane[i].generate_time = clock(); // 记录敌机生成时间
@@ -313,6 +327,12 @@ void enemy_shoot_bullet() {
 					enemy_bullet[i].start_pos.y = enemy_plane[j].plane_pos.y + enemy_plane[i].height / 2; // 设置敌机子弹位置为敌机位置
 					enemy_bullet[i].bullet_pos.y = enemy_bullet[i].start_pos.y; // 设置敌机子弹位置为起始位置
 					enemy_bullet[i].bullet_speed = 0.3; // 设置敌机子弹速度
+					// 敌机子弹伤害,精英敌机伤害为3，普通敌机伤害为1
+					if (enemy_plane[j].plane_type == ENEMY_TYPE_ELITE) {
+						enemy_bullet[i].bullet_damage = 3; // 设置敌机子弹伤害
+					} else if (enemy_plane[j].plane_type == ENEMY_TYPE_NORMAL) {
+						enemy_bullet[i].bullet_damage = 1; // 设置敌机子弹伤害
+					}
 					enemy_bullet[i].generate_time = clock(); // 记录敌机子弹生成时间
 					enemy_plane[j].last_shoot_time = clock(); // 记录最后一次射击时间
 					enemy_bullet_num++; // 增加敌机子弹数量
@@ -352,7 +372,7 @@ void check_enemy_bullet_collision() {
 					DWORD chan = BASS_SampleGetChannel(bullet_hit_sound, FALSE);
 					BASS_ChannelPlay(chan, TRUE);
 				}
-				my_plane.life -= 1; // 玩家飞机受到伤害
+				my_plane.life -= enemy_bullet[i].bullet_damage; // 玩家飞机受到伤害
 				enemy_bullet[i].is_active = false; // 禁用敌机子弹
 				enemy_bullet_num--; // 减少敌机子弹数量
 				if (my_plane.life <= 0) { // 如果玩家飞机生命值小于等于0
@@ -377,7 +397,13 @@ void check_collision() {
 					DWORD chan = BASS_SampleGetChannel(enemy_down_sound, FALSE);
 					BASS_ChannelPlay(chan, TRUE);
 				}
-				my_plane.life -= 10; // 玩家飞机受到伤害
+				//如果为精英敌机受30点伤害，普通敌机受10点伤害
+				if (enemy_plane[i].plane_type == ENEMY_TYPE_ELITE) {
+					my_plane.life -= 30; // 玩家飞机受到伤害
+				} else if (enemy_plane[i].plane_type == ENEMY_TYPE_NORMAL) {
+					my_plane.life -= 10; // 玩家飞机受到伤害
+				}
+				//my_plane.life -= 10; // 玩家飞机受到伤害
 				enemy_plane[i].is_alive = false; // 禁用敌机
 				enemy_num--; // 减少敌机数量
 				if (my_plane.life <= 0) { // 如果玩家飞机生命值小于等于0
