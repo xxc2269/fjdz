@@ -180,17 +180,17 @@ void check_plane_state() {
 			//根据飞机气势等级设置子弹类型和伤害
 			if (my_plane.grade == 0) { // 一级气势
 				mega_bullet[0].bullet_type = BULLET_TYPE_BIG; //
-				mega_bullet[0].bullet_damage = 100; // 设置子弹伤害
+				mega_bullet[0].bullet_damage = 30; // 设置子弹伤害
 			}
 
 			else if (my_plane.grade == 1) { // 二级气势
 				mega_bullet[0].bullet_type = BULLET_TYPE_BIG; // 
-				mega_bullet[0].bullet_damage = 110; // 设置子弹伤害
+				mega_bullet[0].bullet_damage = 50; // 设置子弹伤害
 			}
 
 			else if (my_plane.grade == 2) { // 三级气势
 				mega_bullet[0].bullet_type = BULLET_TYPE_BIG; // 
-				mega_bullet[0].bullet_damage = 120; // 设置子弹伤害
+				mega_bullet[0].bullet_damage = 100; // 设置子弹伤害
 			}
 
 			else if (my_plane.grade == 3) { // 四级及以上气势
@@ -480,7 +480,7 @@ void check_bullet_collision() {
 								score += enemy_plane[j].maxlife;// 增加分数
 								last_complete_time = clock(); // 更新上次通关时间
 								boss_is_alive = false; // BOSS激活状态设置为false
-								if(level<=5)level++; // 关卡数增加
+								if(level < 5)level++; // 关卡数增加
 								if (drop_item_num < ITEM_NUM - 1)generate_drop_item(ENEMY_TYPE_BOSS, enemy_plane[j].plane_pos); // 生成BOSS掉落物品
 							}
 							if(bullet[i].bullet_type == BULLET_TYPE_NORMAL)my_plane.power += 10; // 增加飞机气势
