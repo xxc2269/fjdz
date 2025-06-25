@@ -266,7 +266,7 @@ void generate_enemy() {
 			if (!enemy_plane[i].is_alive) { // 如果敌机未激活
 				enemy_plane[i].is_alive = true; // 激活敌机
 				//概率生成敌机类型
-				if (rand() % 100 < 50) { // 30%的概率生成精英敌机
+				if (rand() % 100 < 100) { // 30%的概率生成精英敌机
 					enemy_plane[i].plane_type = ENEMY_TYPE_ELITE; // 设置敌机类型为BOSS敌机
 					enemy_plane[i].maxlife = 200; // 设置敌机最大生命值
 					enemy_plane[i].life = 200; // 设置敌机生命值
@@ -332,8 +332,12 @@ void enemy_shoot_bullet() {
 					// 敌机子弹伤害,精英敌机伤害为3，普通敌机伤害为1
 					if (enemy_plane[j].plane_type == ENEMY_TYPE_ELITE) {
 						enemy_bullet[i].bullet_damage = 3; // 设置敌机子弹伤害
+						enemy_bullet[i].bullet_type = BULLET_TYPE_TRACKING; // 设置敌机子弹类型为追踪子弹
+						enemy_bullet[i].aim_pos.x = my_plane.plane_pos.x; // 设置目标位置为玩家飞机位置
+						enemy_bullet[i].aim_pos.y = my_plane.plane_pos.y; // 设置目标位置为玩家飞机位置
 					} else if (enemy_plane[j].plane_type == ENEMY_TYPE_NORMAL) {
 						enemy_bullet[i].bullet_damage = 1; // 设置敌机子弹伤害
+						enemy_bullet[i].bullet_type = BULLET_TYPE_NORMAL; // 设置敌机子弹类型为普通子弹
 					}
 					enemy_bullet[i].generate_time = clock(); // 记录敌机子弹生成时间
 					enemy_plane[j].last_shoot_time = clock(); // 记录最后一次射击时间
@@ -353,11 +357,22 @@ void enemy_bullet_move() {
 		// 更新子弹位置
 		for (int i = 0; i <= ENEMY_MAX_NUM; i++) {
 			if (enemy_bullet[i].is_active) { // 如果子弹激活
-				enemy_bullet[i].bullet_pos.y = enemy_bullet[i].start_pos.y + (clock() - enemy_bullet[i].generate_time) * enemy_bullet[i].bullet_speed; // 更新子弹位置
-				if (enemy_bullet[i].bullet_pos.y > SCREEN_HEIGHT) { // 如果子弹超出屏幕下边界
-					enemy_bullet[i].is_active = false; // 禁用子弹
-					enemy_bullet_num--; // 减少敌机子弹数量
+				//如果为普通敌机子弹
+				
+					enemy_bullet[i].bullet_pos.y = enemy_bullet[i].start_pos.y + (clock() - enemy_bullet[i].generate_time) * enemy_bullet[i].bullet_speed; // 更新子弹位置
+				
+				//如果为精英敌机子弹
+				 if (enemy_bullet[i].bullet_type == BULLET_TYPE_TRACKING) {
+
+					 enemy_bullet[i].bullet_pos.x = enemy_bullet[i].start_pos.x +
+						 (clock() - enemy_bullet[i].generate_time) * enemy_bullet[i].bullet_speed * ((enemy_bullet[i].start_pos.x - enemy_bullet[i].aim_pos.x) / (enemy_bullet[i].start_pos.y - enemy_bullet[i].aim_pos.y)); // 更新子弹位置
+					
 				}
+				if (enemy_bullet[i].bullet_pos.y > SCREEN_HEIGHT) { // 如果子弹超出屏幕下边界
+						enemy_bullet[i].is_active = false; // 禁用子弹
+						enemy_bullet_num--; // 减少敌机子弹数量
+					}
+
 			}
 		}
 }
@@ -858,21 +873,6 @@ void check_player_drop_item_collision() {
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //播放音乐
 void play_music() {

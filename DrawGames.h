@@ -99,6 +99,7 @@ void DrawGame() {
 			//		&laser_bullet_mask[my_plane.grade]
 			//	);
 			//}
+			
 			else //普通子弹
 			putTransparentImage(
 				bullet[i].bullet_pos.x - PLANE_SIZE / 2,
@@ -110,13 +111,25 @@ void DrawGame() {
 	}
 
 	for (int i = 0; i < BULLET_NUM; i++) {
-		if (enemy_bullet[i].is_active) { //如果子弹激活
-			putTransparentImage(
-				enemy_bullet[i].bullet_pos.x - PLANE_SIZE / 2,
-				enemy_bullet[i].bullet_pos.y - PLANE_SIZE / 2,
-				&enemy_bullet_image[0],
-				&enemy_bullet_mask[0]
-			);
+		if (enemy_bullet[i].is_active) {
+			if (enemy_bullet[i].bullet_type == BULLET_TYPE_NORMAL) { //如果子弹激活
+				putTransparentImage(
+					enemy_bullet[i].bullet_pos.x - PLANE_SIZE / 2,
+					enemy_bullet[i].bullet_pos.y - PLANE_SIZE / 2,
+					&enemy_bullet_image[0],
+					&enemy_bullet_mask[0]
+				);
+			}
+
+			else if (enemy_bullet[i].bullet_type == BULLET_TYPE_TRACKING) 
+			{ //如果是追踪子弹
+				putTransparentImage(
+					enemy_bullet[i].bullet_pos.x - PLANE_SIZE / 2,
+					enemy_bullet[i].bullet_pos.y - PLANE_SIZE / 2,
+					&enemy_bullet_image[1],
+					&enemy_bullet_mask[1]
+				);
+			}
 		}
 	}
 

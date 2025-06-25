@@ -78,7 +78,8 @@ enum {
 	BULLET_TYPE_NORMAL = 0, //普通子弹
 	BULLET_TYPE_BIG, //大子弹
 	BULLET_TYPE_MEGA, //无双子弹
-	BULLET_TYPE_LASER //激光
+	BULLET_TYPE_LASER, //激光
+	BULLET_TYPE_TRACKING //追踪子弹
 }; //子弹类型枚举
 typedef struct {
 	bool is_active; //子弹是否激活
@@ -86,7 +87,7 @@ typedef struct {
 	POS start_pos; //子弹起始位置
 	int bullet_num; //子弹数量
 	float bullet_speed; //子弹速度
-
+	POS aim_pos;//子弹目标位置（仅用于追踪子弹）
 	int bullet_type; //子弹类型
 	int bullet_grade; //无双子弹等级
 	int bullet_damage; //子弹伤害
