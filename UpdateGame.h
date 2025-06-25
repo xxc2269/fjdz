@@ -265,14 +265,22 @@ void generate_enemy() {
 		for (int i = 0; i < ENEMY_MAX_NUM; i++) {
 			if (!enemy_plane[i].is_alive) { // 如果敌机未激活
 				enemy_plane[i].is_alive = true; // 激活敌机
-				//根据敌机类型设置不同的大小和高度
-				if (enemy_plane[i].plane_type == ENEMY_TYPE_ELITE) {
+				//概率生成敌机类型
+				if (rand() % 100 < 50) { // 30%的概率生成精英敌机
+					enemy_plane[i].plane_type = ENEMY_TYPE_ELITE; // 设置敌机类型为BOSS敌机
+					enemy_plane[i].maxlife = 200; // 设置敌机最大生命值
+					enemy_plane[i].life = 200; // 设置敌机生命值
 					enemy_plane[i].size = PLANE_ELITE_SIZE; // 设置精英敌机大小
 					enemy_plane[i].height = 80; // 设置精英敌机高度
-				} else if (enemy_plane[i].plane_type == ENEMY_TYPE_NORMAL){
+				}
+				else {
+					enemy_plane[i].plane_type = ENEMY_TYPE_NORMAL; // 设置敌机类型为普通敌机
+					enemy_plane[i].maxlife = 50; // 设置敌机最大生命值
+					enemy_plane[i].life = 50; // 设置敌机生命值
 					enemy_plane[i].size = PLANE_SIZE; // 设置普通敌机大小
 					enemy_plane[i].height = PLANE_SIZE; // 设置普通敌机高度
 				}
+				
 				//enemy_plane[i].size = PLANE_SIZE; // 设置敌机大小
 				//enemy_plane[i].height = PLANE_SIZE; // 设置敌机高度
 				enemy_plane[i].start_pos.x = rand() % (SCREEN_WIDTH - enemy_plane[i].size)+25; // 随机生成敌机位置
@@ -280,15 +288,9 @@ void generate_enemy() {
 				enemy_plane[i].start_pos.y = -enemy_plane[i].height; // 设置敌机初始位置在屏幕上方
 				enemy_plane[i].plane_pos.y = enemy_plane[i].start_pos.y; // 设置敌机位置为起始位置
 				enemy_plane[i].speed = 0.1; // 设置敌机速度
-				//概率生成敌机类型
-				if (rand() % 100 < 30) { // 30%的概率生成精英敌机
-					enemy_plane[i].plane_type = ENEMY_TYPE_ELITE; // 设置敌机类型为BOSS敌机
-				} else {
-					enemy_plane[i].plane_type = ENEMY_TYPE_NORMAL; // 设置敌机类型为普通敌机
-				}
+				
 				/*enemy_plane[i].plane_type = ENEMY_TYPE_NORMAL;*/ // 设置敌机类型为普通敌机
-				enemy_plane[i].maxlife = 50; // 设置敌机最大生命值
-				enemy_plane[i].life = 50; // 设置敌机生命值
+				
 				enemy_plane[i].generate_time = clock(); // 记录敌机生成时间
 
 				enemy_num++; // 增加敌机数量
