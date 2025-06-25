@@ -553,8 +553,8 @@ void generate_boss() {
 				enemy_plane[i].plane_pos.y = enemy_plane[i].start_pos.y; // 设置BOSS位置为起始位置
 				enemy_plane[i].speed = 0.03; // 设置BOSS速度
 				enemy_plane[i].plane_type = ENEMY_TYPE_BOSS; // 设置BOSS类型为BOSS敌机
-				enemy_plane[i].maxlife = BOSS_LIFE; // 设置BOSS最大生命值
-				enemy_plane[i].life = BOSS_LIFE+level*500; // 设置BOSS生命值
+				enemy_plane[i].maxlife = BOSS_LIFE + level * 500; // 设置BOSS最大生命值
+				enemy_plane[i].life = BOSS_LIFE + level * 500; // 设置BOSS生命值
 				enemy_plane[i].generate_time = clock(); // 记录BOSS生成时间
 				boss_is_alive = true; // BOSS激活状态设置为true
 				srand(time(NULL));

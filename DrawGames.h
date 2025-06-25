@@ -12,9 +12,26 @@ void DrawGame() {
 	setlinestyle(PS_NULL); //设置线条样式为无边框
 	//setfillcolor(BLACK); //设置填充颜色为黑色
 	//绘制游戏界面
+	 
+	// 更新背景滚动位置 - 纵向滚动
+	bgScrollOffset += BG_SCROLL_SPEED; // 使用加法使背景向下滚动
+	if (bgScrollOffset >= SCREEN_HEIGHT) {
+		bgScrollOffset -= SCREEN_HEIGHT;
+	}
 	//绘制背景
-	putimage(0, 0, &bg[level-1]); //绘制背景图片1（背景通常不需要掩码）
+	//putimage(0, 0, &bg[level-1]); //绘制背景图片1（背景通常不需要掩码）
+	// 绘制流动背景 - 纵向滚动
+	// 将float坐标转换为int
+	int scrollPos = static_cast<int>(bgScrollOffset);
 
+	// 第一张背景 - 在屏幕上方
+	putimage(0, scrollPos - SCREEN_HEIGHT, &bg[level-1]);
+
+	// 第二张背景 - 在屏幕位置
+	putimage(0, scrollPos, &bg[level-1]);
+
+	// 第三张背景 - 在屏幕下方（用于无缝衔接）
+	putimage(0, scrollPos + SCREEN_HEIGHT, &bg[level-1]);
 	//绘制飞机（假设只用plane[0]和plane_mask[0]，如需动态切换请自行调整下标）
 	putTransparentImage(
 		my_plane.plane_pos.x - PLANE_SIZE / 2,

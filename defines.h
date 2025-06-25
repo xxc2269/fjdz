@@ -140,6 +140,9 @@ static time_t start_charge_time = clock(); //记录开始蓄力的时间
 static time_t charge_time = 0; //记录蓄力时间
 static time_t last_power_time; //记录上次减少气势的时间
 static IMAGE bg[5]; //背景图片
+// 背景滚动变量 - 纵向滚动
+static float bgScrollOffset = 0.0f;
+static float BG_SCROLL_SPEED = 0.01f;
 
 static IMAGE plane[6]; //飞机图片
 static IMAGE plane_mask[6]; //飞机掩码图片
