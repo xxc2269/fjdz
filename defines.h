@@ -15,7 +15,7 @@
 
 #define ENEMY_LIFE 50 //敌机生命值
 #define ELITE_ENEMY_LIFE 200 //精英敌机生命值
-#define BOSS_LIFE 2000 //BOSS生命值
+#define BOSS_LIFE 1500 //BOSS生命值
 
 #define GRADE1_SCORE 100 //一级气势分数
 #define GRADE2_SCORE 110 //二级气势分数

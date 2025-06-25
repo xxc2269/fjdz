@@ -266,7 +266,7 @@ void generate_enemy() {
 			if (!enemy_plane[i].is_alive) { // 如果敌机未激活
 				enemy_plane[i].is_alive = true; // 激活敌机
 				//概率生成敌机类型
-				if (rand() % 100 < 100) { // 30%的概率生成精英敌机
+				if (rand() % 100 < (level-1)*5) { // 概率生成精英敌机
 					enemy_plane[i].plane_type = ENEMY_TYPE_ELITE; // 设置敌机类型为BOSS敌机
 					enemy_plane[i].maxlife = 200; // 设置敌机最大生命值
 					enemy_plane[i].life = 200; // 设置敌机生命值
@@ -480,6 +480,7 @@ void check_bullet_collision() {
 								score += enemy_plane[j].maxlife;// 增加分数
 								last_complete_time = clock(); // 更新上次通关时间
 								boss_is_alive = false; // BOSS激活状态设置为false
+								if(level<=5)level++; // 关卡数增加
 								if (drop_item_num < ITEM_NUM - 1)generate_drop_item(ENEMY_TYPE_BOSS, enemy_plane[j].plane_pos); // 生成BOSS掉落物品
 							}
 							if(bullet[i].bullet_type == BULLET_TYPE_NORMAL)my_plane.power += 10; // 增加飞机气势
@@ -553,7 +554,7 @@ void generate_boss() {
 				enemy_plane[i].speed = 0.03; // 设置BOSS速度
 				enemy_plane[i].plane_type = ENEMY_TYPE_BOSS; // 设置BOSS类型为BOSS敌机
 				enemy_plane[i].maxlife = BOSS_LIFE; // 设置BOSS最大生命值
-				enemy_plane[i].life = BOSS_LIFE; // 设置BOSS生命值
+				enemy_plane[i].life = BOSS_LIFE+level*500; // 设置BOSS生命值
 				enemy_plane[i].generate_time = clock(); // 记录BOSS生成时间
 				boss_is_alive = true; // BOSS激活状态设置为true
 				srand(time(NULL));
@@ -897,7 +898,7 @@ void UpdateGame() {
 	
 	bullet_move(); // 调用更新子弹位置函数，处理子弹移动
 
-	if(clock() - last_generate_enemy_time > (5000/level)) { // 如果距上次生成时间超过（5/关卡数）秒
+	if(clock() - last_generate_enemy_time > (6000/level)) { // 如果距上次生成时间超过（6/关卡数）秒
 		generate_enemy(); // 调用生成敌机函数，处理敌机生成
 		last_generate_enemy_time = clock(); // 重置生成敌机时间
 	}

@@ -13,7 +13,7 @@ void DrawGame() {
 	//setfillcolor(BLACK); //设置填充颜色为黑色
 	//绘制游戏界面
 	//绘制背景
-	putimage(0, 0, &bg[0]); //绘制背景图片1（背景通常不需要掩码）
+	putimage(0, 0, &bg[level-1]); //绘制背景图片1（背景通常不需要掩码）
 
 	//绘制飞机（假设只用plane[0]和plane_mask[0]，如需动态切换请自行调整下标）
 	putTransparentImage(
