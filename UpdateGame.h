@@ -519,10 +519,19 @@ void check_bullet_collision() {
 							
 							if (enemy_plane[j].life <= 0) { // 如果敌机生命值小于等于0
 								// 敌机被击落音效
-								if (enemy_down_sound) {
-									DWORD chan = BASS_SampleGetChannel(enemy_down_sound, FALSE);
-									BASS_ChannelPlay(chan, TRUE);
+								if(enemy_plane[j].plane_type == ENEMY_TYPE_ELITE) {
+									if (elite_down_sound) {
+										DWORD chan = BASS_SampleGetChannel(elite_down_sound, FALSE);
+										BASS_ChannelPlay(chan, TRUE);
+									}
 								}
+								else if (enemy_plane[j].plane_type == ENEMY_TYPE_NORMAL) {
+									if (enemy_down_sound) {
+										DWORD chan = BASS_SampleGetChannel(enemy_down_sound, FALSE);
+										BASS_ChannelPlay(chan, TRUE);
+									}
+								}
+								
 								enemy_plane[j].is_alive = false; // 禁用敌机
 								if (drop_item_num < ITEM_NUM)generate_drop_item(enemy_plane[j].plane_type, enemy_plane[j].plane_pos); // 生成敌机掉落物品
 								enemy_num--; // 减少敌机数量
@@ -689,7 +698,7 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 			drop_item_num++; // 增加掉落物数量
 			break; // 退出循环
 		}
-		if (i % 1000 < 5) { // 0.5%的概率掉落物品
+		if (i % 1000 < 8) { // 0.5%的概率掉落物品
 			drop_item[drop_item_num].is_active = true; // 激活掉落物
 			drop_item[drop_item_num].item_type = ITEM_TYPE_BIG_LIFE; // 设置掉落物类型为大生命球
 			drop_item[drop_item_num].start_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
@@ -701,7 +710,7 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 			drop_item_num++; // 增加掉落物数量
 			break; // 退出循环
 		}
-		if (i % 1000 < 30) { // 3%的概率掉落物品
+		if (i % 1000 < 38) { // 3%的概率掉落物品
 			drop_item[drop_item_num].is_active = true; // 激活掉落物
 			drop_item[drop_item_num].item_type = ITEM_TYPE_SUPPLY; // 设置掉落物类型为小补给球
 			drop_item[drop_item_num].start_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
@@ -713,7 +722,7 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 			drop_item_num++; // 增加掉落物数量
 			break; // 退出循环
 		}
-		if (i % 1000 < 50) { // 5%的概率掉落物品
+		if (i % 1000 < 88) { // 5%的概率掉落物品
 			drop_item[drop_item_num].is_active = true; // 激活掉落物
 			drop_item[drop_item_num].item_type = ITEM_TYPE_SMALL_LIFE; // 设置掉落物类型为小生命球
 			drop_item[drop_item_num].start_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
@@ -742,7 +751,7 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 			drop_item_num++; // 增加掉落物数量
 			break; // 退出循环
 		}
-		if (i % 1000 < 20) { // 2%的概率掉落物品
+		if (i % 1000 < 35) { // 2%的概率掉落物品
 			drop_item[drop_item_num].is_active = true; // 激活掉落物
 			drop_item[drop_item_num].item_type = ITEM_TYPE_BIG_LIFE; // 设置掉落物类型为大生命球
 			drop_item[drop_item_num].start_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
@@ -754,7 +763,7 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 			drop_item_num++; // 增加掉落物数量
 			break; // 退出循环
 
-		if (i % 1000 < 150) { // 15%的概率掉落物品
+		if (i % 1000 < 185) { // 15%的概率掉落物品
 			drop_item[drop_item_num].is_active = true; // 激活掉落物
 			drop_item[drop_item_num].item_type = ITEM_TYPE_SUPPLY; // 设置掉落物类型为小补给球
 			drop_item[drop_item_num].start_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
@@ -767,7 +776,7 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 			break; // 退出循环
 		}
 
-			if (i % 1000 < 200) { // 20%的概率掉落物品
+		if (i % 1000 < 385) { // 20%的概率掉落物品
 			drop_item[drop_item_num].is_active = true; // 激活掉落物
 			drop_item[drop_item_num].item_type = ITEM_TYPE_SMALL_LIFE; // 设置掉落物类型为小生命球
 			drop_item[drop_item_num].start_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
@@ -807,7 +816,7 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 			drop_item[drop_item_num].item_speed = 0.3; // 设置掉落物速度
 			break; // 退出循环
 
-		if (i % 100 < 50) { // 50%的概率掉落物品
+		if (i % 100 < 55) { // 50%的概率掉落物品
 			drop_item[++drop_item_num].is_active = true; // 激活掉落物
 			drop_item[drop_item_num].item_type = ITEM_TYPE_SUPPLY; // 设置掉落物类型为小补给球
 			drop_item[drop_item_num].start_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
@@ -853,19 +862,39 @@ void check_player_drop_item_collision() {
 					my_plane.life += 30; // 玩家飞机生命值增加1
 					if (my_plane.life > 100) my_plane.life = 100; // 生命值不超过100
 					drop_item[i].is_active = false; // 禁用掉落物
+					//播放音效
+					if (get_life_sound) {
+						DWORD chan = BASS_SampleGetChannel(get_life_sound, FALSE);
+						BASS_ChannelPlay(chan, TRUE);
+					}
 					break;
 				case ITEM_TYPE_BIG_LIFE: // 大生命球
 					my_plane.life = 100; // 玩家飞机生命值增加5
 					my_plane.endurance = 100; // 玩家飞机耐久度增加20
 					drop_item[i].is_active = false; // 禁用掉落物
+					//播放音效
+					if (get_life_sound) {
+						DWORD chan = BASS_SampleGetChannel(get_life_sound, FALSE);
+						BASS_ChannelPlay(chan, TRUE);
+					}
 					break;
 				case ITEM_TYPE_SUPPLY: // 小补给球
 					my_plane.power += 100; // 玩家飞机气势增加30
 					drop_item[i].is_active = false; // 禁用掉落物
+					//播放音效
+					if (get_power_sound) {
+						DWORD chan = BASS_SampleGetChannel(get_power_sound, FALSE);
+						BASS_ChannelPlay(chan, TRUE);
+					}
 					break;
 				case ITEM_TYPE_BIG_SUPPLY: // 大补给球
 					my_plane.power += 480; // 玩家飞机气势增加480
 					drop_item[i].is_active = false; // 禁用掉落物
+					//播放音效
+					if (get_power_sound) {
+						DWORD chan = BASS_SampleGetChannel(get_power_sound, FALSE);
+						BASS_ChannelPlay(chan, TRUE);
+					}
 
 				}
 				drop_item[i].is_active = false; // 禁用掉落物
