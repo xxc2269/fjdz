@@ -25,6 +25,8 @@ inline void loadSounds() {
 	boss_down_sound = BASS_SampleLoad(FALSE, "src/sound/boss_down.wav", 0, 0, 8, 0); // 加载BOSS被击落音效
     bullet_hit_sound = BASS_SampleLoad(FALSE, "src/sound/hit.wav", 0, 0, 16, 0); // 加载子弹击中音效
 	mega_bullet_hit_sound = BASS_SampleLoad(FALSE, "src/sound/mega_hit.ogg", 0, 0, 16, 0); // 加载超级子弹击中音效
+	get_life_sound = BASS_SampleLoad(FALSE, "src/sound/get_life.wav", 0, 0, 8, 0); // 加载获取生命音效
+	get_power_sound = BASS_SampleLoad(FALSE, "src/sound/get_power.wav", 0, 0, 8, 0); // 加载获取气势音效
 
 	grade1_sound = BASS_SampleLoad(FALSE, "src/sound/grade1.ogg", 0, 0, 8, 0); // 加载一级音效
 	grade2_sound = BASS_SampleLoad(FALSE, "src/sound/grade2.ogg", 0, 0, 8, 0); // 加载二级音效

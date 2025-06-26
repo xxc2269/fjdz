@@ -9,9 +9,9 @@
 #define MEGA_SIZE 273 //无双子弹大小
 #define BOSS_HEIGHT 140 //BOSS高度
 #define PLANE_SPEED 1.0 //飞机移动速度
-#define ENEMY_MAX_NUM 20 //敌机最大数量
-#define BULLET_NUM 50 //子弹数量
-#define ITEM_NUM 10//收集物数量
+#define ENEMY_MAX_NUM 50 //敌机最大数量
+#define BULLET_NUM 100 //子弹数量
+#define ITEM_NUM 20//收集物数量
 
 #define ENEMY_LIFE 50 //敌机生命值
 #define ELITE_ENEMY_LIFE 200 //精英敌机生命值
@@ -195,6 +195,8 @@ static HSTREAM elite_down_sound; //精英敌机被击落音效
 static HSTREAM boss_down_sound; //BOSS被击落音效
 static HSTREAM bullet_hit_sound; //子弹击中音效
 static HSTREAM mega_bullet_hit_sound; //超级子弹击中音效
+static HSTREAM get_life_sound; //获取生命音效
+static HSTREAM get_power_sound; //获取气势音效
 
 static HSTREAM grade1_sound; //一级音效
 static HSTREAM grade2_sound; //二级音效
