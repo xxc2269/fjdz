@@ -139,6 +139,7 @@ static time_t last_added_time = clock(); //记录上次添加耐久的时间
 static time_t start_charge_time = clock(); //记录开始蓄力的时间
 static time_t charge_time = 0; //记录蓄力时间
 static time_t last_power_time; //记录上次减少气势的时间
+static time_t start_grade;//进入无双状态的时间
 static IMAGE bg[5]; //背景图片
 // 背景滚动变量 - 纵向滚动
 static float bgScrollOffset = 0.0f;

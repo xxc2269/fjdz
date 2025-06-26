@@ -100,14 +100,14 @@ void DrawGame() {
 					&mega_bullet_mask[bullet[i].bullet_grade]
 				);
 			}
-			//else if (bullet[i].bullet_type == BULLET_TYPE_MEGA) { //如果是无双子弹
-			//	putTransparentImage(
-			//		bullet[i].bullet_pos.x - PLANE_SIZE / 2,
-			//		bullet[i].bullet_pos.y - PLANE_SIZE / 2,
-			//		&mega_bullet_image[my_plane.grade],
-			//		&mega_bullet_mask[my_plane.grade]
-			//	);
-			//}
+			else if (bullet[i].bullet_type == BULLET_TYPE_MEGA) { //如果是无双子弹
+				putTransparentImage(
+					bullet[i].bullet_pos.x - PLANE_SIZE / 2,
+					bullet[i].bullet_pos.y - PLANE_SIZE / 2,
+					&mega_time,
+					&mega_time_mask
+				);
+			}
 			//else if (bullet[i].bullet_type == BULLET_TYPE_LASER) { //如果是激光
 			//	putTransparentImage(
 			//		bullet[i].bullet_pos.x - PLANE_SIZE / 2,

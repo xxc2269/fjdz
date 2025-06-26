@@ -59,11 +59,17 @@ void control_plane() {
 		if (my_plane.plane_state == PLANE_STATE_NORMAL) { // 如果飞机状态为正常
 			my_plane.plane_state = PLANE_STATE_SHOOTING; // 切换到射击状态
 		}
+		else if (my_plane.plane_state == PLANE_STATE_MEGA_NORMAL) {
+			my_plane.plane_state = PLANE_STATE_MEGA_SHOOTING;
+		}
 		break;
 	case WM_LBUTTONUP:
 		// 鼠标左键松开事件
 		if (my_plane.plane_state == PLANE_STATE_SHOOTING) { // 如果飞机状态为射击
 			my_plane.plane_state = PLANE_STATE_NORMAL; // 切换到正常状态
+		}
+		else if (my_plane.plane_state == PLANE_STATE_MEGA_SHOOTING) {
+			my_plane.plane_state = PLANE_STATE_MEGA_NORMAL;
 		}
 		break;
 
@@ -161,8 +167,6 @@ void check_plane_state() {
 			}
 		}
 		if (my_plane.plane_state == PLANE_STATE_CHARGED) {
-			
-				
 			// 子弹发射音效
 			if (my_plane.grade <= 2) {
 				if (bullet_sound) {
@@ -223,16 +227,49 @@ void check_plane_state() {
 			if (my_plane.bullet_num < BULLET_NUM) { // 如果子弹数量小于最大子弹数量
 				my_plane.bullet_num++; // 增加子弹数量
 			}
-			my_plane.plane_state = PLANE_STATE_NORMAL;
+			if (my_plane.grade == 5) {
+				start_grade = clock(); // 记录进入无双状态的时间
+				my_plane.plane_state = PLANE_STATE_MEGA_NORMAL; // 切换到无双射击状态
+			}
+			else {
+				my_plane.plane_state = PLANE_STATE_NORMAL;
+			}
+			if(my_plane.grade != 5){
 			my_plane.grade = 0; // 重置飞机等级
 			my_plane.power = 0; // 重置飞机气势
+			}
 		}
-	}
+		if (my_plane.plane_state == PLANE_STATE_MEGA_SHOOTING) {
+			
+			
+				for (int i = 0; i <= my_plane.bullet_num; i++) {
+					if (!bullet[i].is_active && clock() - my_plane.last_shoot_time > 100) { // 如果子弹未激活且距离上次射击时间超过200毫秒
+						// 子弹发射音效
+						if (bullet_sound) {
+							DWORD chan = BASS_SampleGetChannel(bullet_sound, FALSE);
+							BASS_ChannelPlay(chan, TRUE);
+						}
 
-		
+						bullet[i].is_active = true; // 激活子弹
+						bullet[i].bullet_type = BULLET_TYPE_MEGA;
+						bullet[i].start_pos.x = my_plane.plane_pos.x + PLANE_SIZE / 2; // 设置子弹位置为飞机位置
+						bullet[i].bullet_pos.x = bullet[i].start_pos.x; // 设置子弹位置为起始位置
+						bullet[i].start_pos.y = my_plane.plane_pos.y - PLANE_SIZE / 2; // 设置子弹位置为飞机位置
+						bullet[i].bullet_pos.y = bullet[i].start_pos.y; // 设置子弹位置为起始位置
+						bullet[i].bullet_speed = 0.3; // 设置子弹速度
+						bullet[i].bullet_damage = 20; // 设置子弹伤害
+						bullet[i].generate_time = clock(); // 记录子弹生成时间
+						my_plane.last_shoot_time = clock(); // 记录最后一次射击时间
+						if (my_plane.bullet_num < BULLET_NUM) { // 如果子弹数量小于最大子弹数量
+							my_plane.bullet_num++; // 增加子弹数量
+						}
+						break; // 退出循环
+					}
+				}
+			}
+		}
 	
-
-
+	
 
 //更新子弹位置
 void bullet_move() {
@@ -458,7 +495,7 @@ void check_bullet_collision() {
 									}
 								}
 							}
-							if (bullet[i].bullet_type == BULLET_TYPE_BIG && bullet[i].bullet_grade > 2) {
+							if (bullet[i].bullet_type == BULLET_TYPE_BIG && bullet[i].bullet_grade > 2 ) {
 								enemy_plane[j].is_hitted_by_mega = true; // 设置敌机被重击子弹击中状态为true
 							}
 							else {
@@ -506,7 +543,7 @@ void check_bullet_collision() {
 									}
 								}
 							}
-							if (bullet[i].bullet_type == BULLET_TYPE_BIG && bullet[i].bullet_grade > 2) {
+							if (bullet[i].bullet_type == BULLET_TYPE_BIG && bullet[i].bullet_grade > 2 ) {
 								enemy_plane[j].is_hitted_by_mega = true; // 设置敌机被重击子弹击中状态为true
 							}
 							else {
@@ -583,7 +620,7 @@ void check_player_life() {
 //耐久的加减，正常状态每秒恢复15耐久
 void add_endurance() {
 	
-	if (my_plane.plane_state == PLANE_STATE_NORMAL && clock()-last_added_time > 200 && clock()-my_plane.last_shoot_time > 300) { // 如果飞机状态为正常
+	if ((my_plane.plane_state == PLANE_STATE_NORMAL || my_plane.plane_state == PLANE_STATE_MEGA_NORMAL || my_plane.plane_state == PLANE_STATE_MEGA_SHOOTING) && clock()-last_added_time > 200 && clock()-my_plane.last_shoot_time > 300) { // 如果飞机状态为正常
 		
 		my_plane.endurance += 3; // 每秒恢复15耐久
 		last_added_time = clock(); // 重置上次添加耐久的时间
@@ -603,7 +640,7 @@ void check_player_endurance() {
 	}
 }
 
-//检测飞机气势数值，与升级体系
+//检测飞机数值，与升级体系
 void check_player_power() {
 	if (my_plane.power >= GRADE1_SCORE && my_plane.grade == 0) { // 如果飞机气势大于等于100
 		//升级音效
@@ -669,6 +706,15 @@ void diminish_player_power() {
 			my_plane.power -= 1; // 每秒减少5点气势
 		}
 		last_power_time = clock(); // 重置上次减少气势的时间
+	}
+	if ((my_plane.plane_state == PLANE_STATE_MEGA_NORMAL || my_plane.plane_state == PLANE_STATE_MEGA_SHOOTING) && clock() - last_power_time > 100) {
+			my_plane.power -= 1; // 每秒减少10点气势
+			if (my_plane.power <= 0) {
+				my_plane.grade = 0;
+				if (my_plane.plane_state == PLANE_STATE_MEGA_NORMAL) my_plane.plane_state = PLANE_STATE_NORMAL;
+				else my_plane.plane_state = PLANE_STATE_SHOOTING;
+			}
+			last_power_time = clock(); // 重置上次减少气势的时间
 	}
 }
 
