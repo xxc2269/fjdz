@@ -29,7 +29,7 @@ void init_game() {
 		bullet[i].is_active = false; //设置子弹激活状态为false
 		bullet[i].bullet_type = BULLET_TYPE_NORMAL; //设置子弹类型为普通子弹
 		bullet[i].bullet_damage = 10; //设置子弹伤害
-		bullet[i].bullet_size = 5; //设置子弹大小
+		bullet[i].bullet_size = 50; //设置子弹大小
 	}
 
 	//初始化收集物品

@@ -6,6 +6,7 @@
 #define PLANE_SIZE 50 //飞机大小
 #define PLANE_ELITE_SIZE 102//精英敌机大小
 #define BOSS_SIZE 200 //BOSS大小
+#define BULLET_SIZE 50 //子弹大小
 #define MEGA_SIZE 273 //无双子弹大小
 #define BOSS_HEIGHT 140 //BOSS高度
 #define PLANE_SPEED 1.0 //飞机移动速度

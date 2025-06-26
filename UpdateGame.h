@@ -155,9 +155,12 @@ void check_plane_state() {
 					bullet[i].start_pos.y = my_plane.plane_pos.y - PLANE_SIZE / 2; // 设置子弹位置为飞机位置
 					bullet[i].bullet_pos.y = bullet[i].start_pos.y; // 设置子弹位置为起始位置
 					bullet[i].bullet_speed = 0.3; // 设置子弹速度
+					bullet[i].bullet_size = BULLET_SIZE; // 设置子弹大小
 					bullet[i].bullet_grade = my_plane.grade; // 设置子弹等级为飞机等级
 					my_plane.endurance -= 1; // 减少飞机耐久度
 					bullet[i].generate_time = clock(); // 记录子弹生成时间
+					bullet[i].generate_time = clock(); // 记录子弹生成时间
+
 					my_plane.last_shoot_time = clock(); // 记录最后一次射击时间
 					if (my_plane.bullet_num < BULLET_NUM) { // 如果子弹数量小于最大子弹数量
 						my_plane.bullet_num++; // 增加子弹数量
@@ -182,6 +185,7 @@ void check_plane_state() {
 			}
 
 			//根据飞机气势等级设置子弹类型和伤害
+			mega_bullet[0].bullet_size = 100; // 设置子弹大小为100
 			if (my_plane.grade == 0) { // 一级气势
 				mega_bullet[0].bullet_type = BULLET_TYPE_BIG; //
 				mega_bullet[0].bullet_damage = 30; // 设置子弹伤害
@@ -210,6 +214,7 @@ void check_plane_state() {
 			else if (my_plane.grade == 5) { // 六级
 				mega_bullet[0].bullet_type = BULLET_TYPE_BIG; //
 				mega_bullet[0].bullet_damage = 400; // 设置子弹伤害
+				mega_bullet[0].bullet_size = MEGA_SIZE; // 设置子弹大小
 			}
 
 			mega_bullet[0].is_active = true; // 激活子弹
@@ -221,7 +226,7 @@ void check_plane_state() {
 			mega_bullet[0].bullet_pos.y = mega_bullet[0].start_pos.y; // 设置子弹位置为起始位置
 			mega_bullet[0].bullet_speed = 0.7; // 设置子弹速度
 			my_plane.endurance -= 10; // 减少飞机耐久度
-			bullet[++my_plane.bullet_num-1].generate_time = clock(); // 记录子弹生成时间
+			bullet[my_plane.bullet_num++].generate_time = clock(); // 记录子弹生成时间
 			bullet[my_plane.bullet_num-1] = mega_bullet[0];
 			my_plane.last_shoot_time = clock(); // 记录最后一次射击时间
 			if (my_plane.bullet_num < BULLET_NUM) { // 如果子弹数量小于最大子弹数量
@@ -477,7 +482,7 @@ void check_bullet_collision() {
 				if (enemy_plane[j].is_alive && !enemy_plane[j].is_hitted_by_mega) { // 如果敌机激活
 					// 检测子弹与敌机的碰撞
 					if (enemy_plane[j].plane_type == ENEMY_TYPE_BOSS) {// 如果是BOSS敌机
-						if (abs(bullet[i].bullet_pos.x - enemy_plane[j].plane_pos.x) < enemy_plane[j].size / 2 &&
+						if (abs(bullet[i].bullet_pos.x - enemy_plane[j].plane_pos.x) < bullet[i].bullet_size * 2 &&
 							abs(bullet[i].bullet_pos.y - enemy_plane[j].plane_pos.y) < enemy_plane[j].height / 2) {
 							enemy_plane[j].life -= bullet[i].bullet_damage; // 敌机受到伤害
 							if (enemy_plane[i].life > 0 || bullet[i].bullet_type == BULLET_TYPE_BIG) {
@@ -525,7 +530,7 @@ void check_bullet_collision() {
 						}
 					}
 					else {// 如果是普通敌机或精英敌机
-						if (abs(bullet[i].bullet_pos.x - enemy_plane[j].plane_pos.x) < enemy_plane[j].size &&
+						if (abs(bullet[i].bullet_pos.x - enemy_plane[j].plane_pos.x) < bullet[i].bullet_size &&
 							abs(bullet[i].bullet_pos.y - enemy_plane[j].plane_pos.y) < enemy_plane[j].height){
 							enemy_plane[j].life -= bullet[i].bullet_damage; // 敌机受到伤害
 							if (enemy_plane[i].life > 0 || bullet[i].bullet_type == BULLET_TYPE_BIG) {
@@ -702,7 +707,7 @@ void check_player_power() {
 		last_power_time = clock(); // 记录或重置上次减少气势的时间
 	}
 
-	if (my_plane.grade >= 5 && my_plane.plane_state == PLANE_STATE_NORMAL) { // 如果气势等级超过5
+	if (my_plane.grade >= 5 && (my_plane.plane_state == PLANE_STATE_NORMAL || my_plane.plane_state == PLANE_STATE_SHOOTING)) { // 如果气势等级超过5
 		my_plane.grade = 5; // 将气势等级设置为5
 		my_plane.power = 400;// 将气势设置为400
 	}
@@ -808,7 +813,7 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 			drop_item[drop_item_num].item_speed = 0.3; // 设置掉落物速度
 			drop_item_num++; // 增加掉落物数量
 			break; // 退出循环
-
+		}
 		if (i % 1000 < 185) { // 15%的概率掉落物品
 			drop_item[drop_item_num].is_active = true; // 激活掉落物
 			drop_item[drop_item_num].item_type = ITEM_TYPE_SUPPLY; // 设置掉落物类型为小补给球
@@ -835,7 +840,7 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 			break; // 退出循环
 		}
 		
-		}
+		
 
 		
 		break;
@@ -854,9 +859,9 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 		if (i % 100 < 5) { // 5%的概率掉落物品
 			drop_item[++drop_item_num].is_active = true; // 激活掉落物
 			drop_item[drop_item_num].item_type = ITEM_TYPE_SUPPLY; // 设置掉落物类型为大补给球
-			drop_item[drop_item_num].start_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].start_pos.x = plane_pos.x - 10; // 设置掉落物位置为敌机位置
 			drop_item[drop_item_num].start_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
-			drop_item[drop_item_num].item_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].item_pos.x = plane_pos.x - 10; // 设置掉落物位置为敌机位置
 			drop_item[drop_item_num].item_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
 			drop_item[drop_item_num].generate_time = clock(); // 设置掉落物起始时间
 			drop_item[drop_item_num].item_speed = 0.3; // 设置掉落物速度
@@ -865,9 +870,9 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 		if (i % 100 < 55) { // 50%的概率掉落物品
 			drop_item[++drop_item_num].is_active = true; // 激活掉落物
 			drop_item[drop_item_num].item_type = ITEM_TYPE_SUPPLY; // 设置掉落物类型为小补给球
-			drop_item[drop_item_num].start_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].start_pos.x = plane_pos.x - 10; // 设置掉落物位置为敌机位置
 			drop_item[drop_item_num].start_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
-			drop_item[drop_item_num].item_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
+			drop_item[drop_item_num].item_pos.x = plane_pos.x - 10; // 设置掉落物位置为敌机位置
 			drop_item[drop_item_num].item_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
 			drop_item[drop_item_num].generate_time = clock(); // 设置掉落物起始时间
 			drop_item[drop_item_num].item_speed = 0.3; // 设置掉落物速度
@@ -925,7 +930,7 @@ void check_player_drop_item_collision() {
 					}
 					break;
 				case ITEM_TYPE_SUPPLY: // 小补给球
-					my_plane.power += 100; // 玩家飞机气势增加30
+					if(my_plane.plane_state == PLANE_STATE_NORMAL || my_plane.plane_state == PLANE_STATE_SHOOTING)my_plane.power += 100; // 玩家飞机气势增加100
 					drop_item[i].is_active = false; // 禁用掉落物
 					//播放音效
 					if (get_power_sound) {
@@ -934,7 +939,7 @@ void check_player_drop_item_collision() {
 					}
 					break;
 				case ITEM_TYPE_BIG_SUPPLY: // 大补给球
-					my_plane.power += 480; // 玩家飞机气势增加480
+					if(my_plane.plane_state == PLANE_STATE_NORMAL || my_plane.plane_state == PLANE_STATE_SHOOTING)my_plane.power += 480; // 玩家飞机气势增加480
 					drop_item[i].is_active = false; // 禁用掉落物
 					//播放音效
 					if (get_power_sound) {
