@@ -702,7 +702,7 @@ void check_player_power() {
 		last_power_time = clock(); // 记录或重置上次减少气势的时间
 	}
 
-	if (my_plane.grade >= 5) { // 如果气势等级超过5
+	if (my_plane.grade >= 5 && my_plane.plane_state == PLANE_STATE_NORMAL) { // 如果气势等级超过5
 		my_plane.grade = 5; // 将气势等级设置为5
 		my_plane.power = 400;// 将气势设置为400
 	}
@@ -716,7 +716,7 @@ void diminish_player_power() {
 		}
 		last_power_time = clock(); // 重置上次减少气势的时间
 	}
-	if ((my_plane.plane_state == PLANE_STATE_MEGA_NORMAL || my_plane.plane_state == PLANE_STATE_MEGA_SHOOTING) && clock() - last_power_time > 100) {
+	if ((my_plane.plane_state == PLANE_STATE_MEGA_NORMAL || my_plane.plane_state == PLANE_STATE_MEGA_SHOOTING) && clock() - last_power_time > 25) {
 			my_plane.power -= 1; // 每秒减少10点气势
 			if (my_plane.power <= 0) {
 				my_plane.grade = 0;

@@ -223,9 +223,10 @@ void DrawGame() {
 			if (my_plane.power > 0)fillpie(18, 639, 68, 689, 0, 2 * M_PI * (my_plane.power / 400)); //绘制气势等级4的扇形
 			break;
 		case 5:
+			setfillcolor(WHITE); //设置填充颜色为白色
+			fillcircle(43, 664, 25); //绘制气势等级0的圆形
 			setfillcolor(LIGHTRED); //设置填充颜色为红色
-			fillcircle(43, 664, 25); //绘制气势等级5的圆形
-			//fillpie(18, 639, 68, 689, 0, 2 * M_PI * (my_plane.power / 400)); //绘制气势等级5的扇形
+			if (my_plane.power > 0)fillpie(18, 639, 68, 689, 0, 2 * M_PI * (my_plane.power / 400)); //绘制气势等级5的扇形
 			break;
 	}
 
