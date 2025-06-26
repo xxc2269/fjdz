@@ -161,6 +161,7 @@
     <ClInclude Include="InitGame.h" />
     <ClInclude Include="loadImages.h" />
     <ClInclude Include="loadSounds.h" />
+    <ClInclude Include="musicplayer.h" />
     <ClInclude Include="UpdateGame.h" />
   </ItemGroup>
   <ItemGroup>

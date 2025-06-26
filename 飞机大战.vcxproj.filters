@@ -98,6 +98,9 @@
     <ClInclude Include="include\mysqlx_version.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="musicplayer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="bass.lib" />
