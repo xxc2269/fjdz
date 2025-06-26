@@ -17,6 +17,14 @@ void loadimages() {
 	loadimage(&bg[3], "src/ColorImages/bg/bg4.jpg"); //¼ÓÔØ±³¾°Í¼Æ¬4
 	loadimage(&bg[4], "src/ColorImages/bg/bg5.jpg"); //¼ÓÔØ±³¾°Í¼Æ¬5
 
+	//¼ÓÔØ°µÉ«±³¾°Í¼Æ¬
+	loadimage(&bg_dark[0], "src/ColorImages/bg/bg1_dark.jpg"); //¼ÓÔØ°µÉ«±³¾°Í¼Æ¬1
+	loadimage(&bg_dark[1], "src/ColorImages/bg/bg2_dark.jpg"); //¼ÓÔØ°µÉ«±³¾°Í¼Æ¬2
+	loadimage(&bg_dark[2], "src/ColorImages/bg/bg3_dark.jpg"); //¼ÓÔØ°µÉ«±³¾°Í¼Æ¬3
+	loadimage(&bg_dark[3], "src/ColorImages/bg/bg4_dark.jpg"); //¼ÓÔØ°µÉ«±³¾°Í¼Æ¬4
+	loadimage(&bg_dark[4], "src/ColorImages/bg/bg5_dark.jpg"); //¼ÓÔØ°µÉ«±³¾°Í¼Æ¬5
+
+
 	//¼ÓÔØ·É»úÍ¼Æ¬
 	loadimage(&plane[0], "src/ColorImages/plane/hero0.png", PLANE_SIZE, PLANE_SIZE); //¼ÓÔØ·É»úÍ¼Æ¬1
 	loadimage(&plane[1], "src/ColorImages/plane/hero1.png", PLANE_SIZE, PLANE_SIZE); //¼ÓÔØ·É»úÍ¼Æ¬2

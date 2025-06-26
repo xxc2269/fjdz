@@ -34,13 +34,35 @@ void init_game() {
 
 	//初始化收集物品
 	for (int i = 0; i < ITEM_NUM; i++) { //初始化收集物品
-		item[i].is_active = false; //设置物品激活状态为false
-		item[i].item_type = ITEM_TYPE_SMALL_LIFE; //设置物品类型为小生命球
-		item[i].item_size = 10; //设置物品大小
-		item[i].item_speed = 0.3; //设置物品移动速度
+		drop_item[i].is_active = false; //设置物品激活状态为false
+		drop_item[i].item_type = ITEM_TYPE_SMALL_LIFE; //设置物品类型为小生命球
+		drop_item[i].item_size = 10; //设置物品大小
+		drop_item[i].item_speed = 0.3; //设置物品移动速度
 	}
 
 	start_time = clock(); //记录游戏开始时间
 	srand((unsigned)time(NULL)); //设置随机数种子
+
+
+	button[0] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 200, 200, 50, "开始游戏" }; // 定义开始按钮
+	button[1] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 300, 200, 50, "登录" }; // 定义登录按钮
+	button[2] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 400, 200, 50, "注册" }; // 定义注册按钮
+	button[3] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 500, 200, 50, "退出登录" , BUTTON_STATE_DISABLED }; // 定义退出登录按钮
+	button[4] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 200, 200, 50, "继续" ,BUTTON_STATE_DISABLED }; // 定义继续按钮
+	button[5] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 300, 200, 50, "退出" ,BUTTON_STATE_DISABLED }; // 定义退出按钮
+	button[6] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 250, 200, 50, "重新开始" ,BUTTON_STATE_DISABLED }; // 定义重新开始按钮
+
+	//若为准备状态，开始游戏
+	if (game_state == GAME_STATE_READY) {
+		BASS_SampleStop(bgmmain); // 停止背景音乐
+		
+		//BASS_SampleFree(bgmmain); // 释放背景音乐资源
+		game_state = GAME_STATE_PLAYING; //将游戏状态设置为进行中
+		button[START].state = BUTTON_STATE_DISABLED; // 禁用开始按钮
+		button[LOGIN].state = BUTTON_STATE_DISABLED; // 禁用登录按钮
+		button[REGISTER].state = BUTTON_STATE_DISABLED; // 禁用注册按钮
+		button[LOGOFF].state = BUTTON_STATE_DISABLED; // 禁用退出登录按钮
+		
+	}
 }
 

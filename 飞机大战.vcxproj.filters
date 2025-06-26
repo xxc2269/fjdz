@@ -101,6 +101,15 @@
     <ClInclude Include="musicplayer.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="menu.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ReadMouseMessage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="pause.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="bass.lib" />

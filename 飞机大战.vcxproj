@@ -162,6 +162,9 @@
     <ClInclude Include="loadImages.h" />
     <ClInclude Include="loadSounds.h" />
     <ClInclude Include="musicplayer.h" />
+    <ClInclude Include="menu.h" />
+    <ClInclude Include="pause.h" />
+    <ClInclude Include="ReadMouseMessage.h" />
     <ClInclude Include="UpdateGame.h" />
   </ItemGroup>
   <ItemGroup>

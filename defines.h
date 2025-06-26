@@ -1,8 +1,8 @@
-#pragma once//用于
-#include"includes.h"
+#pragma once//用于防止头文件被多次包含
+#include"includes.h"//包含了标准头文件
 
 #define SCREEN_WIDTH 512 //屏幕宽度
-#define SCREEN_HEIGHT 720 //屏幕高度
+#define SCREEN_HEIGHT 768 //屏幕高度
 #define PLANE_SIZE 50 //飞机大小
 #define PLANE_ELITE_SIZE 102//精英敌机大小
 #define BOSS_SIZE 200 //BOSS大小
@@ -28,6 +28,43 @@ typedef struct {
 	float x; //x坐标
 	float y; //y坐标
 } POS; //位置结构体
+//按钮名称：
+enum {
+	START=0,
+	LOGIN,
+	REGISTER,
+	LOGOFF,
+	CONTINUE,
+	EXIT,
+	RESTART
+};
+ 
+
+//按钮状态：弹起、按下、激活
+enum {
+	BUTTON_STATE_UP = 0, //按钮弹起状态
+	BUTTON_STATE_DOWN, //按钮按下状态
+	BUTTON_STATE_ACTIVE, //按钮激活状态
+	BUTTON_STATE_DISABLED //按钮禁用状态
+}; //按钮状态枚举
+
+// 按钮结构体
+struct Button {
+	int x, y;
+	int width, height;
+	char text[10];
+	int state; // 按钮状态（0-弹起，1-按下，2-激活，3-禁用）
+};
+static Button button[10]; // 定义按钮数组，包含三个按钮：开始、登录、注册、退出登录
+//游戏状态：主界面、准备、进行中、暂停、结束
+enum {
+
+	GAME_STATE_MAIN_MENU = 0, //主界面
+	GAME_STATE_READY, //准备状态
+	GAME_STATE_PLAYING, //进行中状态
+	GAME_STATE_PAUSED, //暂停状态
+	GAME_STATE_GAME_OVER //结束状态
+};
 
 //玩家飞机的状态：正常、射击、蓄力中、蓄力完成、无双状态
 enum {
@@ -118,7 +155,7 @@ typedef struct {
 
 // 定义游戏中的全局变量和常量
 //static用于定义全局变量，这些变量在整个程序中都可以访问
-static ITEM drop_item[10]; //定义一个全局变量drop_item，表示掉落物品
+static ITEM drop_item[20]; //定义一个全局变量drop_item，表示掉落物品
 static int drop_item_num = 0; //掉落物品数量
 static bool boss_is_alive = false; //BOSS是否存活
 static PLANE my_plane; //定义一个全局变量my_plane，表示飞机
@@ -127,7 +164,7 @@ static BULLET bullet[BULLET_NUM]; //定义一个全局变量bullet，表示玩家子弹
 static BULLET mega_bullet[2]; //定义一个全局变量mega_bullet，表示超级子弹
 static BULLET enemy_bullet[BULLET_NUM]; //定义一个全局变量enemy_bullet，表示敌机子弹
 static BULLET laser_bullet[ENEMY_MAX_NUM]; //定义一个全局变量laser_bullet，表示激光
-static ITEM item[ITEM_NUM]; //定义一个全局变量item，表示收集物品
+//static ITEM item[ITEM_NUM]; //定义一个全局变量item，表示收集物品
 
 static int enemy_num = 0; //敌机数量
 static int  enemy_bullet_num; //敌机子弹数量
@@ -142,6 +179,7 @@ static time_t charge_time = 0; //记录蓄力时间
 static time_t last_power_time; //记录上次减少气势的时间
 static time_t start_grade;//进入无双状态的时间
 static IMAGE bg[5]; //背景图片
+static IMAGE bg_dark[5]; //背景暗色图片
 // 背景滚动变量 - 纵向滚动
 static float bgScrollOffset = 0.0f;
 static float BG_SCROLL_SPEED = 0.01f;
@@ -176,17 +214,24 @@ static IMAGE mega_power_mask; //大气势掩码图片
 
 static int score = 0; //分数
 static int level = 1; //游戏等级
-static int game_state = 0; //游戏状态（0-未开始，1-进行中，2-结束）
+static int game_state = 0; //游戏状态（0-主界面，1-准备状态，2-进行中状态，3-暂停状态，4-结束状态）
 
 //背景音乐
+static HSTREAM bgmmain; //主界面背景音乐
 static HSAMPLE bgm1; //背景音乐1
 static HSTREAM bgm2; //背景音乐2
 static HSTREAM bgm3; //背景音乐3
 static HSTREAM bgm4; //背景音乐4
 static HSTREAM bgm5; //背景音乐5
-static HSTREAM over; //游戏结束音乐
+static HSTREAM bgmover; //游戏结束音乐
 
-static HCHANNEL BGM; //背景音乐通道
+static HCHANNEL BGMMAIN; //主界面背景音乐通道
+static HCHANNEL BGM1; //背景音乐通道1
+static HCHANNEL BGM2; //背景音乐通道2
+static HCHANNEL BGM3; //背景音乐通道3
+static HCHANNEL BGM4; //背景音乐通道4
+static HCHANNEL BGM5; //背景音乐通道5
+static HCHANNEL BGMOVER; //游戏结束音乐通道
 
 //音效相关变量
 static HSTREAM bullet_sound; //子弹音效
@@ -204,3 +249,6 @@ static HSTREAM grade2_sound; //二级音效
 static HSTREAM grade3_sound; //三级音效
 static HSTREAM grade4_sound; //四级音效
 static HSTREAM grade5_sound; //五级音效
+
+//是否登录
+static bool is_login = false; //是否登录

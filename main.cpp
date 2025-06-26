@@ -13,6 +13,8 @@
 #include"InitGame.h"//自定义的头文件，包含了初始化游戏函数的声明
 #include"UpdateGame.h"//自定义的头文件，包含了更新游戏状态函数的声明
 #include"loadSounds.h"//自定义的头文件，包含了加载音效函数的声明
+#include"menu.h"//自定义的头文件，包含了菜单函数的声明
+#include"pause.h"//自定义的头文件，包含了暂停函数的声明
 
 //函数声明
 
@@ -46,7 +48,23 @@ int WINAPI WinMain(
 	//MessageBox(NULL, TEXT("一个简单的Win32应用程序"), TEXT("消息窗口"), MB_OK);//弹出一个消息窗口，显示“一个简单的Win32应用程序”(测试)
 	init_game(); //调用初始化游戏函数
 	while(1){
-		UpdateGame(); //调用更新游戏状态函数，更新游戏状态
+		switch (game_state) { //根据游戏状态进行处理
+			case GAME_STATE_MAIN_MENU: //如果游戏状态为主界面
+				menu(); //调用菜单函数，绘制主界面
+				break;
+			case GAME_STATE_READY://如果游戏状态为准备
+				init_game(); //调用初始化游戏函数，重新初始化游戏
+				game_state = GAME_STATE_PLAYING; //将游戏状态设置为进行中
+				break;
+			case GAME_STATE_PLAYING: //如果游戏状态为进行中
+				UpdateGame(); //调用更新游戏状态函数，更新游戏状态
+				break;
+			case GAME_STATE_PAUSED:
+				pause();
+				break;
+
+		}
+		
 		DrawGame(); //调用绘制游戏界面函数，绘制游戏界面
 		//Sleep(1); //延时1毫秒，控制游戏帧率（弃用）
 	}

@@ -9,6 +9,7 @@
 #include<mmstream.h>//多媒体流相关的函数和接口（IMultiMediaStream、IMediaStream、IStreamSample等）
 #include"bass.h"//BASS音频库相关的函数和接口（用于音频播放、处理等）
 #include"include/mysql.h"//MySQL数据库相关的函数和接口（用于数据库操作，如连接、查询、插入等）
+//#include"ReadMouseMessage.h"//读取鼠标输入相关的函数和接口（用于获取鼠标位置、按键状态等）
 
 #pragma comment(lib,"winmm.lib")//音乐播放相关的库(因性能问题弃用，改为使用BASS库)
 #pragma comment(lib,"bass.lib")//BASS音频库的链接库

@@ -12,7 +12,35 @@ void enemy_shoot_bullet(); //生成敌机子弹函数
 //void generate_laser(); //生成激光函数
 //void generate_mega_bullet(); //生成无双子弹函数
 
+//处理暂停事件（重置所有子弹、飞机、收集物的起始位置）
+void gamepaused() {
+	//重置子弹的起始位置
+	for (int i = 0;i < BULLET_NUM;i++) {
+		bullet[i].start_pos.x = bullet[i].bullet_pos.x; // 设置子弹位置为飞机位置
+		bullet[i].start_pos.y = bullet[i].bullet_pos.y; // 设置子弹位置为飞机位置
+		bullet[i].generate_time = clock(); // 记录子弹生成时间
 
+	}
+	//重置敌机的起始位置
+	for (int i = 0;i < ENEMY_MAX_NUM;i++) {
+		enemy_plane[i].start_pos.x = enemy_plane[i].plane_pos.x; // 设置敌机位置为飞机位置
+		enemy_plane[i].start_pos.y = enemy_plane[i].plane_pos.y; // 设置敌机位置为飞机位置
+		enemy_plane[i].generate_time = clock(); // 记录敌机生成时间
+	}
+	//重置掉落物品的起始位置
+	for (int i = 0;i < ITEM_NUM;i++) {
+		drop_item[i].start_pos.x = drop_item[i].item_pos.x; // 设置物品位置为飞机位置
+		drop_item[i].start_pos.y = drop_item[i].item_pos.y; // 设置物品位置为飞机位置
+		drop_item[i].generate_time = clock(); // 记录物品生成时间
+		
+	}
+	//重置敌机子弹的起始位置
+	for (int i = 0;i < ENEMY_MAX_NUM;i++) {
+		enemy_bullet[i].start_pos.x = enemy_bullet[i].bullet_pos.x; // 设置敌机子弹位置为飞机位置
+		enemy_bullet[i].start_pos.y = enemy_bullet[i].bullet_pos.y; // 设置敌机子弹位置为飞机位置
+		enemy_bullet[i].generate_time = clock(); // 记录敌机子弹生成时间
+	}
+}
 
 //控制
 void control_plane() {
@@ -88,7 +116,17 @@ void control_plane() {
 			charge_time = clock() - start_charge_time; // 计算蓄力时间
 		}
 		break;
+	case WM_KEYDOWN:
+		if (msg.vkcode == VK_ESCAPE) {
+			gamepaused(); // 调用暂停函数
+			game_state = GAME_STATE_PAUSED;
+			button[CONTINUE].state = BUTTON_STATE_UP;
+			button[EXIT].state = BUTTON_STATE_UP;
+			button[RESTART].state = BUTTON_STATE_UP;
+		}
 	}
+	
+
 }
 
 //检测飞机状态为蓄力中状态时，每秒减少飞机5点耐久度，且每秒增加飞机气势100点，且气势等级最多为3级
@@ -232,14 +270,12 @@ void check_plane_state() {
 			if (my_plane.bullet_num < BULLET_NUM) { // 如果子弹数量小于最大子弹数量
 				my_plane.bullet_num++; // 增加子弹数量
 			}
-			if (my_plane.grade == 5) {
+			if (my_plane.grade >= 5) {
 				start_grade = clock(); // 记录进入无双状态的时间
 				my_plane.plane_state = PLANE_STATE_MEGA_NORMAL; // 切换到无双射击状态
 			}
 			else {
-				my_plane.plane_state = PLANE_STATE_NORMAL;
-			}
-			if(my_plane.grade != 5){
+			my_plane.plane_state = PLANE_STATE_NORMAL;
 			my_plane.grade = 0; // 重置飞机等级
 			my_plane.power = 0; // 重置飞机气势
 			}
@@ -349,7 +385,7 @@ void update_enemy() {
 		if (enemy_plane[i].is_alive) { // 如果敌机激活
 			enemy_plane[i].plane_pos.y = enemy_plane[i].start_pos.y + (clock()-enemy_plane[i].generate_time)*enemy_plane[i].speed; // 更新敌机位置
 			if (enemy_plane[i].plane_type == ENEMY_TYPE_BOSS && enemy_plane[i].plane_pos.y > 200) {
-				enemy_plane[i].plane_pos.y = 200; // 如果是BOSS敌机，限制其位置在屏幕上方200像素
+				enemy_plane[i].plane_pos.y = 150; // 如果是BOSS敌机，限制其位置在屏幕上方150像素
 			}
 			if (enemy_plane[i].plane_pos.y > SCREEN_HEIGHT) { // 如果敌机超出屏幕下边界
 				enemy_plane[i].is_alive = false; // 禁用敌机
@@ -525,7 +561,10 @@ void check_bullet_collision() {
 								if(level < 5)level++; // 关卡数增加
 								if (drop_item_num < ITEM_NUM - 1)generate_drop_item(ENEMY_TYPE_BOSS, enemy_plane[j].plane_pos); // 生成BOSS掉落物品
 							}
-							if(bullet[i].bullet_type == BULLET_TYPE_NORMAL)my_plane.power += 10; // 增加飞机气势
+							if (bullet[i].bullet_type == BULLET_TYPE_NORMAL) {
+								my_plane.power += 10;
+								if (my_plane.power > 400) my_plane.power = 400; // 限制飞机气势最大值为400
+							} // 增加飞机气势
 							break; // 退出循环
 						}
 					}
@@ -579,7 +618,10 @@ void check_bullet_collision() {
 								enemy_num--; // 减少敌机数量
 								score += enemy_plane[j].maxlife;// 增加分数
 							}
-							if(bullet[i].bullet_type == BULLET_TYPE_NORMAL)  my_plane.power += 10; // 增加飞机气势
+							if (bullet[i].bullet_type == BULLET_TYPE_NORMAL) {
+								my_plane.power += 10;
+								if (my_plane.power > 400) my_plane.power = 400; // 限制飞机气势最大值为400
+							} // 增加飞机气势
 							break; // 退出循环
 							}
 
@@ -739,7 +781,7 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 	case ENEMY_TYPE_NORMAL: // 普通敌机
 		if (i % 1000 < 3) { // 0.3%的概率掉落物品
 			drop_item[drop_item_num].is_active = true; // 激活掉落物
-			drop_item[drop_item_num].item_type = ITEM_TYPE_SUPPLY; // 设置掉落物类型为大补给球
+			drop_item[drop_item_num].item_type = ITEM_TYPE_BIG_SUPPLY; // 设置掉落物类型为大补给球
 			drop_item[drop_item_num].start_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
 			drop_item[drop_item_num].start_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
 			drop_item[drop_item_num].item_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
@@ -792,7 +834,7 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 	case ENEMY_TYPE_ELITE: // 精英敌机
 		if (i % 1000 < 15) { // 1.5%的概率掉落物品
 			drop_item[drop_item_num].is_active = true; // 激活掉落物
-			drop_item[drop_item_num].item_type = ITEM_TYPE_SUPPLY; // 设置掉落物类型为大补给球
+			drop_item[drop_item_num].item_type = ITEM_TYPE_BIG_SUPPLY; // 设置掉落物类型为大补给球
 			drop_item[drop_item_num].start_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
 			drop_item[drop_item_num].start_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
 			drop_item[drop_item_num].item_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
@@ -858,7 +900,7 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 			drop_item_num++; // 增加掉落物数量
 		if (i % 100 < 5) { // 5%的概率掉落物品
 			drop_item[++drop_item_num].is_active = true; // 激活掉落物
-			drop_item[drop_item_num].item_type = ITEM_TYPE_SUPPLY; // 设置掉落物类型为大补给球
+			drop_item[drop_item_num].item_type = ITEM_TYPE_BIG_SUPPLY; // 设置掉落物类型为大补给球
 			drop_item[drop_item_num].start_pos.x = plane_pos.x - 10; // 设置掉落物位置为敌机位置
 			drop_item[drop_item_num].start_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
 			drop_item[drop_item_num].item_pos.x = plane_pos.x - 10; // 设置掉落物位置为敌机位置
@@ -958,12 +1000,12 @@ void check_player_drop_item_collision() {
 //播放音乐
 void play_music() {
 	if (bgm1) { // 如果背景音乐存在
-		BGM = BASS_SampleGetChannel(bgm1, FALSE); // 获取背景音乐通道
+		BGM1 = BASS_SampleGetChannel(bgm1, FALSE); // 获取背景音乐通道
 		//if (!BASS_ChannelIsActive(BGM)) { // 如果背景音乐未在播放
 			
 			// 将背景音乐音量设置为50%
-			BASS_ChannelSetAttribute(BGM, BASS_ATTRIB_VOL, 0.5f);
-			BASS_ChannelPlay(BGM, TRUE); // 播放背景音乐
+			BASS_ChannelSetAttribute(BGM1, BASS_ATTRIB_VOL, 0.3f);
+			BASS_ChannelPlay(BGM1, TRUE); // 播放背景音乐
 		//}
 	}
 }
