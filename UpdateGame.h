@@ -40,6 +40,13 @@ void gamepaused() {
 		enemy_bullet[i].start_pos.y = enemy_bullet[i].bullet_pos.y; // 设置敌机子弹位置为飞机位置
 		enemy_bullet[i].generate_time = clock(); // 记录敌机子弹生成时间
 	}
+	start_paused_time = clock(); // 记录暂停开始时间
+	//降低背景音乐音量
+	BASS_ChannelSetAttribute(BGM1, BASS_ATTRIB_VOL, 0.02f); // 设置背景音乐音量为20%
+	BASS_ChannelSetAttribute(BGM2, BASS_ATTRIB_VOL, 0.02f); // 设置背景音乐音量为20%
+	BASS_ChannelSetAttribute(BGM3, BASS_ATTRIB_VOL, 0.02f); // 设置背景音乐音量为20%
+	BASS_ChannelSetAttribute(BGM4, BASS_ATTRIB_VOL, 0.02f); // 设置背景音乐音量为20%
+	BASS_ChannelSetAttribute(BGM5, BASS_ATTRIB_VOL, 0.02f); // 设置背景音乐音量为20%
 }
 
 //控制
@@ -384,7 +391,7 @@ void update_enemy() {
 	for (int i = 0; i < ENEMY_MAX_NUM; i++) {
 		if (enemy_plane[i].is_alive) { // 如果敌机激活
 			enemy_plane[i].plane_pos.y = enemy_plane[i].start_pos.y + (clock()-enemy_plane[i].generate_time)*enemy_plane[i].speed; // 更新敌机位置
-			if (enemy_plane[i].plane_type == ENEMY_TYPE_BOSS && enemy_plane[i].plane_pos.y > 200) {
+			if (enemy_plane[i].plane_type == ENEMY_TYPE_BOSS && enemy_plane[i].plane_pos.y > 150) {
 				enemy_plane[i].plane_pos.y = 150; // 如果是BOSS敌机，限制其位置在屏幕上方150像素
 			}
 			if (enemy_plane[i].plane_pos.y > SCREEN_HEIGHT) { // 如果敌机超出屏幕下边界
@@ -557,6 +564,7 @@ void check_bullet_collision() {
 								enemy_num--; // 减少敌机数量
 								score += enemy_plane[j].maxlife;// 增加分数
 								last_complete_time = clock(); // 更新上次通关时间
+								total_paused_time = 0;// 重置总暂停时间
 								boss_is_alive = false; // BOSS激活状态设置为false
 								if(level < 5)level++; // 关卡数增加
 								if (drop_item_num < ITEM_NUM - 1)generate_drop_item(ENEMY_TYPE_BOSS, enemy_plane[j].plane_pos); // 生成BOSS掉落物品
@@ -634,7 +642,7 @@ void check_bullet_collision() {
 
 //游戏开始90秒后生成BOSS
 void generate_boss() {
-	if (clock() - last_complete_time > 90000 && !boss_is_alive) { // 如果游戏开始超过90秒且BOSS未激活
+	if (clock() - last_complete_time > 90000 + total_paused_time && !boss_is_alive) { // 如果游戏开始超过90秒且BOSS未激活
 		for (int i = 0; i < ENEMY_MAX_NUM; i++) {
 			if (!enemy_plane[i].is_alive) { // 如果敌机未激活
 				enemy_plane[i].is_alive = true; // 激活敌机
@@ -653,10 +661,11 @@ void generate_boss() {
 				srand(time(NULL));
 				if (level <= 3) {
 					enemy_plane[i].style = 0;
-				} else {
-					
-					enemy_plane[i].style = 1;  
-						
+				}
+				else {
+
+					enemy_plane[i].style = 1;
+
 				}
 				break; // 退出循环
 			}
@@ -668,9 +677,10 @@ void generate_boss() {
 void check_player_life() {
 	if (my_plane.life <= 0) { // 如果玩家飞机生命值小于等于0
 		my_plane.is_alive = false; // 玩家飞机死亡
-		PlaySound("src/sound/game_over.wav", NULL, SND_FILENAME | SND_ASYNC | SND_NOWAIT); // 播放游戏结束音效
-		MessageBox(NULL, "Game Over!", "提示", MB_OK); // 弹出游戏结束提示框
-		exit(0); // 退出游戏
+		game_state = GAME_STATE_GAME_OVER ; // 切换游戏状态为结束状态
+		button[EXIT].state = BUTTON_STATE_UP;
+		button[RESTART].state = BUTTON_STATE_UP;
+		if (is_login)ready_to_insert = true; // 如果是登录状态，准备插入数据
 	}
 }
 //耐久的加减，正常状态每秒恢复15耐久
@@ -999,20 +1009,69 @@ void check_player_drop_item_collision() {
 
 //播放音乐
 void play_music() {
-	if (bgm1) { // 如果背景音乐存在
-		BGM1 = BASS_SampleGetChannel(bgm1, FALSE); // 获取背景音乐通道
-		//if (!BASS_ChannelIsActive(BGM)) { // 如果背景音乐未在播放
+	switch (level) {
+		case 1: // 第一关
+		if (bgm1) { // 如果背景音乐存在
+				BGM1 = BASS_SampleGetChannel(bgm1, FALSE); // 获取背景音乐通道
+				//if (!BASS_ChannelIsActive(BGM)) { // 如果背景音乐未在播放
 			
-			// 将背景音乐音量设置为50%
-			BASS_ChannelSetAttribute(BGM1, BASS_ATTRIB_VOL, 0.3f);
-			BASS_ChannelPlay(BGM1, TRUE); // 播放背景音乐
-		//}
+					// 将背景音乐音量设置为30%
+					BASS_ChannelSetAttribute(BGM1, BASS_ATTRIB_VOL, 0.3f);
+					BASS_ChannelPlay(BGM1, TRUE); // 播放背景音乐
+				//}
+			}
+		break;
+		case 2: // 第二关
+			BASS_SampleStop(bgm1); // 停止背景音乐1
+			if (bgm2) { // 如果背景音乐存在
+				BGM2 = BASS_SampleGetChannel(bgm2, FALSE); // 获取背景音乐通道
+				//if (!BASS_ChannelIsActive(BGM)) { // 如果背景音乐未在播放
+					// 将背景音乐音量设置为30%
+					BASS_ChannelSetAttribute(BGM2, BASS_ATTRIB_VOL, 0.3f);
+					BASS_ChannelPlay(BGM2, TRUE); // 播放背景音乐
+				//}
+			}
+			break;
+		case 3: // 第三关
+			BASS_SampleStop(bgm2); // 停止背景音乐2
+			if (bgm3) { // 如果背景音乐存在
+				BGM3 = BASS_SampleGetChannel(bgm3, FALSE); // 获取背景音乐通道
+				//if (!BASS_ChannelIsActive(BGM)) { // 如果背景音乐未在播放
+					// 将背景音乐音量设置为30%
+					BASS_ChannelSetAttribute(BGM3, BASS_ATTRIB_VOL, 0.3f);
+					BASS_ChannelPlay(BGM3, TRUE); // 播放背景音乐
+				//}
+			}
+			break;
+		case 4: // 第四关
+			BASS_SampleStop(bgm3); // 停止背景音乐3
+			if (bgm4) { // 如果背景音乐存在
+				BGM4 = BASS_SampleGetChannel(bgm4, FALSE); // 获取背景音乐通道
+				//if (!BASS_ChannelIsActive(BGM)) { // 如果背景音乐未在播放
+					// 将背景音乐音量设置为30%
+					BASS_ChannelSetAttribute(BGM4, BASS_ATTRIB_VOL, 0.3f);
+					BASS_ChannelPlay(BGM4, TRUE); // 播放背景音乐
+				//}
+			}
+			break;
+		case 5: // 第五关
+			BASS_SampleStop(bgm4); // 停止背景音乐4
+			if (bgm5) { // 如果背景音乐存在
+				BGM5 = BASS_SampleGetChannel(bgm5, FALSE); // 获取背景音乐通道
+				//if (!BASS_ChannelIsActive(BGM)) { // 如果背景音乐未在播放
+					// 将背景音乐音量设置为30%
+					BASS_ChannelSetAttribute(BGM5, BASS_ATTRIB_VOL, 0.3f);
+					BASS_ChannelPlay(BGM5, TRUE); // 播放背景音乐
+				//}
+			}
+			break;
 	}
+	
 }
 
 // 更新游戏状态函数
 void UpdateGame() {
-
+	play_music(); // 调用播放音乐函数，处理背景音乐播放
 	control_plane(); // 调用控制飞机函数，处理飞机移动和射击状态
 	check_plane_state();
 
@@ -1042,5 +1101,5 @@ void UpdateGame() {
 	update_drop_item(); // 调用更新掉落物位置函数，处理掉落物位置更新
 	check_player_drop_item_collision(); // 调用玩家与掉落物碰撞检测函数，处理玩家飞机与掉落物的碰撞
 
-	play_music(); // 调用播放音乐函数，处理背景音乐播放
+
 }

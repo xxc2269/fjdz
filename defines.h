@@ -1,5 +1,6 @@
 #pragma once//ÓÃÓÚ·ÀÖ¹Í·ÎÄ¼ş±»¶à´Î°üº¬
 #include"includes.h"//°üº¬ÁË±ê×¼Í·ÎÄ¼ş
+using namespace std; //Ê¹ÓÃ±ê×¼ÃüÃû¿Õ¼ä
 
 #define SCREEN_WIDTH 512 //ÆÁÄ»¿í¶È
 #define SCREEN_HEIGHT 768 //ÆÁÄ»¸ß¶È
@@ -36,7 +37,8 @@ enum {
 	LOGOFF,
 	CONTINUE,
 	EXIT,
-	RESTART
+	RESTART,
+	HOME
 };
  
 
@@ -153,6 +155,22 @@ typedef struct {
 	float item_speed; //ÎïÆ·ÒÆ¶¯ËÙ¶È
 } ITEM; //ÊÕ¼¯ÎïÆ·½á¹¹Ìå;
 
+typedef struct  _userinfo{
+	char username[45];
+	char password[45];
+}userinfo;// ÓÃ»§ĞÅÏ¢½á¹¹Ìå
+
+userinfo USER; // ¶¨ÒåÒ»¸öÈ«¾Ö±äÁ¿USER£¬±íÊ¾µ±Ç°ÓÃ»§ĞÅÏ¢
+
+typedef struct _gameinfo {
+	char username[45];
+	int score;
+}record;// ÓÎÏ·¼ÇÂ¼½á¹¹Ìå
+
+record RECORD; // ¶¨ÒåÒ»¸öÈ«¾Ö±äÁ¿RECORD£¬±íÊ¾µ±Ç°ÓÎÏ·¼ÇÂ¼
+static 	record records[100]; // ¶¨ÒåÒ»¸öÈ«¾Ö±äÁ¿records£¬±íÊ¾ÓÎÏ·¼ÇÂ¼Êı×é
+
+
 // ¶¨ÒåÓÎÏ·ÖĞµÄÈ«¾Ö±äÁ¿ºÍ³£Á¿
 //staticÓÃÓÚ¶¨ÒåÈ«¾Ö±äÁ¿£¬ÕâĞ©±äÁ¿ÔÚÕû¸ö³ÌĞòÖĞ¶¼¿ÉÒÔ·ÃÎÊ
 static ITEM drop_item[20]; //¶¨ÒåÒ»¸öÈ«¾Ö±äÁ¿drop_item£¬±íÊ¾µôÂäÎïÆ·
@@ -173,11 +191,14 @@ static time_t end_time; //¼ÇÂ¼ÓÎÏ·½áÊøÊ±¼ä
 static time_t last_complete_time = clock(); //¼ÇÂ¼ÉÏ´ÎÍ¨¹ØÊ±¼ä
 static time_t last_shoot_time = clock(); //¼ÇÂ¼ÉÏ´ÎÉä»÷Ê±¼ä
 static time_t last_generate_enemy_time = clock(); //¼ÇÂ¼ÉÏ´ÎÉú³ÉµĞ»úÊ±¼ä
+static time_t start_paused_time = clock(); //¼ÇÂ¼ÉÏ´ÎÉú³ÉBOSSÊ±¼ä
+static time_t total_paused_time = clock(); //¼ÇÂ¼ÔİÍ£Ê±¼ä
 static time_t last_added_time = clock(); //¼ÇÂ¼ÉÏ´ÎÌí¼ÓÄÍ¾ÃµÄÊ±¼ä
 static time_t start_charge_time = clock(); //¼ÇÂ¼¿ªÊ¼ĞîÁ¦µÄÊ±¼ä
 static time_t charge_time = 0; //¼ÇÂ¼ĞîÁ¦Ê±¼ä
 static time_t last_power_time; //¼ÇÂ¼ÉÏ´Î¼õÉÙÆøÊÆµÄÊ±¼ä
 static time_t start_grade;//½øÈëÎŞË«×´Ì¬µÄÊ±¼ä
+static time_t back_to_home_time; //·µ»ØÖ÷Ò³µÄÊ±¼ä
 static IMAGE bg[5]; //±³¾°Í¼Æ¬
 static IMAGE bg_dark[5]; //±³¾°°µÉ«Í¼Æ¬
 // ±³¾°¹ö¶¯±äÁ¿ - ×İÏò¹ö¶¯
@@ -218,7 +239,7 @@ static int game_state = 0; //ÓÎÏ·×´Ì¬£¨0-Ö÷½çÃæ£¬1-×¼±¸×´Ì¬£¬2-½øĞĞÖĞ×´Ì¬£¬3-ÔİÍ
 
 //±³¾°ÒôÀÖ
 static HSTREAM bgmmain; //Ö÷½çÃæ±³¾°ÒôÀÖ
-static HSAMPLE bgm1; //±³¾°ÒôÀÖ1
+static HSTREAM bgm1; //±³¾°ÒôÀÖ1
 static HSTREAM bgm2; //±³¾°ÒôÀÖ2
 static HSTREAM bgm3; //±³¾°ÒôÀÖ3
 static HSTREAM bgm4; //±³¾°ÒôÀÖ4
@@ -252,3 +273,9 @@ static HSTREAM grade5_sound; //Îå¼¶ÒôĞ§
 
 //ÊÇ·ñµÇÂ¼
 static bool is_login = false; //ÊÇ·ñµÇÂ¼
+
+static bool ready_to_insert = false;
+
+static record outputrecord[5];//Êä³öµÄÓÎÏ·¼ÇÂ¼
+
+FILE* record_file; //ÓÎÏ·¼ÇÂ¼ÎÄ¼şÖ¸Õë

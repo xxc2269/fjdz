@@ -1,8 +1,9 @@
 #pragma once//用于防止头文件被多次包含
 #include"defines.h"//包含宏定义头文件(已包含了标准头文件)
 #include <math.h>
-#include"menu.h"//包含菜单头文件
-#include"pause.h"//包含暂停头文件
+#include"DrawButtons.h"//绘制按钮头文件
+#include"outputrecords.h"//输出记录头文件
+
 #ifndef M_PI  
 #define M_PI 3.14159265358979323846 // 定义圆周率常量  
 #endif
@@ -301,8 +302,18 @@ void DrawGame() {
 		switch(game_state) { //根据游戏状态绘制不同的界面
 		case GAME_STATE_MAIN_MENU:
 			//主菜单界面
-			DrawTitle(); //绘制标题
 			DrawStartButton(); //绘制开始按钮
+			DrawTitle(); //绘制标题
+			if (!is_login) {
+				DrawLoginButton(); //绘制登录按钮
+				DrawRegisterButton(); //绘制注册按钮
+			}
+			else {
+				DrawUsername(); // 绘制用户名
+				DrawLogoffButton(); // 绘制退出登录按钮
+			}
+			
+			DrawExitButton(); // 绘制退出按钮
 			break;
 			case GAME_STATE_PLAYING: //游戏进行中
 				break;
@@ -311,6 +322,14 @@ void DrawGame() {
 				DrawContinueButton(); // 绘制继续按钮
 				DrawRestartButton(); // 绘制重新开始按钮
 				DrawExitButton(); // 绘制退出按钮
+				DrawHomeButton(); // 绘制返回主页按钮
+				break;
+			case GAME_STATE_GAME_OVER: //游戏结束
+				DrawOverTitle(); // 绘制游戏结束标题
+				DrawRestartButton(); // 绘制重新开始按钮
+				DrawExitButton(); // 绘制退出按钮
+				DrawHomeButton(); // 绘制返回主页按钮
+				if(is_login)outputrecords(); // 输出游戏记录
 				break;
 			
 		}

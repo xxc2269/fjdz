@@ -110,6 +110,33 @@
     <ClInclude Include="pause.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="gameover.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="findAll.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="dasebase.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="connect_db.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="add.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="login.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="register.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawButtons.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="outputrecords.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="bass.lib" />
