@@ -14,6 +14,7 @@ void init_game() {
 	my_plane.size = PLANE_SIZE; //设置飞机大小
 	my_plane.height = PLANE_SIZE; //设置飞机高度
 	my_plane.power = 0; //设置飞机火力
+	my_plane.grade = 0; //设置飞机等级
 	my_plane.endurance = 100; //设置飞机耐久度
 	my_plane.max_endurance = 100; //设置飞机最大耐久度
 	my_plane.plane_state = PLANE_STATE_NORMAL; //设置飞机状态为正常
