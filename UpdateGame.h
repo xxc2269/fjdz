@@ -260,6 +260,8 @@ void check_plane_state() {
 				mega_bullet[0].bullet_type = BULLET_TYPE_BIG; //
 				mega_bullet[0].bullet_damage = 400; // 设置子弹伤害
 				mega_bullet[0].bullet_size = MEGA_SIZE; // 设置子弹大小
+				start_grade = clock(); // 记录进入无双状态的时间
+				my_plane.plane_state = PLANE_STATE_MEGA_NORMAL; // 切换到无双射击状态
 			}
 
 			mega_bullet[0].is_active = true; // 激活子弹

@@ -177,6 +177,7 @@
     <ClInclude Include="pause.h" />
     <ClInclude Include="ReadMouseMessage.h" />
     <ClInclude Include="register.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="UpdateGame.h" />
   </ItemGroup>
   <ItemGroup>
@@ -188,6 +189,12 @@
     <None Include="bass.dll" />
     <None Include="x64\bass.dll" />
     <None Include="x64\libmysql.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="plane.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
