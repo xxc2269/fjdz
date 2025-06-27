@@ -13,11 +13,11 @@ inline void loadSounds() {
 	//加载背景音乐
 	bgmmain = BASS_SampleLoad(FALSE, "src/sound/bgmmain.mp3", 0, 0, 1, BASS_SAMPLE_LOOP); // 加载主界面背景音乐
 	bgm1 = BASS_SampleLoad(FALSE, "src/sound/bgm1.mp3", 0, 0, 1, BASS_SAMPLE_LOOP); // 加载背景音乐1
-	bgm2 = BASS_SampleLoad(FALSE, "src/sound/bgm2.mp3", 0, 0, 1, BASS_SAMPLE_LOOP);// 加载背景音乐2
+	bgm2 = BASS_SampleLoad(FALSE, "src/sound/bgm2.ogg", 0, 0, 1, BASS_SAMPLE_LOOP);// 加载背景音乐2
 	bgm3 = BASS_SampleLoad(FALSE, "src/sound/bgm3.mp3", 0, 0, 1, BASS_SAMPLE_LOOP); // 加载背景音乐3
 	bgm4 = BASS_SampleLoad(FALSE, "src/sound/bgm4.mp3", 0, 0, 1, BASS_SAMPLE_LOOP); // 加载背景音乐4
 	bgm5 = BASS_SampleLoad(FALSE, "src/sound/bgm5.mp3", 0, 0, 1, BASS_SAMPLE_LOOP); // 加载背景音乐5
-	bgmover = BASS_SampleLoad(FALSE, "src/sound/over.mp3", 0, 0, 1, BASS_SAMPLE_LOOP); // 加载游戏结束音乐
+	bgmover = BASS_SampleLoad(FALSE, "src/sound/bgmover.mp3", 0, 0, 1, BASS_SAMPLE_LOOP); // 加载游戏结束音乐
 	//BASS_SAMPLE_LOOP | BASS_SAMPLE_OVER_POS // 设置循环播放和结束时停止
     
     // 加载音效文件

@@ -115,6 +115,9 @@
     <PreBuildEvent>
       <Command>xcopy /E /Y /I "$(ProjectDir)src" "$(OutDir)src"</Command>
     </PreBuildEvent>
+    <PreLinkEvent>
+      <Command>xcopy /Y /I "$(ProjectDir)*.sql" "$(OutDir)"</Command>
+    </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -137,9 +140,15 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="add.h" />
     <ClInclude Include="bass.h" />
+    <ClInclude Include="connect_db.h" />
+    <ClInclude Include="dasebase.h" />
     <ClInclude Include="defines.h" />
+    <ClInclude Include="DrawButtons.h" />
     <ClInclude Include="DrawGames.h" />
+    <ClInclude Include="findAll.h" />
+    <ClInclude Include="gameover.h" />
     <ClInclude Include="helloworld.h" />
     <ClInclude Include="includes.h" />
     <ClInclude Include="include\errmsg.h" />
@@ -161,10 +170,13 @@
     <ClInclude Include="InitGame.h" />
     <ClInclude Include="loadImages.h" />
     <ClInclude Include="loadSounds.h" />
+    <ClInclude Include="login.h" />
     <ClInclude Include="musicplayer.h" />
     <ClInclude Include="menu.h" />
+    <ClInclude Include="outputrecords.h" />
     <ClInclude Include="pause.h" />
     <ClInclude Include="ReadMouseMessage.h" />
+    <ClInclude Include="register.h" />
     <ClInclude Include="UpdateGame.h" />
   </ItemGroup>
   <ItemGroup>

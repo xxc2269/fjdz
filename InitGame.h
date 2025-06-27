@@ -41,27 +41,33 @@ void init_game() {
 	}
 
 	start_time = clock(); //记录游戏开始时间
+	start_paused_time = clock(); //记录上次暂停时间
+	total_paused_time = 0; //初始化暂停时间为0
+	last_complete_time = clock(); //记录上次通关时间
+	boss_is_alive = false; //BOSS是否存活
 	srand((unsigned)time(NULL)); //设置随机数种子
 
 
-	button[0] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 200, 200, 50, "开始游戏" }; // 定义开始按钮
-	button[1] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 300, 200, 50, "登录" }; // 定义登录按钮
-	button[2] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 400, 200, 50, "注册" }; // 定义注册按钮
-	button[3] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 500, 200, 50, "退出登录" , BUTTON_STATE_DISABLED }; // 定义退出登录按钮
-	button[4] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 200, 200, 50, "继续" ,BUTTON_STATE_DISABLED }; // 定义继续按钮
-	button[5] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 300, 200, 50, "退出" ,BUTTON_STATE_DISABLED }; // 定义退出按钮
-	button[6] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 250, 200, 50, "重新开始" ,BUTTON_STATE_DISABLED }; // 定义重新开始按钮
+	button[0] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 150, 200, 50, "开始游戏" }; // 定义开始按钮
+	button[1] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 200, 100, 50, "登录" }; // 定义登录按钮
+	button[2] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 250, 200, 50, "注册" }; // 定义注册按钮
+	button[3] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 250, 200, 50, "退出登录" , BUTTON_STATE_DISABLED }; // 定义退出登录按钮
+	button[4] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 150, 200, 50, "继续" ,BUTTON_STATE_DISABLED }; // 定义继续按钮
+	button[5] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 300, 200, 50, "退出游戏"  }; // 定义退出按钮
+	button[6] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 200, 200, 50, "重新开始" ,BUTTON_STATE_DISABLED }; // 定义重新开始按钮
+	button[7] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 250, 200, 50, "返回主页" ,BUTTON_STATE_DISABLED }; // 定义排行榜按钮
 
 	//若为准备状态，开始游戏
 	if (game_state == GAME_STATE_READY) {
 		BASS_SampleStop(bgmmain); // 停止背景音乐
-		
+		BASS_SampleStop(bgmover); // 停止游戏结束音乐
 		//BASS_SampleFree(bgmmain); // 释放背景音乐资源
 		game_state = GAME_STATE_PLAYING; //将游戏状态设置为进行中
 		button[START].state = BUTTON_STATE_DISABLED; // 禁用开始按钮
 		button[LOGIN].state = BUTTON_STATE_DISABLED; // 禁用登录按钮
 		button[REGISTER].state = BUTTON_STATE_DISABLED; // 禁用注册按钮
 		button[LOGOFF].state = BUTTON_STATE_DISABLED; // 禁用退出登录按钮
+		button[EXIT].state = BUTTON_STATE_DISABLED; // 禁用退出按钮
 		
 	}
 }

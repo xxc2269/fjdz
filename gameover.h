@@ -1,7 +1,9 @@
 #pragma once
 #include "defines.h" // 包含宏定义头文件(已包含了标准头文件)
+#include"add.h"// 包含添加分数的头文件
+#include"findAll.h"// 包含查询所有记录的头文件
 
-void PauseReadMouseInput() {
+void OverReadMouseInput() {
 	ExMessage msg; // 定义一个ExMessage结构体变量msg，用于存储鼠标消息
 	peekmessage(&msg, EM_MOUSE | EM_KEY); // 获取鼠标消息和键盘消息
 	switch (msg.message) { // 根据消息类型进行处理
@@ -35,50 +37,33 @@ void PauseReadMouseInput() {
 
 
 
-void gamecontinue() {
-	//重置子弹的起始位置
-	for (int i = 0;i < BULLET_NUM;i++) {
-		bullet[i].start_pos.x = bullet[i].bullet_pos.x; // 设置子弹位置为飞机位置
-		bullet[i].start_pos.y = bullet[i].bullet_pos.y; // 设置子弹位置为飞机位置
-		bullet[i].generate_time = clock(); // 记录子弹生成时间
-
-	}
-	//重置敌机的起始位置
-	for (int i = 0;i < ENEMY_MAX_NUM;i++) {
-		enemy_plane[i].start_pos.x = enemy_plane[i].plane_pos.x; // 设置敌机位置为飞机位置
-		enemy_plane[i].start_pos.y = enemy_plane[i].plane_pos.y; // 设置敌机位置为飞机位置
-		enemy_plane[i].generate_time = clock(); // 记录敌机生成时间
-	}
-	//重置掉落物品的起始位置
-	for (int i = 0;i < ITEM_NUM;i++) {
-		drop_item[i].start_pos.x = drop_item[i].item_pos.x; // 设置物品位置为飞机位置
-		drop_item[i].start_pos.y = drop_item[i].item_pos.y; // 设置物品位置为飞机位置
-		drop_item[i].generate_time = clock(); // 记录物品生成时间
-
-	}
-	//重置敌机子弹的起始位置
-	for (int i = 0;i < ENEMY_MAX_NUM;i++) {
-		enemy_bullet[i].start_pos.x = enemy_bullet[i].bullet_pos.x; // 设置敌机子弹位置为飞机位置
-		enemy_bullet[i].start_pos.y = enemy_bullet[i].bullet_pos.y; // 设置敌机子弹位置为飞机位置
-		enemy_bullet[i].generate_time = clock(); // 记录敌机子弹生成时间
-	}
-}
 
 
-//若继续按钮被激活，则进入游戏继续状态
-void ContinueGame() {
-	if (button[CONTINUE].state == BUTTON_STATE_ACTIVE) {
-		gamecontinue(); // 重置游戏状态
-		game_state = GAME_STATE_PLAYING; // 设置游戏状态为继续状态
-		button[CONTINUE].state = BUTTON_STATE_DISABLED; // 禁用继续按钮
-		button[RESTART].state = BUTTON_STATE_DISABLED; // 禁用重新开始按钮
-		button[EXIT].state = BUTTON_STATE_DISABLED; // 禁用退出按钮
-		total_paused_time += clock() - start_paused_time; // 计算总暂停时间
-	}
-}
+
+////绘制重新开始按钮
+//void DrawRestartButton() {
+//	settextstyle(30, 0, _T("黑体")); // 设置字体样式
+//	setbkmode(OPAQUE); // 设置背景模式为不透明
+//	setbkcolor(BLUE); // 设置按钮背景颜色为蓝色
+//	setfillcolor(BLUE); // 设置按钮填充颜色为蓝色
+//	settextcolor(WHITE); // 设置文字颜色为白色
+//	rectangle(button[RESTART].x, button[RESTART].y, button[RESTART].x + button[RESTART].width, button[RESTART].y + button[RESTART].height); // 绘制按钮边框
+//	outtextxy(button[RESTART].x + 50, button[RESTART].y + 10, button[RESTART].text); // 在按钮上绘制文字
+//}
+////绘制退出按钮
+//void DrawExitButton() {
+//	settextstyle(30, 0, _T("黑体")); // 设置字体样式
+//	setbkmode(OPAQUE); // 设置背景模式为不透明
+//	setbkcolor(BLUE); // 设置按钮背景颜色为蓝色
+//	setfillcolor(BLUE); // 设置按钮填充颜色为蓝色
+//	settextcolor(WHITE); // 设置文字颜色为白色
+//	rectangle(button[EXIT].x, button[EXIT].y, button[EXIT].x + button[EXIT].width, button[EXIT].y + button[EXIT].height); // 绘制按钮边框
+//	outtextxy(button[EXIT].x + 50, button[EXIT].y + 10, button[EXIT].text); // 在按钮上绘制文字
+//}
+
 
 //若重新开始按钮被激活，则进入游戏准备状态
-void RestartGame() {
+void OverRestartGame() {
 	if (button[RESTART].state == BUTTON_STATE_ACTIVE) {
 		game_state = GAME_STATE_READY; // 设置游戏状态为准备状态
 		button[CONTINUE].state = BUTTON_STATE_DISABLED; // 禁用继续按钮
@@ -88,14 +73,13 @@ void RestartGame() {
 }
 
 //若退出按钮被激活，则退出游戏
-void ExitGame() {
+void OverExitGame() {
 	if (button[EXIT].state == BUTTON_STATE_ACTIVE) {
 		exit(0); // 退出游戏
 	}
 }
 
-//若返回主页按钮被激活，则返回主页
-void HomeGame() {
+void OverHomeGame() {
 	if (button[HOME].state == BUTTON_STATE_ACTIVE) {
 		game_state = GAME_STATE_MAIN_MENU; // 设置游戏状态为主界面
 		level = 1; // 重置关卡为1
@@ -115,13 +99,31 @@ void HomeGame() {
 	}
 }
 
-void pause() {
-	//音量降低为原来的20%
+void gameover() {
+	//停止所有游戏内音乐
+	BASS_SampleStop(bgm1); // 停止背景音乐1
+	BASS_SampleStop(bgm2); // 停止背景音乐2
+	BASS_SampleStop(bgm3); // 停止背景音乐3
+	BASS_SampleStop(bgm4); // 停止背景音乐4
+	BASS_SampleStop(bgm5); // 停止背景音乐5
+	
+	//播放游戏结束音乐
+	if (bgmover) { // 如果背景音乐存在
+		BGMOVER = BASS_SampleGetChannel(bgmover, FALSE); // 获取背景音乐通道
+		//if (!BASS_ChannelIsActive(BGM)) { // 如果背景音乐未在播放
 
-
-	PauseReadMouseInput(); // 读取鼠标输入
-	ContinueGame(); // 检查是否继续游戏
-	RestartGame(); // 检查是否重新开始游戏
-	ExitGame(); // 检查是否退出游戏
-	HomeGame(); // 检查是否返回主页
+			// 将背景音乐音量设置为70%
+		BASS_ChannelSetAttribute(BGMOVER, BASS_ATTRIB_VOL, 0.7f);
+		BASS_ChannelPlay(BGMOVER, TRUE); // 播放背景音乐
+		//}
+	}
+	if (is_login && ready_to_insert) {// 如果已登录，则添加分数
+		add_score();
+		findAll(); // 查询所有记录
+		ready_to_insert = false;// 准备插入数据状态设置为false
+	}
+	OverReadMouseInput(); // 读取鼠标输入
+	OverRestartGame(); // 检查是否重新开始游戏
+	OverExitGame(); // 检查是否退出游戏
+	OverHomeGame(); // 检查是否返回主页
 }
