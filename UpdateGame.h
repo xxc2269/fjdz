@@ -9,8 +9,8 @@ void generate_enemy(); //生成敌机函数
 void generate_boss(); //生成BOSS函数
 void generate_drop_item(int plane_type,POS plan_pos); //生成物品函数
 void enemy_shoot_bullet(); //生成敌机子弹函数
-//void generate_laser(); //生成激光函数
-//void generate_mega_bullet(); //生成无双子弹函数
+//void generate_laser(); //生成激光函数(未实现)
+//void generate_mega_bullet(); //生成无双子弹函数(未实现)
 
 //处理暂停事件（重置所有子弹、飞机、收集物的起始位置）
 void gamepaused() {
@@ -569,7 +569,7 @@ void check_bullet_collision() {
 								last_complete_time = clock(); // 更新上次通关时间
 								total_paused_time = 0;// 重置总暂停时间
 								boss_is_alive = false; // BOSS激活状态设置为false
-								generate_speed++; // 增加生成速度
+								
 								if(level < 5)level++; // 关卡数增加
 								if (drop_item_num < ITEM_NUM - 1)generate_drop_item(ENEMY_TYPE_BOSS, enemy_plane[j].plane_pos); // 生成BOSS掉落物品
 							}
@@ -1086,6 +1086,11 @@ void UpdateGame() {
 	if(clock() - last_generate_enemy_time > (6000/generate_speed)) { // 如果距上次生成时间超过（6/关卡数）秒
 		generate_enemy(); // 调用生成敌机函数，处理敌机生成
 		last_generate_enemy_time = clock(); // 重置生成敌机时间
+		generate_count++; // 增加生成计数
+		if(generate_count >= 20 * generate_speed) { // 如果生成计数超过120
+			generate_speed++; // 增加生成速度
+			generate_count = 0; // 重置生成计数
+		}
 	}
 
 	update_enemy(); // 调用更新敌机位置函数，处理敌机移动

@@ -235,6 +235,7 @@ static IMAGE mega_power_mask; //大气势掩码图片
 
 static int score = 0; //分数
 static int level = 1; //游戏等级
+static int generate_count = 0; //生成敌机计数
 static int generate_speed = 1; //生成敌机速度
 static int game_state = 0; //游戏状态（0-主界面，1-准备状态，2-进行中状态，3-暂停状态，4-结束状态）
 
