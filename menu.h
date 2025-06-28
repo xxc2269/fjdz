@@ -86,6 +86,7 @@ void LogoffGame() {
 			button[LOGIN].state = BUTTON_STATE_UP; // 激活登录按钮
 			button[REGISTER].state = BUTTON_STATE_UP; // 激活注册按钮
 		}
+		else button[LOGOFF].state = BUTTON_STATE_UP; // 如果用户选择不退出登录，则将退出登录按钮状态设置为弹起
 		
 	}
 	else {
