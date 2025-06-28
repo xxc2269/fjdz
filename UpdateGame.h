@@ -417,12 +417,13 @@ void enemy_shoot_bullet() {
 					enemy_bullet[i].bullet_pos.y = enemy_bullet[i].start_pos.y; // 设置敌机子弹位置为起始位置
 					enemy_bullet[i].bullet_speed = 0.3; // 设置敌机子弹速度
 					// 敌机子弹伤害,精英敌机伤害为3，普通敌机伤害为1
-					if (enemy_plane[j].plane_type == ENEMY_TYPE_ELITE) {
+					if (enemy_plane[j].plane_type == ENEMY_TYPE_ELITE || enemy_plane[j].plane_type == ENEMY_TYPE_BOSS) {
 						enemy_bullet[i].bullet_damage = 3; // 设置敌机子弹伤害
 						enemy_bullet[i].bullet_type = BULLET_TYPE_TRACKING; // 设置敌机子弹类型为追踪子弹
 						enemy_bullet[i].aim_pos.x = my_plane.plane_pos.x; // 设置目标位置为玩家飞机位置
 						enemy_bullet[i].aim_pos.y = my_plane.plane_pos.y; // 设置目标位置为玩家飞机位置
-					} else if (enemy_plane[j].plane_type == ENEMY_TYPE_NORMAL) {
+					}
+					else if (enemy_plane[j].plane_type == ENEMY_TYPE_NORMAL) {
 						enemy_bullet[i].bullet_damage = 1; // 设置敌机子弹伤害
 						enemy_bullet[i].bullet_type = BULLET_TYPE_NORMAL; // 设置敌机子弹类型为普通子弹
 					}
@@ -568,6 +569,7 @@ void check_bullet_collision() {
 								last_complete_time = clock(); // 更新上次通关时间
 								total_paused_time = 0;// 重置总暂停时间
 								boss_is_alive = false; // BOSS激活状态设置为false
+								generate_speed++; // 增加生成速度
 								if(level < 5)level++; // 关卡数增加
 								if (drop_item_num < ITEM_NUM - 1)generate_drop_item(ENEMY_TYPE_BOSS, enemy_plane[j].plane_pos); // 生成BOSS掉落物品
 							}
@@ -703,7 +705,7 @@ void add_endurance() {
 void check_player_endurance() {
 	if (my_plane.endurance <= 0) { // 如果玩家飞机耐久度小于等于0
 		my_plane.endurance = 0; // 将耐久度设置为0
-		my_plane.plane_state = my_plane.plane_state == PLANE_STATE_CHARGING ? PLANE_STATE_CHARGED : PLANE_STATE_NORMAL ; // 切换到正常状态，若为蓄力状态则切换到蓄力完成状态
+		my_plane.plane_state = my_plane.plane_state == PLANE_STATE_MEGA_NORMAL? PLANE_STATE_MEGA_NORMAL: (my_plane.plane_state == PLANE_STATE_CHARGING ? PLANE_STATE_CHARGED : PLANE_STATE_NORMAL) ; // 切换到正常状态，若为蓄力状态则切换到蓄力完成状态
 		
 	}
 }
@@ -1081,7 +1083,7 @@ void UpdateGame() {
 	
 	bullet_move(); // 调用更新子弹位置函数，处理子弹移动
 
-	if(clock() - last_generate_enemy_time > (6000/level)) { // 如果距上次生成时间超过（6/关卡数）秒
+	if(clock() - last_generate_enemy_time > (6000/generate_speed)) { // 如果距上次生成时间超过（6/关卡数）秒
 		generate_enemy(); // 调用生成敌机函数，处理敌机生成
 		last_generate_enemy_time = clock(); // 重置生成敌机时间
 	}

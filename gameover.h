@@ -83,6 +83,7 @@ void OverHomeGame() {
 	if (button[HOME].state == BUTTON_STATE_ACTIVE) {
 		game_state = GAME_STATE_MAIN_MENU; // 设置游戏状态为主界面
 		level = 1; // 重置关卡为1
+		generate_speed = 1; // 重置生成速度为1
 		button[CONTINUE].state = BUTTON_STATE_DISABLED; // 禁用继续按钮
 		button[RESTART].state = BUTTON_STATE_DISABLED; // 禁用重新开始按钮
 		button[EXIT].state = BUTTON_STATE_DISABLED; // 禁用退出按钮

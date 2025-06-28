@@ -4,6 +4,7 @@
 void init_game() {
 	score = 0; //初始化分数为0
 	level = 1; //初始化关卡为1
+	generate_speed = 1; //初始化生成速度为1
 	my_plane.plane_pos.x = SCREEN_WIDTH / 2 - PLANE_SIZE / 2; //设置飞机初始位置为屏幕中心
 	my_plane.plane_pos.y = SCREEN_HEIGHT - PLANE_SIZE; //设置飞机初始位置为屏幕底部
 	my_plane.speed = PLANE_SPEED; //设置飞机速度
