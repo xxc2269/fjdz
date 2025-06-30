@@ -1015,6 +1015,14 @@ void check_player_drop_item_collision() {
 void play_music() {
 	switch (level) {
 		case 1: // µ⁄“ªπÿ
+			//Õ£÷πÀ˘”–±≥æ∞“Ù¿÷
+			//BASS_SampleStop(bgm1); // Õ£÷π±≥æ∞“Ù¿÷1
+			BASS_SampleStop(bgm2); // Õ£÷π±≥æ∞“Ù¿÷2
+			BASS_SampleStop(bgm3); // Õ£÷π±≥æ∞“Ù¿÷3
+			BASS_SampleStop(bgm4); // Õ£÷π±≥æ∞“Ù¿÷4
+			BASS_SampleStop(bgm5); // Õ£÷π±≥æ∞“Ù¿÷5
+
+			
 		if (bgm1) { // »Áπ˚±≥æ∞“Ù¿÷¥Ê‘⁄
 				BGM1 = BASS_SampleGetChannel(bgm1, FALSE); // ªÒ»°±≥æ∞“Ù¿÷Õ®µ¿
 				//if (!BASS_ChannelIsActive(BGM)) { // »Áπ˚±≥æ∞“Ù¿÷Œ¥‘⁄≤•∑≈

@@ -5,6 +5,7 @@
 #include <vector>
 #include <map>
 #include "bass.h"
+#include"defines.h" // 包含宏定义头文件（已包含了标准头文件）
 
 using namespace std;
 
