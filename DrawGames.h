@@ -326,6 +326,7 @@ void DrawGame() {
 				break;
 			case GAME_STATE_GAME_OVER: //游戏结束
 				DrawOverTitle(); // 绘制游戏结束标题
+				DrawFinalScore(); // 绘制最终得分
 				DrawButton(RESTART); // 绘制重新开始按钮
 				DrawButton(EXIT); // 绘制退出按钮
 				DrawButton(HOME); // 绘制返回主页按钮

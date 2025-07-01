@@ -28,6 +28,16 @@ void DrawOverTitle() {
 	outtextxy(SCREEN_WIDTH / 2 - 100, 150, _T("游戏结束")); // 在屏幕中心绘制标题
 }
 
+//绘制最终得分
+void DrawFinalScore() {
+	settextstyle(30, 0, _T("黑体")); // 设置字体样式
+	setbkmode(TRANSPARENT); // 设置背景模式为透明
+	settextcolor(WHITE); // 设置文字颜色为白色
+	char scoreText[50];
+	sprintf(scoreText, "最终得分：%d", score); // 格式化得分文本
+	outtextxy(SCREEN_WIDTH / 2 - 100, 200, scoreText); // 在屏幕中心绘制得分
+}
+
 //显示用户名
 void DrawUsername() {
 	settextstyle(30, 0, _T("黑体")); // 设置字体样式

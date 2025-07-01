@@ -9,14 +9,14 @@ void outputrecords() {
 	setbkmode(TRANSPARENT); // 设置背景模式为透明
 	settextcolor(WHITE); // 设置文字颜色为黑色
 	// 绘制标题
-	outtextxy(SCREEN_WIDTH / 2 - 80, 220, "排行榜");
+	outtextxy(SCREEN_WIDTH / 2 - 80, 250, "排行榜");
 	// 查询所有记录
 	
 	// 输出记录到屏幕
 	for (int i = 0; i < 5; i++) {
 		char output[100];
-		sprintf(output, "%d.\t%s\t- %d", i + 1, records[i].username, records[i].score);
-		outtextxy(SCREEN_WIDTH / 2 - 100, 300 + i * 30, output);
+		sprintf(output, "%d.\t\t%s\t\t- %d", i + 1, records[i].username, records[i].score);
+		outtextxy(SCREEN_WIDTH / 2 - 150, 300 + i * 30, output);
 	}
 
 }
