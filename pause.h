@@ -118,24 +118,35 @@ void ContinueGame() {
 //若重新开始按钮被激活，则进入游戏准备状态
 void RestartGame() {
 	if (button[RESTART].state == BUTTON_STATE_ACTIVE) {
-		game_state = GAME_STATE_READY; // 设置游戏状态为准备状态
-		button[CONTINUE].state = BUTTON_STATE_DISABLED; // 禁用继续按钮
-		button[RESTART].state = BUTTON_STATE_DISABLED; // 禁用重新开始按钮
-		button[EXIT].state = BUTTON_STATE_DISABLED; // 禁用退出按钮
+		if (button[RESTART].state == BUTTON_STATE_ACTIVE) {
+			if (MessageBox(NULL, "确定要重新开始吗？\n你将失去当前进度！", "重新开始", MB_YESNO | MB_ICONQUESTION) == IDYES) {
+				game_state = GAME_STATE_READY; // 设置游戏状态为准备状态
+				button[CONTINUE].state = BUTTON_STATE_DISABLED; // 禁用继续按钮
+				button[RESTART].state = BUTTON_STATE_DISABLED; // 禁用重新开始按钮
+				button[EXIT].state = BUTTON_STATE_DISABLED; // 禁用退出按钮
+			}
+			else button[RESTART].state = BUTTON_STATE_UP; // 如果用户选择不重开游戏，则将重开游戏按钮状态设置为弹起
+		}
+
 	}
 }
 
 //若退出按钮被激活，则退出游戏
 void ExitGame() {
 	if (button[EXIT].state == BUTTON_STATE_ACTIVE) {
-		exit(0); // 退出游戏
+		if (MessageBox(NULL, "确定要退出游戏吗？\n你将失去当前进度！", "退出游戏", MB_YESNO | MB_ICONQUESTION) == IDYES) {
+			exit(0); // 退出游戏
+		}
+		else button[EXIT].state = BUTTON_STATE_UP; // 如果用户选择不退出游戏，则将退出游戏按钮状态设置为弹起
 	}
 }
 
 //若返回主页按钮被激活，则返回主页
 void HomeGame() {
 	if (button[HOME].state == BUTTON_STATE_ACTIVE) {
-		game_state = GAME_STATE_MAIN_MENU; // 设置游戏状态为主界面
+		if (button[HOME].state == BUTTON_STATE_ACTIVE) {
+			if (MessageBox(NULL, "确定要返回主页吗？\n你将失去当前进度！", "返回主页", MB_YESNO | MB_ICONQUESTION) == IDYES) {
+				game_state = GAME_STATE_MAIN_MENU; // 设置游戏状态为主界面
 		level = 1; // 重置关卡为1
 		generate_speed = 1; // 重置生成速度为1
 		button[CONTINUE].state = BUTTON_STATE_DISABLED; // 禁用继续按钮
@@ -158,6 +169,10 @@ void HomeGame() {
 		BASS_SampleStop(bgm5); // 停止背景音乐5
 		BASS_SampleStop(bgmover); // 停止游戏结束音乐
 		back_to_home_time = clock(); // 记录返回主页时间
+			}
+			else button[HOME].state = BUTTON_STATE_UP; // 如果用户选择不退出游戏，则将退出游戏按钮状态设置为弹起
+		}
+		
 
 	}
 }

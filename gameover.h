@@ -103,7 +103,10 @@ void OverRestartGame() {
 //若退出按钮被激活，则退出游戏
 void OverExitGame() {
 	if (button[EXIT].state == BUTTON_STATE_ACTIVE) {
-		exit(0); // 退出游戏
+		if (MessageBox(NULL, "确定要退出游戏吗？", "退出游戏", MB_YESNO | MB_ICONQUESTION) == IDYES) {
+			exit(0); // 退出游戏
+		}
+		else button[EXIT].state = BUTTON_STATE_UP; // 如果用户选择不退出游戏，则将退出游戏按钮状态设置为弹起
 	}
 }
 
