@@ -6,6 +6,7 @@ void init_game() {
 	level = 1; //初始化关卡为1
 	generate_count = 0; //初始化生成计数为0
 	generate_speed = 1; //初始化生成速度为1
+	last_generate_enemy_time = clock(); //记录上次生成敌机时间
 	my_plane.plane_pos.x = SCREEN_WIDTH / 2 - PLANE_SIZE / 2; //设置飞机初始位置为屏幕中心
 	my_plane.plane_pos.y = SCREEN_HEIGHT - PLANE_SIZE; //设置飞机初始位置为屏幕底部
 	my_plane.speed = PLANE_SPEED; //设置飞机速度
@@ -51,14 +52,14 @@ void init_game() {
 	srand((unsigned)time(NULL)); //设置随机数种子
 
 
-	button[0] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 150, 200, 50, "开始游戏" }; // 定义开始按钮
-	button[1] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 200, 100, 50, "登录" }; // 定义登录按钮
-	button[2] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 250, 200, 50, "注册" }; // 定义注册按钮
-	button[3] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 250, 200, 50, "退出登录" , BUTTON_STATE_DISABLED }; // 定义退出登录按钮
-	button[4] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 150, 200, 50, "继续" ,BUTTON_STATE_DISABLED }; // 定义继续按钮
-	button[5] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 300, 200, 50, "退出游戏"  }; // 定义退出按钮
-	button[6] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 200, 200, 50, "重新开始" ,BUTTON_STATE_DISABLED }; // 定义重新开始按钮
-	button[7] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 250, 200, 50, "返回主页" ,BUTTON_STATE_DISABLED }; // 定义排行榜按钮
+	button[START] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 150, 200, 50, "开始游戏" }; // 定义开始按钮
+	button[LOGIN] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 200, 100, 50, "登录" }; // 定义登录按钮
+	button[REGISTER] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 250, 100, 50, "注册" }; // 定义注册按钮
+	button[LOGOFF] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 250, 100, 50, "退出登录" , BUTTON_STATE_DISABLED }; // 定义退出登录按钮
+	button[CONTINUE] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 150, 200, 50, "继续" ,BUTTON_STATE_DISABLED }; // 定义继续按钮
+	button[EXIT] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 300, 200, 50, "退出游戏"  }; // 定义退出按钮
+	button[RESTART] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 200, 200, 50, "重新开始" ,BUTTON_STATE_DISABLED }; // 定义重新开始按钮
+	button[HOME] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 250, 200, 50, "返回主页" ,BUTTON_STATE_DISABLED }; // 定义返回主页按钮
 
 	//若为准备状态，开始游戏
 	if (game_state == GAME_STATE_READY) {

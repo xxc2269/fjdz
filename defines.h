@@ -2,6 +2,13 @@
 #include"includes.h"//包含了标准头文件
 using namespace std; //使用标准命名空间
 
+#define COLOR_BTN_UP      RGB(0, 120, 215)   // 蓝色
+#define COLOR_BTN_HOVER   RGB(0, 180, 255)   // 浅蓝
+#define COLOR_BTN_DOWN    RGB(0, 80, 180)    // 深蓝
+#define COLOR_BTN_ACTIVE  RGB(0, 200, 100)   // 绿色
+#define COLOR_BTN_DISABLE RGB(150, 150, 150) // 灰色
+#define COLOR_BTN_TEXT    RGB(255,255,255)   // 白色
+
 #define SCREEN_WIDTH 512 //屏幕宽度
 #define SCREEN_HEIGHT 768 //屏幕高度
 #define PLANE_SIZE 50 //飞机大小
@@ -45,6 +52,7 @@ enum {
 //按钮状态：弹起、按下、激活
 enum {
 	BUTTON_STATE_UP = 0, //按钮弹起状态
+	BUTTON_STATE_HOVER, //按钮悬停状态
 	BUTTON_STATE_DOWN, //按钮按下状态
 	BUTTON_STATE_ACTIVE, //按钮激活状态
 	BUTTON_STATE_DISABLED //按钮禁用状态

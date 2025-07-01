@@ -129,6 +129,7 @@ void control_plane() {
 			game_state = GAME_STATE_PAUSED;
 			button[CONTINUE].state = BUTTON_STATE_UP;
 			button[EXIT].state = BUTTON_STATE_UP;
+			button[HOME].state = BUTTON_STATE_UP;
 			button[RESTART].state = BUTTON_STATE_UP;
 		}
 	}
@@ -683,6 +684,7 @@ void check_player_life() {
 		my_plane.is_alive = false; // 玩家飞机死亡
 		game_state = GAME_STATE_GAME_OVER ; // 切换游戏状态为结束状态
 		button[EXIT].state = BUTTON_STATE_UP;
+		button[HOME].state = BUTTON_STATE_UP;
 		button[RESTART].state = BUTTON_STATE_UP;
 		if (is_login)ready_to_insert = true; // 如果是登录状态，准备插入数据
 	}

@@ -16,7 +16,7 @@ void outputrecords() {
 	for (int i = 0; i < 5; i++) {
 		char output[100];
 		sprintf(output, "%d.\t%s\t- %d", i + 1, records[i].username, records[i].score);
-		outtextxy(SCREEN_WIDTH / 2 - 100, 250 + i * 30, output);
+		outtextxy(SCREEN_WIDTH / 2 - 100, 300 + i * 30, output);
 	}
 
 }

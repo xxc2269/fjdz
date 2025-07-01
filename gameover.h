@@ -4,33 +4,61 @@
 #include"findAll.h"// 包含查询所有记录的头文件
 
 void OverReadMouseInput() {
-	ExMessage msg; // 定义一个ExMessage结构体变量msg，用于存储鼠标消息
-	peekmessage(&msg, EM_MOUSE | EM_KEY); // 获取鼠标消息和键盘消息
-	switch (msg.message) { // 根据消息类型进行处理
-	case WM_LBUTTONDOWN: // 鼠标左键按下事件
-		for (int i = 0;i < 10;i++) {
-			//鼠标在按钮范围内按下时，相应按钮变为按下状态
-			if (msg.x >= button[i].x && msg.x <= button[i].x + button[i].width &&
-				msg.y >= button[i].y && msg.y <= button[i].y + button[i].height
-				&& button[i].state == BUTTON_STATE_UP) {
-				button[i].state = BUTTON_STATE_DOWN;
-			}
+	static int mouseDownIndex = -1; // 记录按下时的按钮索引
+	ExMessage msg;
+	peekmessage(&msg, EM_MOUSE | EM_KEY);
 
-		}
-		break;
-	case WM_LBUTTONUP:
-		//鼠标松开时，若在按钮范围内松开，该按钮变为激活状态，否则所有按钮恢复弹起状态
-		for (int i = 0;i < 10;i++) {
+	switch (msg.message) {
+	case WM_MOUSEMOVE:
+		for (int i = 0; i < 10; i++) {
+			// 鼠标在按钮范围内且按钮未禁用
 			if (msg.x >= button[i].x && msg.x <= button[i].x + button[i].width &&
-				msg.y >= button[i].y && msg.y <= button[i].y + button[i].height
-				/*&& button[i].state == BUTTON_STATE_DOWN*/) {
-				button[i].state = BUTTON_STATE_ACTIVE; // 设置按钮为激活状态
+				msg.y >= button[i].y && msg.y <= button[i].y + button[i].height &&
+				button[i].state != BUTTON_STATE_DISABLED) {
+				if (button[i].state != BUTTON_STATE_DOWN) // 按下时不变悬停
+					button[i].state = BUTTON_STATE_HOVER;
 			}
 			else {
-				button[i].state = BUTTON_STATE_UP; // 恢复按钮为弹起状态
+				// 鼠标不在按钮上，且不是按下状态，恢复为弹起
+				if (button[i].state == BUTTON_STATE_HOVER)
+					button[i].state = BUTTON_STATE_UP;
 			}
 		}
+		break;
 
+	case WM_LBUTTONDOWN:
+		mouseDownIndex = -1;
+		for (int i = 0; i < 10; i++) {
+			if (msg.x >= button[i].x && msg.x <= button[i].x + button[i].width &&
+				msg.y >= button[i].y && msg.y <= button[i].y + button[i].height &&
+				button[i].state == BUTTON_STATE_HOVER &&
+				button[i].state != BUTTON_STATE_DISABLED) {
+				button[i].state = BUTTON_STATE_DOWN;
+				mouseDownIndex = i; // 记录按下的按钮
+			}
+			else {
+				// 其它按钮恢复为弹起
+				if (button[i].state == BUTTON_STATE_DOWN)
+					button[i].state = BUTTON_STATE_UP;
+			}
+		}
+		break;
+
+	case WM_LBUTTONUP:
+		for (int i = 0; i < 10; i++) {
+			// 只有鼠标按下和松开都在同一个按钮上才激活
+			if (i == mouseDownIndex &&
+				msg.x >= button[i].x && msg.x <= button[i].x + button[i].width &&
+				msg.y >= button[i].y && msg.y <= button[i].y + button[i].height &&
+				button[i].state == BUTTON_STATE_DOWN &&
+				button[i].state != BUTTON_STATE_DISABLED) {
+				button[i].state = BUTTON_STATE_ACTIVE;
+			}
+			else if (button[i].state != BUTTON_STATE_DISABLED) {
+				button[i].state = BUTTON_STATE_UP;
+			}
+		}
+		mouseDownIndex = -1;
 		break;
 	}
 }
@@ -86,8 +114,16 @@ void OverHomeGame() {
 		generate_speed = 1; // 重置生成速度为1
 		button[CONTINUE].state = BUTTON_STATE_DISABLED; // 禁用继续按钮
 		button[RESTART].state = BUTTON_STATE_DISABLED; // 禁用重新开始按钮
-		button[EXIT].state = BUTTON_STATE_DISABLED; // 禁用退出按钮
+		//button[EXIT].state = BUTTON_STATE_DISABLED; // 禁用退出按钮
 		button[HOME].state = BUTTON_STATE_DISABLED; // 禁用返回主页按钮
+		button[START].state = BUTTON_STATE_UP; // 设置开始按钮状态为弹起
+		if (is_login) {
+			button[LOGOFF].state = BUTTON_STATE_UP; // 设置退出登录按钮状态为弹起
+		}
+		else {
+			button[LOGIN].state = BUTTON_STATE_UP; // 设置登录按钮状态为弹起
+			button[REGISTER].state = BUTTON_STATE_UP; // 设置注册按钮状态为弹起
+		}
 		//停止所有游戏内音乐
 		BASS_SampleStop(bgm1); // 停止背景音乐1
 		BASS_SampleStop(bgm2); // 停止背景音乐2

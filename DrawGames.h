@@ -302,33 +302,33 @@ void DrawGame() {
 		switch(game_state) { //根据游戏状态绘制不同的界面
 		case GAME_STATE_MAIN_MENU:
 			//主菜单界面
-			DrawStartButton(); //绘制开始按钮
+			DrawButton(START); //绘制开始按钮
 			DrawTitle(); //绘制标题
 			if (!is_login) {
-				DrawLoginButton(); //绘制登录按钮
-				DrawRegisterButton(); //绘制注册按钮
+				DrawButton(LOGIN); //绘制登录按钮
+				DrawButton(REGISTER); //绘制注册按钮
 			}
 			else {
 				DrawUsername(); // 绘制用户名
-				DrawLogoffButton(); // 绘制退出登录按钮
+				DrawButton(LOGOFF); // 绘制退出登录按钮
 			}
 			
-			DrawExitButton(); // 绘制退出按钮
+			DrawButton(EXIT); // 绘制退出按钮
 			break;
 			case GAME_STATE_PLAYING: //游戏进行中
 				break;
 			case GAME_STATE_PAUSED: //游戏暂停
 				DrawPauseTitle(); // 绘制暂停标题
-				DrawContinueButton(); // 绘制继续按钮
-				DrawRestartButton(); // 绘制重新开始按钮
-				DrawExitButton(); // 绘制退出按钮
-				DrawHomeButton(); // 绘制返回主页按钮
+				DrawButton(CONTINUE); // 绘制继续按钮
+				DrawButton(RESTART); // 绘制重新开始按钮
+				DrawButton(EXIT); // 绘制退出按钮
+				DrawButton(HOME); // 绘制返回主页按钮
 				break;
 			case GAME_STATE_GAME_OVER: //游戏结束
 				DrawOverTitle(); // 绘制游戏结束标题
-				DrawRestartButton(); // 绘制重新开始按钮
-				DrawExitButton(); // 绘制退出按钮
-				DrawHomeButton(); // 绘制返回主页按钮
+				DrawButton(RESTART); // 绘制重新开始按钮
+				DrawButton(EXIT); // 绘制退出按钮
+				DrawButton(HOME); // 绘制返回主页按钮
 				if(is_login)outputrecords(); // 输出游戏记录
 				break;
 			
