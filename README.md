@@ -3,7 +3,7 @@
 敌机即将侵占这片天空，你将扮演一架英雄飞机，击退汹涌而来的敌机浪潮，守护一方和平。你将逐渐远离地面，深入敌人内部，面对更为猛烈的攻势，直面敌机头目。你，准备好了吗？
 
 ## 下载
-可在右侧Release页面进行下载，或使用网盘链接：[https://wwqb.lanzout.com/iubXr2zrg2xg](https://wwqb.lanzout.com/iiBTi2zrjupe)
+可在右侧Release页面进行下载，或使用网盘链接：https://wwqb.lanzout.com/b00csczs5c 密码:9szl
 
 ## 关于账号系统的使用
 **本程序的账号系统依靠MySQL数据库实现，使用前请安装MySQL Server并手动运行位于程序目录下的mysql.sql文件以创建游戏数据库及其管理员账户，否则无法使用该系统**
