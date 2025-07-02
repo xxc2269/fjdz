@@ -19,8 +19,8 @@ using namespace std; //使用标准命名空间
 #define BOSS_HEIGHT 140 //BOSS高度
 #define PLANE_SPEED 1.0 //飞机移动速度
 #define ENEMY_MAX_NUM 50 //敌机最大数量
-#define BULLET_NUM 100 //子弹数量
-#define ITEM_NUM 20//收集物数量
+#define BULLET_NUM 200 //子弹数量
+#define ITEM_NUM 50//收集物数量
 
 #define ENEMY_LIFE 50 //敌机生命值
 #define ELITE_ENEMY_LIFE 200 //精英敌机生命值
@@ -135,6 +135,8 @@ typedef struct {
 	POS start_pos; //子弹起始位置
 	int bullet_num; //子弹数量
 	float bullet_speed; //子弹速度
+	float bullet_speed_x; //子弹水平速度（仅用于追踪子弹）
+	float bullet_speed_y; //子弹垂直速度（仅用于追踪子弹）
 	POS aim_pos;//子弹目标位置（仅用于追踪子弹）
 	int bullet_type; //子弹类型
 	int bullet_grade; //无双子弹等级
@@ -181,7 +183,7 @@ static 	record records[100]; // 定义一个全局变量records，表示游戏记录数组
 
 // 定义游戏中的全局变量和常量
 //static用于定义全局变量，这些变量在整个程序中都可以访问
-static ITEM drop_item[20]; //定义一个全局变量drop_item，表示掉落物品
+static ITEM drop_item[ITEM_NUM]; //定义一个全局变量drop_item，表示掉落物品
 static int drop_item_num = 0; //掉落物品数量
 static bool boss_is_alive = false; //BOSS是否存活
 static PLANE my_plane; //定义一个全局变量my_plane，表示飞机
@@ -283,7 +285,9 @@ static HSTREAM grade5_sound; //五级音效
 
 //是否登录
 static bool is_login = false; //是否登录
-
+static int is_auto_login = 0; //自动登录状态（0-未登录，1-已登录）
+char auto_username[45]; //自动登录用户名
+char auto_password[45]; //自动登录密码
 static bool ready_to_insert = false;
 
 static record outputrecord[5];//输出的游戏记录

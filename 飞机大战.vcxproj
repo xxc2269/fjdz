@@ -141,6 +141,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="add.h" />
+    <ClInclude Include="auto_login.h" />
     <ClInclude Include="bass.h" />
     <ClInclude Include="connect_db.h" />
     <ClInclude Include="dasebase.h" />

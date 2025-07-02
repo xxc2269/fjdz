@@ -55,7 +55,7 @@ void init_game() {
 	button[START] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 150, 200, 50, "开始游戏" }; // 定义开始按钮
 	button[LOGIN] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 200, 100, 50, "登录" }; // 定义登录按钮
 	button[REGISTER] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 250, 100, 50, "注册" }; // 定义注册按钮
-	button[LOGOFF] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 250, 100, 50, "退出登录" , BUTTON_STATE_DISABLED }; // 定义退出登录按钮
+	button[LOGOFF] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 250, 200, 50, "退出登录" , BUTTON_STATE_DISABLED }; // 定义退出登录按钮
 	button[CONTINUE] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 150, 200, 50, "继续" ,BUTTON_STATE_DISABLED }; // 定义继续按钮
 	button[EXIT] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 300, 200, 50, "退出游戏"  }; // 定义退出按钮
 	button[RESTART] = { SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 200, 200, 50, "重新开始" ,BUTTON_STATE_DISABLED }; // 定义重新开始按钮

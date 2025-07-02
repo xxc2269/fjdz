@@ -16,6 +16,7 @@
 #include"menu.h"//自定义的头文件，包含了菜单函数的声明
 #include"pause.h"//自定义的头文件，包含了暂停函数的声明
 #include"gameover.h"//自定义的头文件，包含了游戏结束函数的声明
+#include"auto_login.h"//自定义的头文件，包含了自动登录函数的声明
 //#include"accountmanager.h"//自定义的头文件，包含了注册函数的声明
 //函数声明
 
@@ -44,11 +45,15 @@ int WINAPI WinMain(
 
 	char accounttext[] = "关于账号系统的使用：\n\n本程序的账号系统依靠MySQL数据库实现，使用前请安装MySQL Server并手动运行位于程序目录下的mysql.sql文件以创建游戏数据库及其管理员账户，否则无法使用该系统"; //定义账号管理文本
 
-	if ((record_file = fopen("_RECORD_", "r"))==NULL) { //如果找不到记录文件，则创建一个新的记录文件
+	if ((record_file = fopen("_RECORD_", "r")) == NULL) { //如果找不到记录文件，则创建一个新的记录文件
 		MessageBox(NULL, welcometext, TEXT("提示"), MB_ICONINFORMATION); //弹出消息窗口，显示欢迎信息
 		MessageBox(NULL, accounttext, TEXT("提示"), MB_ICONINFORMATION); //弹出消息窗口，显示账号系统使用说明
 		record_file = fopen("_RECORD_", "w+"); //尝试创建记录文件
+		fprintf(record_file, "0 0 0"); //初始化记录文件内容为0 0 0
+		fclose(record_file);
 	}
+
+
 
 	//accountmanager( hInstance,
 	//	hPrevInstance,
@@ -61,6 +66,12 @@ int WINAPI WinMain(
 	initgraph(SCREEN_WIDTH, SCREEN_HEIGHT);//初始化图形窗口，设置窗口大小
 	//MessageBox(NULL, TEXT("一个简单的Win32应用程序"), TEXT("消息窗口"), MB_OK);//弹出一个消息窗口，显示“一个简单的Win32应用程序”(测试)
 	init_game(); //调用初始化游戏函数
+	
+
+	fscanf(record_file, "%d%s%s", &is_auto_login, &auto_username, &auto_password); //读取记录文件内容
+	if (is_auto_login)auto_login();
+	fclose(record_file); //关闭记录文件
+	
 	while(1){
 		switch (game_state) { //根据游戏状态进行处理
 			case GAME_STATE_MAIN_MENU: //如果游戏状态为主界面

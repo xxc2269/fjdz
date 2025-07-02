@@ -99,9 +99,14 @@ void LogoffGame() {
 	if (button[LOGOFF].state == BUTTON_STATE_ACTIVE ) {// 确保按钮被点击后至少等待1秒
 		if (MessageBox(NULL, "确定要退出登录吗？", "退出登录", MB_YESNO | MB_ICONQUESTION) == IDYES) {
 			is_login = false; // 设置登录状态为false
+			is_auto_login = 0; // 设置自动登录状态为false
+			USER.username[0] = '\0'; // 清空用户名
+			USER.password[0] = '\0'; // 清空密码
 			button[LOGOFF].state = BUTTON_STATE_DISABLED; // 禁用退出登录按钮
 			button[LOGIN].state = BUTTON_STATE_UP; // 激活登录按钮
 			button[REGISTER].state = BUTTON_STATE_UP; // 激活注册按钮
+			record_file = fopen("_RECORD_", "w+"); // 打开记录文件
+			fprintf(record_file, "%d %s %s", is_auto_login, USER.username, USER.password); // 写入自动登录状态和用户名密码
 		}
 		else button[LOGOFF].state = BUTTON_STATE_UP; // 如果用户选择不退出登录，则将退出登录按钮状态设置为弹起
 		

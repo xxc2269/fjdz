@@ -44,10 +44,14 @@ void userlogin() {// 用户登录函数
 		sprintf(msg, "欢迎回来, %s!", username);
 		MessageBox(NULL, msg, _T("登录成功"), MB_ICONINFORMATION);
 		is_login = true; // 设置登录状态为true
+		is_auto_login = 1; // 设置自动登录状态为true
 		sprintf(USER.username, "%s", username); // 保存登录用户名
 		sprintf(USER.password, "%s", password); // 保存登录密码
 		button[LOGIN].state = BUTTON_STATE_DISABLED; // 登录后将登录按钮状态设置为禁用
 		button[REGISTER].state = BUTTON_STATE_DISABLED; // 登录后将注册按钮状态设置为禁用
 		button[LOGOFF].state = BUTTON_STATE_UP; // 退出登录按钮设置为激活状态
+		record_file = fopen("_RECORD_", "w+"); // 打开记录文件
+		fprintf(record_file, "%d %s %s", is_auto_login, USER.username, USER.password); // 写入自动登录状态和用户名密码
+		fclose(record_file); // 关闭记录文件
 	}
 }
