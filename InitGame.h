@@ -46,6 +46,9 @@ void init_game() {
 
 	start_time = clock(); //记录游戏开始时间
 	start_paused_time = clock(); //记录上次暂停时间
+	partly_paused_time = 0;
+	generate_paused_time = 0;
+	shoot_paused_time = 0;
 	total_paused_time = 0; //初始化暂停时间为0
 	last_complete_time = clock(); //记录上次通关时间
 	boss_is_alive = false; //BOSS是否存活

@@ -11,6 +11,9 @@ void auto_login() {//自动登录
 		char error_msg[256];
 		sprintf(error_msg, "无法连接到数据库，自动登录失败\n\n %s", mysql_error(&mysql));
 		MessageBox(NULL, error_msg, "错误", MB_ICONWARNING);
+		record_file = fopen("_RECORD_", "w+"); //尝试创建记录文件
+		fprintf(record_file, "0 0 0"); //重置记录文件内容为0 0 0
+		fclose(record_file);
 		return; // 连接失败
 	}
 	// 设置字符集
@@ -19,6 +22,9 @@ void auto_login() {//自动登录
 	if (is_auto_login) {
 		if (!fetch_user_info(auto_username, auto_password)) {
 			MessageBox(NULL, _T("自动登录失败，用户名或密码错误"), _T("错误"), MB_ICONWARNING);
+			record_file = fopen("_RECORD_", "w+"); //尝试创建记录文件
+			fprintf(record_file, "0 0 0"); //重置记录文件内容为0 0 0
+			fclose(record_file);
 			return;
 		} else {
 			/*TCHAR msg[200];

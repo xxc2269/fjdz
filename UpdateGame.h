@@ -14,32 +14,32 @@ void enemy_shoot_bullet(); //生成敌机子弹函数
 
 //处理暂停事件（重置所有子弹、飞机、收集物的起始位置）
 void gamepaused() {
-	//重置子弹的起始位置
-	for (int i = 0;i < BULLET_NUM;i++) {
-		bullet[i].start_pos.x = bullet[i].bullet_pos.x; // 设置子弹位置为飞机位置
-		bullet[i].start_pos.y = bullet[i].bullet_pos.y; // 设置子弹位置为飞机位置
-		bullet[i].generate_time = clock(); // 记录子弹生成时间
+	////重置子弹的起始位置
+	//for (int i = 0;i < BULLET_NUM;i++) {
+	//	bullet[i].start_pos.x = bullet[i].bullet_pos.x; // 设置子弹位置为飞机位置
+	//	bullet[i].start_pos.y = bullet[i].bullet_pos.y; // 设置子弹位置为飞机位置
+	//	bullet[i].generate_time = clock(); // 记录子弹生成时间
 
-	}
-	//重置敌机的起始位置
-	for (int i = 0;i < ENEMY_MAX_NUM;i++) {
-		enemy_plane[i].start_pos.x = enemy_plane[i].plane_pos.x; // 设置敌机位置为飞机位置
-		enemy_plane[i].start_pos.y = enemy_plane[i].plane_pos.y; // 设置敌机位置为飞机位置
-		enemy_plane[i].generate_time = clock(); // 记录敌机生成时间
-	}
-	//重置掉落物品的起始位置
-	for (int i = 0;i < ITEM_NUM;i++) {
-		drop_item[i].start_pos.x = drop_item[i].item_pos.x; // 设置物品位置为飞机位置
-		drop_item[i].start_pos.y = drop_item[i].item_pos.y; // 设置物品位置为飞机位置
-		drop_item[i].generate_time = clock(); // 记录物品生成时间
-		
-	}
-	//重置敌机子弹的起始位置
-	for (int i = 0;i < ENEMY_MAX_NUM;i++) {
-		enemy_bullet[i].start_pos.x = enemy_bullet[i].bullet_pos.x; // 设置敌机子弹位置为飞机位置
-		enemy_bullet[i].start_pos.y = enemy_bullet[i].bullet_pos.y; // 设置敌机子弹位置为飞机位置
-		enemy_bullet[i].generate_time = clock(); // 记录敌机子弹生成时间
-	}
+	//}
+	////重置敌机的起始位置
+	//for (int i = 0;i < ENEMY_MAX_NUM;i++) {
+	//	enemy_plane[i].start_pos.x = enemy_plane[i].plane_pos.x; // 设置敌机位置为飞机位置
+	//	enemy_plane[i].start_pos.y = enemy_plane[i].plane_pos.y; // 设置敌机位置为飞机位置
+	//	enemy_plane[i].generate_time = clock(); // 记录敌机生成时间
+	//}
+	////重置掉落物品的起始位置
+	//for (int i = 0;i < ITEM_NUM;i++) {
+	//	drop_item[i].start_pos.x = drop_item[i].item_pos.x; // 设置物品位置为飞机位置
+	//	drop_item[i].start_pos.y = drop_item[i].item_pos.y; // 设置物品位置为飞机位置
+	//	drop_item[i].generate_time = clock(); // 记录物品生成时间
+	//	
+	//}
+	////重置敌机子弹的起始位置
+	//for (int i = 0;i < ENEMY_MAX_NUM;i++) {
+	//	enemy_bullet[i].start_pos.x = enemy_bullet[i].bullet_pos.x; // 设置敌机子弹位置为飞机位置
+	//	enemy_bullet[i].start_pos.y = enemy_bullet[i].bullet_pos.y; // 设置敌机子弹位置为飞机位置
+	//	enemy_bullet[i].generate_time = clock(); // 记录敌机子弹生成时间
+	//}
 	start_paused_time = clock(); // 记录暂停开始时间
 	//降低背景音乐音量
 	BASS_ChannelSetAttribute(BGM1, BASS_ATTRIB_VOL, 0.02f); // 设置背景音乐音量为20%
@@ -120,7 +120,7 @@ void control_plane() {
 		// 鼠标右键松开事件
 		if (my_plane.plane_state == PLANE_STATE_CHARGING) { // 如果飞机状态为蓄力中状态
 			my_plane.plane_state = PLANE_STATE_CHARGED; // 切换到蓄力完成状态
-			charge_time = clock() - start_charge_time; // 计算蓄力时间
+			//charge_time = clock() - partly_paused_time -  start_charge_time; // 计算蓄力时间
 		}
 		break;
 	case WM_KEYDOWN:
@@ -139,7 +139,7 @@ void control_plane() {
 
 //检测飞机状态为蓄力中状态时，每秒减少飞机5点耐久度，且每秒增加飞机气势100点，且气势等级最多为3级
 void check_plane_state() {
-	if (my_plane.plane_state == PLANE_STATE_CHARGING && clock() - start_charge_time > 200  ) { // 如果飞机状态为蓄力中状态
+	if (my_plane.plane_state == PLANE_STATE_CHARGING && clock() - partly_paused_time -  start_charge_time > 200  ) { // 如果飞机状态为蓄力中状态
 		if (my_plane.endurance > 0) {
 			my_plane.endurance -= 1; // 每秒减少飞机5点耐久度
 			if(my_plane.grade <= 2){
@@ -162,7 +162,7 @@ void check_plane_state() {
 	void shoot_bullet(){
 		if (my_plane.plane_state == PLANE_STATE_SHOOTING && my_plane.endurance > 0) {
 			for (int i = 0; i <= my_plane.bullet_num; i++) {
-				if (!bullet[i].is_active && clock() - my_plane.last_shoot_time > 200) { // 如果子弹未激活且距离上次射击时间超过200毫秒
+				if (!bullet[i].is_active && clock() - partly_paused_time -  my_plane.last_shoot_time > 200) { // 如果子弹未激活且距离上次射击时间超过200毫秒
 					// 子弹发射音效
 					if (bullet_sound) {
 						DWORD chan = BASS_SampleGetChannel(bullet_sound, FALSE);
@@ -205,7 +205,7 @@ void check_plane_state() {
 					bullet[i].bullet_grade = my_plane.grade; // 设置子弹等级为飞机等级
 					my_plane.endurance -= 1; // 减少飞机耐久度
 					bullet[i].generate_time = clock(); // 记录子弹生成时间
-					bullet[i].generate_time = clock(); // 记录子弹生成时间
+					bullet[i].last_move_time = clock();//记录上次移动时间
 
 					my_plane.last_shoot_time = clock(); // 记录最后一次射击时间
 					if (my_plane.bullet_num < BULLET_NUM) { // 如果子弹数量小于最大子弹数量
@@ -274,8 +274,9 @@ void check_plane_state() {
 			mega_bullet[0].bullet_pos.y = mega_bullet[0].start_pos.y; // 设置子弹位置为起始位置
 			mega_bullet[0].bullet_speed = 0.7; // 设置子弹速度
 			my_plane.endurance -= 10; // 减少飞机耐久度
-			bullet[my_plane.bullet_num++].generate_time = clock(); // 记录子弹生成时间
-			bullet[my_plane.bullet_num-1] = mega_bullet[0];
+			mega_bullet[0].generate_time = clock(); // 记录子弹生成时间
+			mega_bullet[0].last_move_time = clock();// 记录上次移动时间
+			bullet[my_plane.bullet_num++] = mega_bullet[0];
 			my_plane.last_shoot_time = clock(); // 记录最后一次射击时间
 			if (my_plane.bullet_num < BULLET_NUM) { // 如果子弹数量小于最大子弹数量
 				my_plane.bullet_num++; // 增加子弹数量
@@ -294,7 +295,7 @@ void check_plane_state() {
 			
 			
 				for (int i = 0; i <= my_plane.bullet_num; i++) {
-					if (!bullet[i].is_active && clock() - my_plane.last_shoot_time > 100) { // 如果子弹未激活且距离上次射击时间超过200毫秒
+					if (!bullet[i].is_active && clock() - partly_paused_time -  my_plane.last_shoot_time > 100) { // 如果子弹未激活且距离上次射击时间超过100毫秒
 						// 子弹发射音效
 						if (bullet_sound) {
 							DWORD chan = BASS_SampleGetChannel(bullet_sound, FALSE);
@@ -310,6 +311,7 @@ void check_plane_state() {
 						bullet[i].bullet_speed = 0.3; // 设置子弹速度
 						bullet[i].bullet_damage = 20; // 设置子弹伤害
 						bullet[i].generate_time = clock(); // 记录子弹生成时间
+						bullet[i].last_move_time = clock();// 记录上次移动时间
 						my_plane.last_shoot_time = clock(); // 记录最后一次射击时间
 						if (my_plane.bullet_num < BULLET_NUM) { // 如果子弹数量小于最大子弹数量
 							my_plane.bullet_num++; // 增加子弹数量
@@ -328,7 +330,13 @@ void bullet_move() {
 		// 更新子弹位置
 		for (int i = 0; i < BULLET_NUM; i++) {
 			if (bullet[i].is_active) { // 如果子弹激活
-				bullet[i].bullet_pos.y = bullet[i].start_pos.y - (clock() - bullet[i].generate_time) * bullet[i].bullet_speed; // 更新子弹位置
+				time_t t = clock() - partly_paused_time - bullet[i].last_move_time;
+				if (t >= 1) {
+					
+					bullet[i].bullet_pos.y -= t * bullet[i].bullet_speed; // 更新子弹位置
+					
+				}
+				bullet[i].last_move_time = clock();
 				if (bullet[i].bullet_pos.y < -150) { // 如果子弹超出屏幕上边界
 					bullet[i].is_active = false; // 禁用子弹
 					if (bullet[i].bullet_type == BULLET_TYPE_BIG) {
@@ -337,7 +345,7 @@ void bullet_move() {
 							enemy_plane[j].is_hitted_by_mega = false; // 重置敌机被大子弹击中的状态
 						}
 					}
-					char teststr[50];
+					//char teststr[50];
 					//sprintf(teststr, "bullet_num: %d", i);
 					//MessageBox(NULL, teststr, "提示", MB_OK); // 弹出提示框显示子弹数量(排除bug用）
 					my_plane.bullet_num--; // 减少子弹数量
@@ -380,6 +388,7 @@ void generate_enemy() {
 				/*enemy_plane[i].plane_type = ENEMY_TYPE_NORMAL;*/ // 设置敌机类型为普通敌机
 				
 				enemy_plane[i].generate_time = clock(); // 记录敌机生成时间
+				enemy_plane[i].last_move_time = clock();//记录上次移动时间
 
 				enemy_num++; // 增加敌机数量
 				srand(time(NULL));
@@ -393,7 +402,12 @@ void generate_enemy() {
 void update_enemy() {
 	for (int i = 0; i < ENEMY_MAX_NUM; i++) {
 		if (enemy_plane[i].is_alive) { // 如果敌机激活
-			enemy_plane[i].plane_pos.y = enemy_plane[i].start_pos.y + (clock()-enemy_plane[i].generate_time)*enemy_plane[i].speed; // 更新敌机位置
+			time_t t = clock() - partly_paused_time - enemy_plane[i].last_move_time;
+			if (t >= 1) {
+				enemy_plane[i].plane_pos.y += t * enemy_plane[i].speed; // 更新敌机位置
+
+			}
+			enemy_plane[i].last_move_time = clock();
 			if (enemy_plane[i].plane_type == ENEMY_TYPE_BOSS && enemy_plane[i].plane_pos.y > 150) {
 				enemy_plane[i].plane_pos.y = 150; // 如果是BOSS敌机，限制其位置在屏幕上方150像素
 			}
@@ -408,7 +422,7 @@ void update_enemy() {
 //发射敌机子弹
 void enemy_shoot_bullet() {
 	for(int j = 0; j < ENEMY_MAX_NUM; j++) {
-		if (enemy_plane[j].is_alive && clock() - enemy_plane[j].generate_time > 1000 && clock() - enemy_plane[j].last_shoot_time > 1000) { // 如果敌机激活且距离生成时间超过1000毫秒
+		if (enemy_plane[j].is_alive && clock() - partly_paused_time -  enemy_plane[j].generate_time > 1000 && clock() - shoot_paused_time -  enemy_plane[j].last_shoot_time > 1000) { // 如果敌机激活且距离生成时间超过1000毫秒
 			for (int i = 0; i < BULLET_NUM; i++) {
 				if (!enemy_bullet[i].is_active) { // 如果敌机子弹未激活
 					enemy_bullet[i].is_active = true; // 激活敌机子弹
@@ -438,12 +452,14 @@ void enemy_shoot_bullet() {
 						enemy_bullet[i].bullet_type = BULLET_TYPE_NORMAL; // 设置敌机子弹类型为普通子弹
 					}
 					enemy_bullet[i].generate_time = clock(); // 记录敌机子弹生成时间
+					enemy_bullet[i].last_move_time = clock();// 记录上次移动时间
 					enemy_plane[j].last_shoot_time = clock(); // 记录最后一次射击时间
 					enemy_bullet_num++; // 增加敌机子弹数量
 					break; // 退出循环
 				}
 			}
 		//enemy_plane[j].generate_time = clock(); // 更新敌机生成时间
+			shoot_paused_time = 0;
 			break; // 退出循环
 		}
 	}
@@ -452,30 +468,40 @@ void enemy_shoot_bullet() {
 //更新敌机子弹位置
 void enemy_bullet_move() {
 
-		// 更新子弹位置
-		for (int i = 0; i <= ENEMY_MAX_NUM; i++) {
-			if (enemy_bullet[i].is_active) { // 如果子弹激活
-				//如果为普通敌机子弹
-				if (enemy_bullet[i].bullet_type == BULLET_TYPE_NORMAL) {
-					enemy_bullet[i].bullet_pos.y = enemy_bullet[i].start_pos.y + (clock() - enemy_bullet[i].generate_time) * enemy_bullet[i].bullet_speed; // 更新子弹位置
+	// 更新子弹位置
+	for (int i = 0; i <= ENEMY_MAX_NUM; i++) {
+		if (enemy_bullet[i].is_active) { // 如果子弹激活
+			time_t t = clock() - partly_paused_time - enemy_bullet[i].last_move_time;
+			//如果为普通敌机子弹
+			if (enemy_bullet[i].bullet_type == BULLET_TYPE_NORMAL) {
+				if (t >= 1) {
+					enemy_bullet[i].bullet_pos.y += t * enemy_bullet[i].bullet_speed; // 更新子弹位置
+					enemy_bullet[i].last_move_time = clock();
 				}
-				//如果为精英敌机子弹
-				else if (enemy_bullet[i].bullet_type == BULLET_TYPE_TRACKING) {
-
-					 enemy_bullet[i].bullet_pos.x = enemy_bullet[i].start_pos.x +
-						 (clock() - enemy_bullet[i].generate_time) * enemy_bullet[i].bullet_speed_x; // 更新子弹位置
-					 enemy_bullet[i].bullet_pos.y = enemy_bullet[i].start_pos.y +
-						 (clock() - enemy_bullet[i].generate_time) * enemy_bullet[i].bullet_speed_y; // 更新子弹位置
-					
-				}
-				if (enemy_bullet[i].bullet_pos.y > SCREEN_HEIGHT) { // 如果子弹超出屏幕下边界
-						enemy_bullet[i].is_active = false; // 禁用子弹
-						enemy_bullet_num--; // 减少敌机子弹数量
-					}
 
 			}
+			//如果为精英敌机子弹
+			else if (enemy_bullet[i].bullet_type == BULLET_TYPE_TRACKING) {
+
+				if (t >= 1) {
+					enemy_bullet[i].bullet_pos.x += t * enemy_bullet[i].bullet_speed_x; // 更新子弹位置
+					enemy_bullet[i].bullet_pos.y += t * enemy_bullet[i].bullet_speed_y; // 更新子弹位置
+
+
+				}
+
+			}
+
 		}
+		enemy_bullet[i].last_move_time = clock();
+		if (enemy_bullet[i].bullet_pos.y > SCREEN_HEIGHT) { // 如果子弹超出屏幕下边界
+			enemy_bullet[i].is_active = false; // 禁用子弹
+			enemy_bullet_num--; // 减少敌机子弹数量
+		}
+
+	}
 }
+
 
 //敌机子弹与玩家飞机碰撞
 void check_enemy_bullet_collision() {
@@ -658,7 +684,7 @@ void check_bullet_collision() {
 
 //游戏开始90秒后生成BOSS
 void generate_boss() {
-	if (clock() - last_complete_time > 90000 + total_paused_time && !boss_is_alive) { // 如果游戏开始超过90秒且BOSS未激活
+	if (clock()  -  last_complete_time > 90000 + total_paused_time && !boss_is_alive) { // 如果游戏开始超过90秒且BOSS未激活
 		for (int i = 0; i < ENEMY_MAX_NUM; i++) {
 			if (!enemy_plane[i].is_alive) { // 如果敌机未激活
 				enemy_plane[i].is_alive = true; // 激活敌机
@@ -673,6 +699,7 @@ void generate_boss() {
 				enemy_plane[i].maxlife = BOSS_LIFE + level * 500; // 设置BOSS最大生命值
 				enemy_plane[i].life = BOSS_LIFE + level * 500; // 设置BOSS生命值
 				enemy_plane[i].generate_time = clock(); // 记录BOSS生成时间
+				enemy_plane[i].last_move_time = clock();//记录上次移动时间
 				boss_is_alive = true; // BOSS激活状态设置为true
 				srand(time(NULL));
 				if (level <= 3) {
@@ -784,13 +811,13 @@ void check_player_power() {
 
 //当飞机气势等级大于等于3时，气势每秒减少5点，但不会小于0
 void diminish_player_power() {
-	if (my_plane.grade >= 3 && clock() - last_power_time > 200) { // 如果飞机气势等级大于3且距离上次减少气势时间超过1秒
+	if (my_plane.grade >= 3 && clock() - partly_paused_time -  last_power_time > 200) { // 如果飞机气势等级大于3且距离上次减少气势时间超过1秒
 		if (my_plane.power > 0) {
 			my_plane.power -= 1; // 每秒减少5点气势
 		}
 		last_power_time = clock(); // 重置上次减少气势的时间
 	}
-	if ((my_plane.plane_state == PLANE_STATE_MEGA_NORMAL || my_plane.plane_state == PLANE_STATE_MEGA_SHOOTING) && clock() - last_power_time > 25) {
+	if ((my_plane.plane_state == PLANE_STATE_MEGA_NORMAL || my_plane.plane_state == PLANE_STATE_MEGA_SHOOTING) && clock() - partly_paused_time -  last_power_time > 25) {
 			my_plane.power -= 1; // 每秒减少10点气势
 			if (my_plane.power <= 0) {
 				my_plane.grade = 0;
@@ -816,7 +843,8 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 				drop_item[j].item_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
 				drop_item[j].item_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
 				drop_item[j].generate_time = clock(); // 设置掉落物起始时间
-				drop_item[j].item_speed = 0.3; // 设置掉落物速度
+				drop_item[j].last_move_time = clock();// 设置上次移动时间
+				drop_item[j].item_speed = 0.1; // 设置掉落物速度
 				drop_item_num++; // 增加掉落物数量
 				break; // 退出循环
 			}
@@ -828,7 +856,8 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 				drop_item[j].item_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
 				drop_item[j].item_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
 				drop_item[j].generate_time = clock(); // 设置掉落物起始时间
-				drop_item[j].item_speed = 0.3; // 设置掉落物速度
+				drop_item[j].last_move_time = clock();// 设置上次移动时间
+				drop_item[j].item_speed = 0.1; // 设置掉落物速度
 				drop_item_num++; // 增加掉落物数量
 				break; // 退出循环
 			}
@@ -840,7 +869,8 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 				drop_item[j].item_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
 				drop_item[j].item_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
 				drop_item[j].generate_time = clock(); // 设置掉落物起始时间
-				drop_item[j].item_speed = 0.3; // 设置掉落物速度
+				drop_item[j].last_move_time = clock();// 设置上次移动时间
+				drop_item[j].item_speed = 0.1; // 设置掉落物速度
 				drop_item_num++; // 增加掉落物数量
 				break; // 退出循环
 			}
@@ -852,7 +882,8 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 				drop_item[j].item_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
 				drop_item[j].item_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
 				drop_item[j].generate_time = clock(); // 设置掉落物起始时间
-				drop_item[j].item_speed = 0.3; // 设置掉落物速度
+				drop_item[j].last_move_time = clock();// 设置上次移动时间
+				drop_item[j].item_speed = 0.1; // 设置掉落物速度
 				drop_item_num++; // 增加掉落物数量
 				break; // 退出循环
 			}
@@ -869,7 +900,8 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 				drop_item[j].item_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
 				drop_item[j].item_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
 				drop_item[j].generate_time = clock(); // 设置掉落物起始时间
-				drop_item[j].item_speed = 0.3; // 设置掉落物速度
+				drop_item[j].last_move_time = clock();// 设置上次移动时间
+				drop_item[j].item_speed = 0.1; // 设置掉落物速度
 				drop_item_num++; // 增加掉落物数量
 				break; // 退出循环
 			}
@@ -881,7 +913,8 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 				drop_item[j].item_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
 				drop_item[j].item_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
 				drop_item[j].generate_time = clock(); // 设置掉落物起始时间
-				drop_item[j].item_speed = 0.3; // 设置掉落物速度
+				drop_item[j].last_move_time = clock();// 设置上次移动时间
+				drop_item[j].item_speed = 0.1; // 设置掉落物速度
 				drop_item_num++; // 增加掉落物数量
 				break; // 退出循环
 			}
@@ -893,7 +926,8 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 				drop_item[j].item_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
 				drop_item[j].item_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
 				drop_item[j].generate_time = clock(); // 设置掉落物起始时间
-				drop_item[j].item_speed = 0.3; // 设置掉落物速度
+				drop_item[j].last_move_time = clock();// 设置上次移动时间
+				drop_item[j].item_speed = 0.1; // 设置掉落物速度
 				drop_item_num++; // 增加掉落物数量
 				break; // 退出循环
 			}
@@ -906,7 +940,8 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 				drop_item[j].item_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
 				drop_item[j].item_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
 				drop_item[j].generate_time = clock(); // 设置掉落物起始时间
-				drop_item[j].item_speed = 0.3; // 设置掉落物速度
+				drop_item[j].last_move_time = clock();// 设置上次移动时间
+				drop_item[j].item_speed = 0.1; // 设置掉落物速度
 				drop_item_num++; // 增加掉落物数量
 				break; // 退出循环
 			}
@@ -925,7 +960,8 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 			drop_item[j].item_pos.x = plane_pos.x; // 设置掉落物位置为敌机位置
 			drop_item[j].item_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
 			drop_item[j].generate_time = clock(); // 设置掉落物起始时间
-			drop_item[j].item_speed = 0.3; // 设置掉落物速度
+			drop_item[j].last_move_time = clock();// 设置上次移动时间
+			drop_item[j].item_speed = 0.1; // 设置掉落物速度
 			drop_item_num++; // 增加掉落物数量
 			if (i % 100 < 5) { // 5%的概率掉落物品
 				drop_item[++j].is_active = true; // 激活掉落物
@@ -935,7 +971,8 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 				drop_item[j].item_pos.x = plane_pos.x - 100; // 设置掉落物位置为敌机位置
 				drop_item[j].item_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
 				drop_item[j].generate_time = clock(); // 设置掉落物起始时间
-				drop_item[j].item_speed = 0.3; // 设置掉落物速度
+				drop_item[j].last_move_time = clock();// 设置上次移动时间
+				drop_item[j].item_speed = 0.1; // 设置掉落物速度
 				drop_item_num++; // 增加掉落物数量
 				break; // 退出循环
 			}
@@ -947,7 +984,8 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 				drop_item[j].item_pos.x = plane_pos.x - 100; // 设置掉落物位置为敌机位置
 				drop_item[j].item_pos.y = plane_pos.y; // 设置掉落物位置为敌机位置
 				drop_item[j].generate_time = clock(); // 设置掉落物起始时间
-				drop_item[j].item_speed = 0.3; // 设置掉落物速度
+				drop_item[j].last_move_time = clock();// 设置上次移动时间
+				drop_item[j].item_speed = 0.1; // 设置掉落物速度
 				drop_item_num++; // 增加掉落物数量
 				break; // 退出循环
 			}
@@ -967,7 +1005,12 @@ void generate_drop_item(int plane_type, POS plane_pos) {
 void update_drop_item() {
 	for (int i = 0; i < ITEM_NUM; i++) {
 		if (drop_item[i].is_active) { // 如果掉落物激活
-			drop_item[i].item_pos.y = drop_item[i].start_pos.y + (clock() - drop_item[i].generate_time) * 0.1; // 更新掉落物位置
+			time_t t = clock() - partly_paused_time - drop_item[i].last_move_time;
+			if (t >= 1) {
+				drop_item[i].item_pos.y += t * drop_item[i].item_speed; // 更新掉落物位置
+				
+			}
+			drop_item[i].last_move_time = clock();
 			if (drop_item[i].item_pos.y > SCREEN_HEIGHT) { // 如果掉落物超出屏幕下边界
 				drop_item[i].is_active = false; // 禁用掉落物
 				drop_item_num--; // 减少掉落物数量
@@ -1110,16 +1153,17 @@ void UpdateGame() {
 	
 	bullet_move(); // 调用更新子弹位置函数，处理子弹移动
 
-	if(clock() - last_generate_enemy_time > (6000/generate_speed)) { // 如果距上次生成时间超过（6/关卡数）秒
+	if(clock() - generate_paused_time -  last_generate_enemy_time > (6000/generate_speed)) { // 如果距上次生成时间超过（6/关卡数）秒
 		generate_enemy(); // 调用生成敌机函数，处理敌机生成
 		last_generate_enemy_time = clock(); // 重置生成敌机时间
 		generate_count++; // 增加生成计数
+		generate_paused_time = 0;
 		if(generate_count >= 20 * generate_speed) { // 如果生成计数超过120
 			generate_speed++; // 增加生成速度
 			generate_count = 0; // 重置生成计数
 		}
 	}
-
+	generate_boss(); // 调用生成BOSS函数，处理BOSS生成
 	update_enemy(); // 调用更新敌机位置函数，处理敌机移动
 	enemy_shoot_bullet(); // 调用发射敌机子弹函数，处理敌机子弹发射
 	enemy_bullet_move(); // 调用更新敌机子弹位置函数，处理敌机子弹移动
@@ -1132,10 +1176,10 @@ void UpdateGame() {
 	diminish_player_power(); // 调用检测飞机气势函数，处理飞机气势状态
 	add_endurance(); // 调用添加耐久函数，处理飞机耐久状态
 
-	generate_boss(); // 调用生成BOSS函数，处理BOSS生成
+	
 
 	update_drop_item(); // 调用更新掉落物位置函数，处理掉落物位置更新
 	check_player_drop_item_collision(); // 调用玩家与掉落物碰撞检测函数，处理玩家飞机与掉落物的碰撞
 
-
+	partly_paused_time = 0;
 }

@@ -115,6 +115,7 @@ typedef struct {
 	bool is_hitted_by_mega; //是否被重击子弹击中(仅用于敌机)
 	int plane_type; //飞机类型（0-普通敌机，1-精英敌机，2-BOSS敌机）
 	time_t generate_time; //生成时间(仅用于敌机)
+	time_t last_move_time; //上次移动时间（仅用于敌机）
 	time_t last_shoot_time; //上次射击时间
 	int style; //飞机样式
 
@@ -145,6 +146,7 @@ typedef struct {
 	int bullet_color; //子弹颜色
 	int byllet_type; //子弹类型（0-普通子弹，1-无双子弹，2-激光）
 	time_t generate_time; //生成时间
+	time_t last_move_time; //上次移动时间	
 } BULLET; //子弹结构体
 //子弹结构体，包含子弹位置、数量、速度等信息
 
@@ -162,6 +164,7 @@ typedef struct {
 	int item_type; //物品类型（0-小生命球，1-大生命球，2-补给球，3-大补给球）
 	int item_size; //物品大小
 	time_t generate_time; //生成时间
+	time_t last_move_time; //上次移动时间
 	float item_speed; //物品移动速度
 } ITEM; //收集物品结构体;
 
@@ -201,8 +204,11 @@ static time_t end_time; //记录游戏结束时间
 static time_t last_complete_time = clock(); //记录上次通关时间
 static time_t last_shoot_time = clock(); //记录上次射击时间
 static time_t last_generate_enemy_time = clock(); //记录上次生成敌机时间
-static time_t start_paused_time = clock(); //记录上次生成BOSS时间
-static time_t total_paused_time = clock(); //记录暂停时间
+static time_t start_paused_time = clock(); //记录开始暂停时间
+static time_t partly_paused_time = clock(); // 记录本次暂停时间
+static time_t generate_paused_time = 0;//记录生成敌机暂停时间
+static time_t shoot_paused_time = 0;//记录发射子弹暂停时间
+static time_t total_paused_time = clock(); //记录总暂停时间
 static time_t last_added_time = clock(); //记录上次添加耐久的时间
 static time_t start_charge_time = clock(); //记录开始蓄力的时间
 static time_t charge_time = 0; //记录蓄力时间
