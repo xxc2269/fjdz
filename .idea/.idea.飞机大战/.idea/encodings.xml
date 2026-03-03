@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/DrawButtons.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/DrawGames.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/InitGame.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/ReadMouseMessage.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/UpdateGame.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/add.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/auto_login.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/connect_db.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/defines.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/findAll.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/gameover.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/helloworld.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/includes.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/loadImages.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/loadSounds.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/login.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/main.cpp" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/menu.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/outputrecords.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/pause.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/register.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/resource.h" charset="GBK" />
+  </component>
+</project>
